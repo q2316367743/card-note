@@ -1,0 +1,32 @@
+{
+    "main": "dist/index.html",
+    "preload": "preload.js",
+    "logo": "public/vite.svg",
+    "platform": [
+        "win32",
+        "darwin",
+        "linux"
+    ],
+    "development": {
+        "main": "http://localhost:5173/"
+    },
+    "pluginSetting": {
+        "single": true,
+        "height": 0
+    },
+    "features": [
+        {
+            "code": "launch",
+            "explain": "vite-utools-template",
+            "icon": "public/vite.svg",
+            "platform": [
+                "win32",
+                "darwin",
+                "linux"
+            ],
+            "cmds": [
+                "vite"
+            ]
+        }
+    ]
+}
