@@ -57,7 +57,6 @@ utools.onPluginEnter(handleTheme);
 watch(() => useAppStore().dark, handleTheme, {immediate: true})
 
 function handleTheme() {
-    console.log(useAppStore().isDarkColors())
     if (useAppStore().isDarkColors()) {
         document.body.setAttribute('arco-theme', 'dark');
     } else {

@@ -55,7 +55,7 @@ function addCheckbox() {
     if (!textareaRef.value) {
         return;
     }
-    const textarea = textareaRef.value.$refs.textareaRef as HTMLTextAreaElement;
+    const textarea = textareaRef.value.inputRef.$refs.textareaRef as HTMLTextAreaElement;
     const cursorPosition = getCursorPosition(textarea);
     const lines = content.value.split("\n");
     lines[Math.max(cursorPosition - 1, 0)] = `- [ ] ${lines[Math.max(cursorPosition - 1, 0)]}`;
@@ -71,7 +71,7 @@ function addCode() {
     if (!textareaRef.value) {
         return;
     }
-    const textarea = textareaRef.value.$refs.textareaRef as HTMLTextAreaElement;
+    const textarea = textareaRef.value.inputRef.$refs.textareaRef as HTMLTextAreaElement;
 
     if (!content.value) {
         content.value = '```\n\n```';

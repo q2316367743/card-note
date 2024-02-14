@@ -32,7 +32,6 @@ let offset = 0;
 const limit = 10;
 
 const page = () => useNoteStore().init().then(() => useNoteStore().page(offset, limit).then(items => {
-    console.log("sss")
     items.forEach(item => records.value.push(item));
     if (items.length < limit) {
         bottom.value = true;
