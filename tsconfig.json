@@ -24,7 +24,6 @@
     "types": [
       "utools-api-types"
     ],
-    "jsx": "preserve",
     "jsxImportSource": "vue"
   },
   "include": [

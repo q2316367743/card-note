@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div ref="codeEditBox" class="input-box"/>
+        <Textarea v-model="content" allow-clear :auto-size="{minRows: 2, maxRows: 8}" placeholder="任何想法..."
+                  ref="textareaRef"/>
         <div style="display: flex;justify-content: space-between;margin-top: 7px;">
             <ButtonGroup type="text">
                 <Space>
@@ -33,12 +34,11 @@
     </div>
 </template>
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
-import {utools} from "@/plugin/utools";
-import * as monaco from 'monaco-editor';
+import {nextTick, ref} from "vue";
 
-import {ButtonGroup, Button, Tooltip, Space} from "@arco-design/web-vue";
-import {IconTag, IconLink, IconCheckSquare, IconCode}from "@arco-design/web-vue/es/icon";
+import {ButtonGroup, Button, Tooltip, Space, Textarea} from "@arco-design/web-vue";
+import {IconTag, IconLink, IconCheckSquare, IconCode} from "@arco-design/web-vue/es/icon";
+import {getCursorPosition} from "@/utils/DomUtil";
 
 const props = defineProps({
     content: String
@@ -46,41 +46,58 @@ const props = defineProps({
 
 const emits = defineEmits(['save']);
 
-const codeEditBox = ref<HTMLElement>();
-
-let instance: monaco.editor.IStandaloneCodeEditor;
+const content = ref(props.content || '');
+const textareaRef = ref()
 
 function addCheckbox() {
+    if (!textareaRef.value) {
+        return;
+    }
+    const textarea = textareaRef.value.$refs.textareaRef as HTMLTextAreaElement;
+    const cursorPosition = getCursorPosition(textarea);
+    const lines = content.value.split("\n");
+    lines[Math.max(cursorPosition - 1, 0)] = `- [ ] ${lines[Math.max(cursorPosition - 1, 0)]}`;
+    content.value = lines.join("\n");
+    nextTick(() => {
+        textarea.focus();
+        const start = lines.slice(0, cursorPosition).join("\n").length
+        textarea.setSelectionRange(start, start);
+    })
 }
 
 function addCode() {
-}
+    if (!textareaRef.value) {
+        return;
+    }
+    const textarea = textareaRef.value.$refs.textareaRef as HTMLTextAreaElement;
 
-onMounted(() => {
-    instance = monaco.editor.create(codeEditBox.value!, {
-        language: "markdown",
-        theme: utools.isDarkColors() ? 'vs-dark' : 'vs',
-        lineNumbers: 'off',
-        wordWrap: 'on',
-        minimap: {
-            enabled: false
-        },
-        lineNumbersMinChars: 0,
-        value: props.content
-    });
-});
+    if (!content.value) {
+        content.value = '```\n\n```';
+        nextTick(() => {
+            textarea.focus();
+            textarea.setSelectionRange(4, 4);
+        });
+        return;
+    }
+
+    const cursorPosition = getCursorPosition(textarea);
+    const lines = content.value.split("\n");
+    lines[Math.max(cursorPosition - 1, 0)] += "\n```\n\n```";
+    content.value = lines.join("\n");
+    nextTick(() => {
+        textarea.focus();
+        const start = lines.slice(0, cursorPosition).join("\n").length - 4
+        textarea.setSelectionRange(start, start);
+    })
+}
 
 
 function add() {
-    emits('save', instance.getValue());
-    instance && instance.setValue("");
+    emits('save', content.value);
+    content.value = "";
 }
 
 
 </script>
 <style scoped>
-.input-box {
-    height: 144px;
-    overflow: hidden;
-}
 </style>
