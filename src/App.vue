@@ -22,9 +22,15 @@
                 </a-menu-item>
                 <a-menu-item key="/explore">
                     <template #icon>
-                        <icon-bulb />
+                        <icon-bulb/>
                     </template>
                     探索
+                </a-menu-item>
+                <a-menu-item key="/setting">
+                    <template #icon>
+                        <icon-settings/>
+                    </template>
+                    设置
                 </a-menu-item>
             </a-menu>
         </a-layout-sider>
@@ -37,24 +43,30 @@
 import {ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useTagStore} from "@/store/TagStore";
+import {useAppStore} from "@/store/AppStore";
 
 const router = useRouter();
 const selectedKeys = ref(['/home']);
 
 watch(() => selectedKeys.value, value => router.push(value[0]));
+useAppStore().init();
 
-if (utools.isDarkColors()) {
-    document.body.setAttribute('arco-theme', 'dark')
+
+utools.onPluginEnter(handleTheme);
+
+watch(() => useAppStore().dark, handleTheme, {immediate: true})
+
+function handleTheme() {
+    console.log(useAppStore().isDarkColors())
+    if (useAppStore().isDarkColors()) {
+        document.body.setAttribute('arco-theme', 'dark');
+    } else {
+        document.body.removeAttribute('arco-theme');
+    }
+
 }
 
-utools.onPluginEnter(() => {
-    if (utools.isDarkColors()) {
-        document.body.setAttribute('arco-theme', 'dark')
-    }
-});
-
 useTagStore().init();
-
 
 </script>
 <style scoped>

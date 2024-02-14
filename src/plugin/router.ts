@@ -23,6 +23,10 @@ const router = createRouter({
         name: "探索",
         path: '/explore',
         component: () => import('@/pages/explore/index.vue')
+    }, {
+        name: "设置",
+        path: '/setting',
+        component: () => import('@/pages/setting/index.vue')
     }]
 });
 

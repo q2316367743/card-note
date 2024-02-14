@@ -13,6 +13,7 @@ import {renderMarkdown} from "@/plugin/markdown";
 import {ref} from "vue";
 import html2canvas from "html2canvas";
 import {downloadByUrl} from "@/utils/BrowserUtil";
+import {useAppStore} from "@/store/AppStore";
 
 export function createExportImage(note: NoteContent) {
 
@@ -59,7 +60,7 @@ export function createExportImage(note: NoteContent) {
 
 function downloadImage(id: string) {
     html2canvas(document.getElementById(id) as HTMLElement, {
-        backgroundColor: utools.isDarkColors() ? '#2A2A2B' : '#ffffff',
+        backgroundColor: useAppStore().isDarkColors() ? '#2A2A2B' : '#ffffff',
     }).then(canvas => downloadByUrl(canvas.toDataURL(), "分享图.png"))
 }
 
