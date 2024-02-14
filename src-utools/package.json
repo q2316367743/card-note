@@ -1,10 +1,10 @@
 {
-  "name": "vite-utools-template",
+  "name": "card-note",
   "version": "1.0.0",
-  "description": "",
+  "description": "卡片笔记",
   "main": "preload.js",
   "author": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "type": "commonjs",
   "dependencies": {},
   "devDependencies": {

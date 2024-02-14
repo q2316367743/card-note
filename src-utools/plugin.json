@@ -1,7 +1,7 @@
 {
     "main": "dist/index.html",
     "preload": "preload.js",
-    "logo": "public/vite.svg",
+    "logo": "public/logo.png",
     "platform": [
         "win32",
         "darwin",
@@ -17,15 +17,15 @@
     "features": [
         {
             "code": "launch",
-            "explain": "vite-utools-template",
-            "icon": "public/vite.svg",
+            "explain": "card-note",
+            "icon": "public/logo.png",
             "platform": [
                 "win32",
                 "darwin",
                 "linux"
             ],
             "cmds": [
-                "vite"
+                "卡片笔记"
             ]
         }
     ]

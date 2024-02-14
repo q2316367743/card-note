@@ -1,0 +1,25 @@
+.home {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    .card {
+        margin: 7px;
+        .create-time {
+            font-size: .875rem;
+            color: var(--color-neutral-6);
+        }
+        .id {
+            font-size: .875rem;
+            color: var(--color-neutral-6);
+            display: none;
+        }
+        &:hover {
+            .id {
+                display: inline;
+            }
+        }
+    }
+}

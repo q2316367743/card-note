@@ -7,6 +7,8 @@ import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css';
 import {utools} from "@/plugin/utools";
+import "@/main.less";
+import "cherry-markdown/dist/cherry-markdown.min.css"
 
 // utools挂载
 window.utools = window.utools || utools;

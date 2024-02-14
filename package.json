@@ -1,7 +1,9 @@
 {
-  "name": "vite-utools-template",
+  "name": "card-note",
+  "description": "卡片笔记",
+  "author": "落雨不悔 <m17762618644@163.com>",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +12,9 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "^2.54.3",
+    "@vueuse/core": "^10.7.2",
     "axios": "^1.6.5",
+    "cherry-markdown": "^0.8.38",
     "idb-keyval": "^6.2.1",
     "less": "^4.2.0",
     "less-loader": "^11.1.4",
@@ -21,6 +25,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.6.2",
+    "@vitejs/plugin-vue-jsx": "^3.1.0",
     "typescript": "^4.9.5",
     "utools-api-types": "^4.0.0",
     "vite": "^4.5.2",

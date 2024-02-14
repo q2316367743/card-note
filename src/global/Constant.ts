@@ -1,12 +1,12 @@
 export default {
     // 插件的ID
-    uid: '',
+    uid: 'zxwqxh7t',
     // 项目名称，英文名称
-    id: '',
+    id: 'card-note',
     // 项目中文名称
-    name: '',
+    name: '卡片笔记',
     // 版本
-    version: '',
+    version: '1.0.0',
     // 作者
     author: '落雨不悔',
     // 仓库

@@ -24,19 +24,18 @@ const selectedKeys = ref(['/home']);
 
 watch(() => selectedKeys.value, value => router.push(value[0]));
 
-</script>
-<style scoped lang="less">
-.main {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    & > .container {
-        position: relative;
-        height: 100%;
-        width: 100%;
-    }
+if (utools.isDarkColors()) {
+    document.body.setAttribute('arco-theme', 'dark')
 }
+
+utools.onPluginEnter(() => {
+    if (utools.isDarkColors()) {
+        document.body.setAttribute('arco-theme', 'dark')
+    }
+});
+
+
+
+</script>
+<style scoped>
 </style>
