@@ -44,6 +44,7 @@ import {ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useTagStore} from "@/store/TagStore";
 import {useAppStore} from "@/store/AppStore";
+import {useSyncStore} from "@/store/SyncStore";
 
 const router = useRouter();
 const selectedKeys = ref(['/home']);
@@ -66,6 +67,7 @@ function handleTheme() {
 }
 
 useTagStore().init();
+useSyncStore().init();
 
 </script>
 <style scoped>

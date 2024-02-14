@@ -6,7 +6,9 @@ enum DbKeyEnum {
 
     NOTE_ITEM = "/note",
 
-    KEY_THEME = '/key/theme'
+    KEY_THEME = '/key/theme',
+
+    SETTING_SYNC = '/setting/sync'
 
 }
 
