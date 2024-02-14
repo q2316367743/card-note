@@ -14,6 +14,12 @@
                     </template>
                     每日回顾
                 </a-menu-item>
+                <a-menu-item key="/search">
+                    <template #icon>
+                        <icon-search/>
+                    </template>
+                    搜索
+                </a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout-content class="container">

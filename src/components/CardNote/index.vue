@@ -51,7 +51,7 @@
                 </template>
             </a-dropdown>
         </template>
-        <note-preview :content="record.record.content" class="juejin"/>
+        <note-preview :content="record.record"/>
     </a-card>
 </template>
 <script lang="ts" setup>

@@ -56,6 +56,10 @@ export const useNoteStore = defineStore('note', () => {
             .map(index => `${DbKeyEnum.NOTE_ITEM}/${index.id}`))
     }
 
+    function allIds(): Array<number> {
+        return ids.value.map(e => e.id);
+    }
+
     function getOne(id: number): Promise<DbRecord<NoteContent> | null> {
         return getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`);
     }
@@ -116,6 +120,6 @@ export const useNoteStore = defineStore('note', () => {
         }
     }
 
-    return {init, page, oneDay, getOne, add, update, remove}
+    return {init, allIds, page, oneDay, getOne, add, update, remove}
 
 });
