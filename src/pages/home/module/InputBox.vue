@@ -1,12 +1,12 @@
 <template>
     <a-card>
-        <monaco-editor @save="e => add(e)"/>
+        <text-editor @save="e => add(e)"/>
     </a-card>
 </template>
 <script lang="ts" setup>
 import {useNoteStore} from "@/store/NoteStore";
 import MessageUtil from "@/utils/MessageUtil";
-import MonacoEditor from "@/pages/home/components/MonacoEditor.vue";
+import TextEditor from "@/pages/home/components/TextEditor.vue";
 
 const emits = defineEmits(['refresh']);
 

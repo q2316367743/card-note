@@ -8,6 +8,12 @@
                     </template>
                     主页
                 </a-menu-item>
+                <a-menu-item key="/calendar">
+                    <template #icon>
+                        <icon-calendar/>
+                    </template>
+                    每日回顾
+                </a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout-content class="container">

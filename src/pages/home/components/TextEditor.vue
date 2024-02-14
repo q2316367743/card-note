@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Textarea v-model="content" allow-clear :auto-size="{minRows: 2, maxRows: 8}" placeholder="任何想法..."
-                  ref="textareaRef"/>
+        <Mention v-model="content" :data="tags" type="textarea" placeholder="任何想法..." prefix="#" allow-clear
+                   :auto-size="{minRows: 2, maxRows: 8}" ref="textareaRef" split=" "/>
         <div style="display: flex;justify-content: space-between;margin-top: 7px;">
             <ButtonGroup type="text">
                 <Space>
@@ -34,11 +34,12 @@
     </div>
 </template>
 <script lang="ts" setup>
-import {nextTick, ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 
-import {ButtonGroup, Button, Tooltip, Space, Textarea} from "@arco-design/web-vue";
+import {ButtonGroup, Button, Tooltip, Space, Mention} from "@arco-design/web-vue";
 import {IconTag, IconLink, IconCheckSquare, IconCode} from "@arco-design/web-vue/es/icon";
 import {getCursorPosition} from "@/utils/DomUtil";
+import {useTagStore} from "@/store/TagStore";
 
 const props = defineProps({
     content: String
@@ -48,6 +49,7 @@ const emits = defineEmits(['save']);
 
 const content = ref(props.content || '');
 const textareaRef = ref()
+const tags = computed(() => useTagStore().tags);
 
 function addCheckbox() {
     if (!textareaRef.value) {

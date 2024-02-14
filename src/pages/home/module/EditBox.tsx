@@ -1,10 +1,10 @@
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
-import {Note} from "@/entity/Note";
+import {NoteContent} from "@/entity/Note";
 import {Modal} from "@arco-design/web-vue";
-import MonacoEditor from "@/pages/home/components/MonacoEditor.vue";
+import TextEditor from "@/pages/home/components/TextEditor.vue";
 import {useNoteStore} from "@/store/NoteStore";
 
-export function openEditBox(record: DbRecord<Note>) {
+export function openEditBox(record: DbRecord<NoteContent>) {
     return new Promise<void>((resolve,reject) => {
         function update(content: string) {
             useNoteStore().update(record, content, [])
@@ -16,7 +16,7 @@ export function openEditBox(record: DbRecord<Note>) {
             titleAlign: 'start',
             footer: false,
             draggable: true,
-            content: () => <MonacoEditor content={record.record.content} onSave={update}/>
+            content: () => <TextEditor content={record.record.content} onSave={update}/>
         });
     })
 }

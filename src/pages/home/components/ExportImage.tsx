@@ -1,8 +1,7 @@
-import {Note} from "@/entity/Note";
+import {NoteContent} from "@/entity/Note";
 import {
     Avatar,
     Button,
-    Divider,
     Modal,
     Option,
     Select,
@@ -15,7 +14,7 @@ import {ref} from "vue";
 import html2canvas from "html2canvas";
 import {downloadByUrl} from "@/utils/BrowserUtil";
 
-export function createExportImage(note: Note) {
+export function createExportImage(note: NoteContent) {
 
     const user = utools.getUser();
     const id = "preview-" + note.id;

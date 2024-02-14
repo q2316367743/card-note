@@ -70,7 +70,7 @@ import {computed, ref} from "vue";
 import {useWindowSize} from "@vueuse/core";
 import {useNoteStore} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
-import {Note} from "@/entity/Note";
+import {NoteContent} from "@/entity/Note";
 import InputBox from "@/pages/home/module/InputBox.vue";
 import {toDateString} from "xe-utils";
 import NotePreview from "@/pages/home/module/NotePreview.vue";
@@ -81,7 +81,7 @@ import {createExportImage} from "@/pages/home/components/ExportImage";
 
 const size = useWindowSize();
 
-const records = ref<Array<DbRecord<Note>>>(new Array<DbRecord<Note>>());
+const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent>>());
 const bottom = ref(false);
 
 const height = computed(() => size.height.value - 14);
@@ -103,7 +103,7 @@ function fetchData() {
 
 function refresh() {
     offset = 0;
-    records.value = new Array<DbRecord<Note>>();
+    records.value = new Array<DbRecord<NoteContent>>();
     bottom.value = false;
     page();
 }
@@ -114,7 +114,7 @@ function prettyDate(date: Date | string | number) {
 
 useNoteStore().init().then(page);
 
-function update(record: DbRecord<Note>, index: number) {
+function update(record: DbRecord<NoteContent>, index: number) {
     openEditBox(record)
         .then(() => {
             MessageUtil.success("更新成功")
@@ -124,7 +124,7 @@ function update(record: DbRecord<Note>, index: number) {
 }
 
 
-function remove(record: DbRecord<Note>, index: number) {
+function remove(record: DbRecord<NoteContent>, index: number) {
     MessageBoxUtil.confirm("是否删除此条笔记", "删除笔记")
         .then(() => useNoteStore().remove(record.record.id).then(() => {
             // 从列表中移除

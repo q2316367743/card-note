@@ -1,14 +1,24 @@
 /**
  * 一篇笔记
  */
-export interface Note {
+export interface NoteIndex {
 
     id: number;
 
     /**
      * 更新时间
      */
-    updateTime: Date | string;
+    updateTime: number;
+
+    /**
+     * 是否置顶
+     */
+    top: boolean;
+
+}
+
+
+export interface NoteContent extends NoteIndex{
 
     /**
      * 内容

@@ -11,6 +11,10 @@ const router = createRouter({
         name: "主页",
         path: '/home',
         component: () => import('@/pages/home/index.vue')
+    }, {
+        name: "每日回顾",
+        path: '/calendar',
+        component: () => import('@/pages/calendar/index.vue')
     }]
 });
 
