@@ -20,6 +20,12 @@
                     </template>
                     搜索
                 </a-menu-item>
+                <a-menu-item key="/explore">
+                    <template #icon>
+                        <icon-bulb />
+                    </template>
+                    探索
+                </a-menu-item>
             </a-menu>
         </a-layout-sider>
         <a-layout-content class="container">

@@ -5,7 +5,7 @@
         </div>
         <a-timeline :mode="`left`" labelPosition="relative" style="margin-top: 14px;">
             <a-timeline-item v-for="record of records" :key="record.record.id" :label="renderLabel(record.record.id)">
-                <note-preview :content="record.record" />
+                <a-card><note-preview :content="record.record" /></a-card>
             </a-timeline-item>
         </a-timeline>
     </div>

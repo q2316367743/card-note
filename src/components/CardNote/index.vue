@@ -96,6 +96,44 @@ function remove(record: DbRecord<NoteContent>) {
 }
 
 </script>
-<style scoped>
-
+<style scoped lang="less">
+.card {
+    margin: 7px;
+    .create-time {
+        font-size: .875rem;
+        color: var(--color-neutral-6);
+    }
+    .id {
+        font-size: .875rem;
+        color: var(--color-neutral-6);
+        display: none;
+    }
+    &:hover {
+        .id {
+            display: inline;
+        }
+    }
+    &.preview {
+        user-select: none;
+        padding: 0;
+        margin: 0;
+        .title {
+            padding: 24px 20px 0;
+        }
+        .body{
+            padding: 0 20px;
+        }
+        .bottom {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            background-color: var(--color-neutral-2);
+            .nickname {
+                margin-left: 8px;
+            }
+        }
+    }
+}
 </style>
