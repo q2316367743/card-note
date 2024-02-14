@@ -82,7 +82,7 @@ export async function listRecordByAsync<T>(key?: string | string[]): Promise<Arr
 
 // --------------------------------------- 单一对象操作 ---------------------------------------
 
-export async function getFromOneByAsync<T extends Record<string, any>>(key: string, record: T): Promise<DbRecord<T>> {
+export async function getFromOneByDefault<T extends Record<string, any>>(key: string, record: T): Promise<DbRecord<T>> {
     const res = await utools.db.promises.get(key);
     if (!res) {
         return {record}
@@ -92,6 +92,18 @@ export async function getFromOneByAsync<T extends Record<string, any>>(key: stri
         rev: res._rev
     });
 }
+
+export async function getFromOneByAsync<T extends Record<string, any>>(key: string): Promise<DbRecord<T> | null> {
+    const res = await utools.db.promises.get(key);
+    if (!res) {
+        return null
+    }
+    return Promise.resolve({
+        record: res.value,
+        rev: res._rev
+    });
+}
+
 
 /**
  * 保存一条数据

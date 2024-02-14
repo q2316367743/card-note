@@ -1,8 +1,16 @@
 import {defineStore} from "pinia";
-import {DbRecord, listByAsync, listRecordByAsync, saveListByAsync, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
+import {
+    DbRecord, getFromOneByAsync,
+    listByAsync,
+    listRecordByAsync,
+    removeOneByAsync,
+    saveListByAsync,
+    saveOneByAsync
+} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {ref} from "vue";
 import {Note} from "@/entity/Note";
+import {useTagStore} from "@/store/TagStore";
 
 export const useNoteStore = defineStore('note', () => {
     const ids = ref(new Array<number>());
@@ -34,15 +42,20 @@ export const useNoteStore = defineStore('note', () => {
         return listRecordByAsync<Note>(numbers.map(num => `${DbKeyEnum.NOTE_ITEM}/${num}`))
     }
 
+    function getOne(id: number): Promise<DbRecord<Note> | null> {
+        return getFromOneByAsync<Note>(`${DbKeyEnum.NOTE_ITEM}/${id}`);
+    }
+
     async function add(content: string, relationNotes: Array<number>) {
         const now = new Date();
         const note: Note = {
             id: now.getTime(),
-            createTime: now,
             updateTime: now,
             content,
             relationNotes
         }
+        // 匹配标签
+        useTagStore().addFromContent(content).then(() => console.debug("标签匹配完成"));
         // 先增加数据
         await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${note.id}`, note);
         // 在增加数组
@@ -50,6 +63,32 @@ export const useNoteStore = defineStore('note', () => {
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, ids.value, rev);
     }
 
-    return {init, page, add}
+    async function update(record: DbRecord<Note>, content: string, relationNotes: Array<number>) {
+        const id = record.record.id;
+        const index = ids.value.indexOf(id);
+        if (index >= 0) {
+            // 匹配标签
+            useTagStore().addFromContent(content).then(() => console.debug("标签匹配完成"));
+            // 更新数据
+            await saveOneByAsync<Note>(`${DbKeyEnum.NOTE_ITEM}/${id}`, {
+                id: id,
+                updateTime: new Date(),
+                content,
+                relationNotes
+            }, record.rev);
+        }
+    }
+
+    async function remove(id: number) {
+        const index = ids.value.indexOf(id);
+        if (index >= 0) {
+            ids.value.splice(index, 1);
+            rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, ids.value, rev);
+            // 删除数据
+            await removeOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${id}`);
+        }
+    }
+
+    return {init, page, getOne, add, update, remove}
 
 });

@@ -4,7 +4,7 @@ enum DbKeyEnum {
 
     LIST_NOTE = "/list/note",
 
-    NOTE_ITEM = "/note/",
+    NOTE_ITEM = "/note",
 
 }
 

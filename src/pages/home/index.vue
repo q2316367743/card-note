@@ -3,13 +3,13 @@
         <a-list @reach-bottom="fetchData()" :scrollbar="false" :bordered="false"
                 :max-height="height" :split="false">
             <template #scroll-loading>
-                <p v-if="bottom">No more data</p>
+                <p v-if="bottom">没有更多的笔记了</p>
                 <a-spin v-else/>
             </template>
             <input-box @refresh="refresh()" style="margin: 7px 7px 0;"/>
-            <a-card v-for="record of records" class="card">
+            <a-card v-for="(record, index) of records" class="card" :key="record.record.id">
                 <template #title>
-                    <span class="create-time">{{prettyDate(record.record.createTime)}}</span>
+                    <span class="create-time">{{ prettyDate(record.record.id) }}</span>
                     <span class="id"> · #{{ record.record.id }}</span>
                 </template>
                 <template #extra>
@@ -20,49 +20,49 @@
                             </template>
                         </a-button>
                         <template #content>
-<!--                            <a-doption>-->
-<!--                                <template #icon>-->
-<!--                                    <icon-subscribe-add />-->
-<!--                                </template>-->
-<!--                                置顶-->
-<!--                            </a-doption>-->
-                            <a-doption>
+                            <!--                            <a-doption>-->
+                            <!--                                <template #icon>-->
+                            <!--                                    <icon-subscribe-add />-->
+                            <!--                                </template>-->
+                            <!--                                置顶-->
+                            <!--                            </a-doption>-->
+                            <a-doption @click="update(record, index)">
                                 <template #icon>
-                                    <icon-edit />
+                                    <icon-edit/>
                                 </template>
                                 编辑
                             </a-doption>
-                            <a-doption>
+                            <a-doption disabled>
                                 <template #icon>
-                                    <icon-link />
+                                    <icon-link/>
                                 </template>
                                 引用
                             </a-doption>
-                            <a-doption>
+                            <a-doption @click="createExportImage(record.record)">
                                 <template #icon>
-                                    <icon-shake />
+                                    <icon-shake/>
                                 </template>
                                 分享
                             </a-doption>
-                            <a-doption>
+                            <a-doption disabled>
                                 <template #icon>
-                                    <icon-bookmark />
+                                    <icon-bookmark/>
                                 </template>
                                 归档
                             </a-doption>
-                            <a-doption>
+                            <a-doption @click="remove(record, index)">
                                 <template #icon>
-                                    <icon-delete />
+                                    <icon-delete/>
                                 </template>
                                 删除
                             </a-doption>
                         </template>
                     </a-dropdown>
                 </template>
-                <note-preview :content="record.record.content" />
+                <note-preview :content="record.record.content" class="juejin"/>
             </a-card>
         </a-list>
-
+        <a-back-top target-container=".arco-list"/>
     </div>
 </template>
 <script lang="ts" setup>
@@ -71,9 +71,13 @@ import {useWindowSize} from "@vueuse/core";
 import {useNoteStore} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {Note} from "@/entity/Note";
-import InputBox from "@/pages/home/components/InputBox.vue";
+import InputBox from "@/pages/home/module/InputBox.vue";
 import {toDateString} from "xe-utils";
-import NotePreview from "@/pages/home/components/NotePreview.vue";
+import NotePreview from "@/pages/home/module/NotePreview.vue";
+import {openEditBox} from "@/pages/home/module/EditBox";
+import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageUtil from "@/utils/MessageUtil";
+import {createExportImage} from "@/pages/home/components/ExportImage";
 
 const size = useWindowSize();
 
@@ -110,7 +114,26 @@ function prettyDate(date: Date | string | number) {
 
 useNoteStore().init().then(page);
 
+function update(record: DbRecord<Note>, index: number) {
+    openEditBox(record)
+        .then(() => {
+            MessageUtil.success("更新成功")
+            // 更新列表
+            useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item))
+        }).catch(e => MessageUtil.error("更新失败", e))
+}
+
+
+function remove(record: DbRecord<Note>, index: number) {
+    MessageBoxUtil.confirm("是否删除此条笔记", "删除笔记")
+        .then(() => useNoteStore().remove(record.record.id).then(() => {
+            // 从列表中移除
+            records.value.splice(index, 1);
+            MessageUtil.success("删除成功")
+        }).catch(e => MessageUtil.error("删除失败", e)))
+}
+
 </script>
-<style scoped lang="less">
+<style lang="less">
 @import "./index.less";
 </style>

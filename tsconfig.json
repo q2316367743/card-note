@@ -23,7 +23,9 @@
     "noEmit": true,
     "types": [
       "utools-api-types"
-    ]
+    ],
+    "jsx": "preserve",
+    "jsxImportSource": "vue"
   },
   "include": [
     "src/**/*.ts",

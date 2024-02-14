@@ -18,6 +18,7 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
 import {useRouter} from "vue-router";
+import {useTagStore} from "@/store/TagStore";
 
 const router = useRouter();
 const selectedKeys = ref(['/home']);
@@ -34,6 +35,7 @@ utools.onPluginEnter(() => {
     }
 });
 
+useTagStore().init();
 
 
 </script>

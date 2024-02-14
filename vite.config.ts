@@ -21,5 +21,9 @@ export default defineConfig({
     build: {
         outDir: "src-utools/dist"
     },
-
+    optimizeDeps: {
+        include: [
+            `monaco-editor/esm/vs/editor/editor.worker`
+        ],
+    }
 });
