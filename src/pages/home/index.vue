@@ -7,60 +7,7 @@
                 <a-spin v-else/>
             </template>
             <input-box @refresh="refresh()" style="margin: 7px 7px 0;"/>
-            <a-card v-for="(record, index) of records" class="card" :key="record.record.id">
-                <template #title>
-                    <span class="create-time">{{ prettyDate(record.record.id) }}</span>
-                    <span class="id"> · #{{ record.record.id }}</span>
-                </template>
-                <template #extra>
-                    <a-dropdown position="br">
-                        <a-button type="text">
-                            <template #icon>
-                                <icon-more-vertical/>
-                            </template>
-                        </a-button>
-                        <template #content>
-                            <!--                            <a-doption>-->
-                            <!--                                <template #icon>-->
-                            <!--                                    <icon-subscribe-add />-->
-                            <!--                                </template>-->
-                            <!--                                置顶-->
-                            <!--                            </a-doption>-->
-                            <a-doption @click="update(record, index)">
-                                <template #icon>
-                                    <icon-edit/>
-                                </template>
-                                编辑
-                            </a-doption>
-                            <a-doption disabled>
-                                <template #icon>
-                                    <icon-link/>
-                                </template>
-                                引用
-                            </a-doption>
-                            <a-doption @click="createExportImage(record.record)">
-                                <template #icon>
-                                    <icon-shake/>
-                                </template>
-                                分享
-                            </a-doption>
-                            <a-doption disabled>
-                                <template #icon>
-                                    <icon-bookmark/>
-                                </template>
-                                归档
-                            </a-doption>
-                            <a-doption @click="remove(record, index)">
-                                <template #icon>
-                                    <icon-delete/>
-                                </template>
-                                删除
-                            </a-doption>
-                        </template>
-                    </a-dropdown>
-                </template>
-                <note-preview :content="record.record.content" class="juejin"/>
-            </a-card>
+            <card-note v-for="(record, index) of records" :record="record" :key="record.record.id" @update="update(record, index)" @remove="remove(index)"/>
         </a-list>
         <a-back-top target-container=".arco-list"/>
     </div>
@@ -72,12 +19,7 @@ import {useNoteStore} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import InputBox from "@/pages/home/module/InputBox.vue";
-import {toDateString} from "xe-utils";
-import NotePreview from "@/pages/home/module/NotePreview.vue";
-import {openEditBox} from "@/pages/home/module/EditBox";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
-import MessageUtil from "@/utils/MessageUtil";
-import {createExportImage} from "@/pages/home/components/ExportImage";
+import CardNote from "@/components/CardNote/index.vue";
 
 const size = useWindowSize();
 
@@ -89,12 +31,13 @@ const height = computed(() => size.height.value - 14);
 let offset = 0;
 const limit = 10;
 
-const page = () => useNoteStore().page(offset, limit).then(items => {
+const page = () => useNoteStore().init().then(() => useNoteStore().page(offset, limit).then(items => {
+    console.log("sss")
     items.forEach(item => records.value.push(item));
     if (items.length < limit) {
         bottom.value = true;
     }
-});
+}));
 
 function fetchData() {
     offset = records.value.length;
@@ -108,29 +51,14 @@ function refresh() {
     page();
 }
 
-function prettyDate(date: Date | string | number) {
-    return toDateString(date);
-}
-
-useNoteStore().init().then(page);
 
 function update(record: DbRecord<NoteContent>, index: number) {
-    openEditBox(record)
-        .then(() => {
-            MessageUtil.success("更新成功")
-            // 更新列表
-            useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item))
-        }).catch(e => MessageUtil.error("更新失败", e))
+    useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item))
 }
 
 
-function remove(record: DbRecord<NoteContent>, index: number) {
-    MessageBoxUtil.confirm("是否删除此条笔记", "删除笔记")
-        .then(() => useNoteStore().remove(record.record.id).then(() => {
-            // 从列表中移除
-            records.value.splice(index, 1);
-            MessageUtil.success("删除成功")
-        }).catch(e => MessageUtil.error("删除失败", e)))
+function remove(index: number) {
+    records.value.splice(index, 1);
 }
 
 </script>

@@ -49,7 +49,7 @@ const emits = defineEmits(['save']);
 
 const content = ref(props.content || '');
 const textareaRef = ref()
-const tags = computed(() => useTagStore().tags);
+const tags = computed(() => Array.from(useTagStore().tags));
 
 function addCheckbox() {
     if (!textareaRef.value) {

@@ -12,6 +12,8 @@ import {ref} from "vue";
 import {NoteContent, NoteIndex} from "@/entity/Note";
 import {useTagStore} from "@/store/TagStore";
 
+const HOUR = 1000 * 60 * 60;
+
 export const useNoteStore = defineStore('note', () => {
     const ids = ref(new Array<NoteIndex>());
     let rev: string | undefined = undefined;
@@ -40,6 +42,18 @@ export const useNoteStore = defineStore('note', () => {
         }
         const indexes = ids.value.slice(offset, Math.min(offset + limit, ids.value.length));
         return listRecordByAsync<NoteContent>(indexes.map(index => `${DbKeyEnum.NOTE_ITEM}/${index.id}`))
+    }
+
+    /**
+     * 查询一天的数据
+     * @param date 当天的早八点时间戳
+     */
+    function oneDay(date: number): Promise<Array<DbRecord<NoteContent>>> {
+        const start = date - 8 * HOUR;
+        const end = date + 16 * HOUR;
+        return listRecordByAsync<NoteContent>(ids.value
+            .filter(index => index.id >= start && index.id <= end)
+            .map(index => `${DbKeyEnum.NOTE_ITEM}/${index.id}`))
     }
 
     function getOne(id: number): Promise<DbRecord<NoteContent> | null> {
@@ -102,6 +116,6 @@ export const useNoteStore = defineStore('note', () => {
         }
     }
 
-    return {init, page, getOne, add, update, remove}
+    return {init, page, oneDay, getOne, add, update, remove}
 
 });
