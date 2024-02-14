@@ -3,8 +3,9 @@
         <div>
             <a-date-picker style="width: 200px;" v-model="date" :allow-clear="false"/>
         </div>
-        <a-timeline :mode="`left`" labelPosition="relative" style="margin-top: 14px;">
-            <a-timeline-item v-for="record of records" :key="record.record.id" :label="renderLabel(record.record.id)">
+        <a-timeline  style="margin-top: 14px;">
+            <a-timeline-item v-for="record of records" :key="record.record.id">
+                <div style="margin-bottom: 7px;">{{renderLabel(record.record.id)}}</div>
                 <a-card><note-preview :content="record.record" /></a-card>
             </a-timeline-item>
         </a-timeline>
