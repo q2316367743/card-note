@@ -1,6 +1,11 @@
 <template>
     <div class="sync-setting">
         <a-form :model="syncSetting" layout="vertical">
+            <a-alert>
+                同步仅支持webdav，如果自己没有服务器，可以使用
+                <a-link @click="openJianGuoYun()">坚果云</a-link>
+                进行同步
+            </a-alert>
             <a-form-item label="链接">
                 <a-input v-model="syncSetting.url" placeholder="请输入webdav地址"/>
             </a-form-item>
@@ -67,6 +72,10 @@ function fullSync() {
                 .catch(e => MessageUtil.error("全量同步失败", e))
                 .finally(() => loading.close())
         })
+}
+
+function openJianGuoYun() {
+    utools.shellOpenExternal("https://www.jianguoyun.com");
 }
 
 </script>
