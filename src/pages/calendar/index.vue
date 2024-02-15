@@ -9,6 +9,7 @@
                 <a-card><note-preview :content="record.record" /></a-card>
             </a-timeline-item>
         </a-timeline>
+        <a-back-top target-container=".calendar" />
     </div>
 </template>
 <script lang="ts" setup>
@@ -36,6 +37,11 @@ function renderLabel(id: number) {
 </script>
 <style scoped>
 .calendar {
-    padding: 7px;
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    right: 7px;
+    bottom: 7px;
+    overflow: auto;
 }
 </style>

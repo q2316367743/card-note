@@ -62,7 +62,7 @@
 .card-tag {
     background-color: var(--color-neutral-2);
     border-radius: 3px;
-    color: #2b88d8;
+    color: rgb(var(--arcoblue-6));
     cursor: pointer;
     font-size: 12px;
     padding: 4px;
@@ -77,6 +77,46 @@
         padding: 20px 10px;
         border-bottom: 1px solid var(--color-neutral-3);
         margin: 0;
+    }
+}
+
+.card {
+    margin: 7px;
+    .create-time {
+        font-size: .875rem;
+        color: var(--color-neutral-6);
+    }
+    .id {
+        font-size: .875rem;
+        color: var(--color-neutral-6);
+        display: none;
+    }
+    &:hover {
+        .id {
+            display: inline;
+        }
+    }
+    &.preview {
+        user-select: none;
+        padding: 0;
+        margin: 0;
+        .title {
+            padding: 24px 20px 0;
+        }
+        .body{
+            padding: 0 20px;
+        }
+        .bottom {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            background-color: var(--color-neutral-2);
+            .nickname {
+                margin-left: 8px;
+            }
+        }
     }
 }
 

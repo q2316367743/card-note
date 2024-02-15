@@ -5,11 +5,6 @@
         <div style="display: flex;justify-content: space-between;margin-top: 7px;">
             <ButtonGroup type="text">
                 <Space>
-                    <Button>
-                        <template #icon>
-                            <IconTag :size="16"/>
-                        </template>
-                    </Button>
                     <Tooltip content="引用">
                         <Button>
                             <template #icon>

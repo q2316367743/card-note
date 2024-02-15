@@ -6,7 +6,7 @@ import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {useDocumentVisibility, useEventBus, useIntervalFn} from "@vueuse/core";
 import {createClient, WebDAVClient} from 'webdav'
 import {handleAutoSync, SyncState} from "@/components/SyncAlgorithm/AutoSync";
-import {useIdleSync} from "@/components/SyncAlgorithm/IdleSync";
+import {fullSynchronization, useIdleSync} from "@/components/SyncAlgorithm/IdleSync";
 
 
 export const useSyncEvent = useEventBus<SyncState>('sync');
@@ -42,6 +42,10 @@ export const useSyncStore = defineStore('sync', () => {
         syncSetting.value = res.record;
         rev = res.rev;
         buildClient();
+        if (syncSetting.value.autoSync) {
+            // 如果开启了自动同步，那面初始化时就应该进行一次全量同步
+            client.value && fullSynchronization(client.value).then(() => console.log("第一次全量同步完成"));
+        }
     }
 
     async function save(res: SyncSetting) {

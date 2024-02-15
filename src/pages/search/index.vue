@@ -12,6 +12,7 @@
                 </template>
             </a-result>
         </div>
+        <a-back-top target-container=".search .container" />
     </div>
 </template>
 <script lang="ts" setup>
