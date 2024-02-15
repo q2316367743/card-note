@@ -1,8 +1,49 @@
 import {NoteContent} from "@/entity/Note";
 import {useNoteStore} from "@/store/NoteStore";
+import {Form, FormItem, Input, Modal} from "@arco-design/web-vue";
+import {ref} from "vue";
+import {fullSynchronization} from "@/components/SyncAlgorithm/IdleSync";
+import {useSyncStore} from "@/store/SyncStore";
+import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageUtil from "@/utils/MessageUtil";
 
-export function importFromMemos() {
-
+export function openImportFromMemos() {
+    const config = ref({
+        url: "",
+        token: ""
+    })
+    Modal.open({
+        title: "从Memos导入",
+        draggable: true,
+        okText: "导入",
+        content: () => <Form model={config.value} layout={"vertical"}>
+            <FormItem label="服务器地址">
+                <Input v-model={config.value.url}/>
+            </FormItem>
+            <FormItem label="token">
+                <Input v-model={config.value.token}/>
+            </FormItem>
+        </Form>,
+        onOk: async () => {
+            const loading = MessageBoxUtil.loading("正在导入，请稍候...");
+            try {
+                // 开始导入
+                loading.append("正在导入")
+                await _importFromMemos(config.value.url, config.value.token);
+                // 进行一次全量同步
+                loading.append("进行一次全量同步");
+                let client = useSyncStore().client;
+                if (client) {
+                    await fullSynchronization(client, loading);
+                }
+                MessageUtil.success("导入成功");
+            } catch (e) {
+                MessageUtil.error("导入失败", e)
+            } finally {
+                loading.close();
+            }
+        }
+    });
 }
 
 interface RootObject {

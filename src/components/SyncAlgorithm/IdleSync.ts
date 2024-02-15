@@ -132,7 +132,7 @@ async function fullSynchronizationByNote(client: WebDAVClient) {
             if(!localNoteIndex.deleted) {
                 // 本地有的，但是远程没有的，需要新增到远程
                 let content = await getFromOneByAsync(key);
-                content && await client.putFileContents(buildPath(key), JSON.stringify(content));
+                content && await client.putFileContents(buildPath(key), JSON.stringify(content.record));
             }
             // 新增到本地索引中
             newNoteIndexes.push(localNoteIndex);

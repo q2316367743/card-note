@@ -98,10 +98,9 @@ export const useNoteStore = defineStore('note', () => {
     }
 
     async function addBatch(noteContents: Array<NoteContent>) {
-
         for (let noteContent of noteContents) {
             // 匹配标签
-            useTagStore().addFromContent(noteContent.content).then(() => console.debug("标签匹配完成"));
+            useTagStore().addFromContent(noteContent.content, false).then(() => console.debug("标签匹配完成"));
             // 先增加数据
             await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${noteContent.id}`, noteContent);
             // 在增加数组
@@ -113,10 +112,6 @@ export const useNoteStore = defineStore('note', () => {
             });
         }
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
-
-        // 自动同步事件
-        useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
-        noteContents.forEach(c => useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${c.id}`, type: 'put'}));
     }
 
     async function update(record: DbRecord<NoteContent>, content: string, relationNotes: Array<number>) {

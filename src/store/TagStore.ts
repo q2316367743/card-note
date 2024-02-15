@@ -17,18 +17,18 @@ export const useTagStore = defineStore("tag", () => {
         rev = res.rev;
     }
 
-    async function add(items: Array<string>) {
+    async function add(items: Array<string>, sync: boolean = true) {
         items.forEach(item => tags.value.add(item));
         rev = await saveListByAsync(DbKeyEnum.LIST_TAG, Array.from(tags.value), rev);
 
         // 自动同步事件
-        useSyncEvent.emit({key: DbKeyEnum.LIST_TAG, type: 'put'});
+        sync && useSyncEvent.emit({key: DbKeyEnum.LIST_TAG, type: 'put'});
     }
 
-    async function addFromContent(content: string) {
+    async function addFromContent(content: string, sync: boolean = true) {
         let tags = content.match(TAG_REGEX);
         if (tags) {
-            await add(tags);
+            await add(tags, sync);
         }
     }
 
