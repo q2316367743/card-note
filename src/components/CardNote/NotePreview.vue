@@ -4,32 +4,32 @@
             <div v-html="preview" class="juejin"></div>
         </a-typography-paragraph>
         <a-typography-paragraph>
-            <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;">
+            <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
                 <a-tag color="arcoblue" bordered>
                     <template #icon>
                         <icon-link/>
                     </template>
-                    · # {{ relationNote.record.id }} {{ renderContent(relationNote.record.content) }}
+                    · #{{ relationNote.record.id }} {{ renderContent(relationNote.record.content) }}
                 </a-tag>
             </div>
         </a-typography-paragraph>
         <a-typography-paragraph>
-            <div v-for="associatedNote in associatedNotes" style="margin-bottom: 4px;">
+            <div v-for="associatedNote in associatedNotes" style="margin-bottom: 4px;" :key="associatedNote.record.id">
                 <a-tag color="green" bordered>
                     <template #icon>
                         <icon-share-internal/>
                     </template>
-                    · # {{ associatedNote.record.id }} {{ renderContent(associatedNote.record.content) }}
+                    · #{{ associatedNote.record.id }} {{ renderContent(associatedNote.record.content) }}
                 </a-tag>
             </div>
         </a-typography-paragraph>
         <a-typography-paragraph>
-            <div v-for="commentNote in commentNotes" style="margin-bottom: 4px;">
+            <div v-for="commentNote in commentNotes" style="margin-bottom: 4px;" :key="commentNote.record.id">
                 <a-tag color="gold" bordered>
                     <template #icon>
                         <icon-edit/>
                     </template>
-                    · # {{ commentNote.record.id }} {{ renderContent(commentNote.record.content) }}
+                    · #{{ commentNote.record.id }} {{ renderContent(commentNote.record.content) }}
                 </a-tag>
             </div>
         </a-typography-paragraph>
@@ -48,6 +48,7 @@ import {
     Tag as ATag
 } from "@arco-design/web-vue";
 import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
+import {renderContent} from "@/utils/BrowserUtil";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>
@@ -60,6 +61,9 @@ const commentNotes = ref<Array<DbRecord<NoteContent>>>([]);
 
 watch(() => props.content,
     value => {
+        relationNotes.value = [];
+        associatedNotes.value = [];
+        commentNotes.value = [];
         if (value) {
             // 渲染markdown
             renderMarkdown(value.content).then(html => preview.value = html)
@@ -85,12 +89,6 @@ watch(() => props.content,
     },
     {immediate: true});
 
-function renderContent(content: string): string {
-    if (content.length > 10) {
-        return content.substring(0, 10) + "...";
-    }
-    return content;
-}
 </script>
 <style>
 </style>

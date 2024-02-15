@@ -7,7 +7,8 @@
                 <a-spin v-else/>
             </template>
             <input-box @refresh="refresh()" style="margin: 7px 7px 0;"/>
-            <card-note v-for="(record, index) of records" :record="record" :key="record.record.id" @update="update(record, index)" @remove="remove(index)"/>
+            <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
+                       @update="e=>update(record, index, e)" @remove="remove(index)"/>
         </a-list>
         <a-back-top target-container=".arco-list"/>
     </div>
@@ -51,8 +52,15 @@ function refresh() {
 }
 
 
-function update(record: DbRecord<NoteContent>, index: number) {
-    useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item))
+function update(record: DbRecord<NoteContent>, index: number, needUpdateIds: Array<number>) {
+    useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item));
+    for (let i = 0; i < records.value.length; i++) {
+        let one = records.value[i].record;
+        if (needUpdateIds.indexOf(one.id) > -1) {
+            // 存在
+            useNoteStore().getOne(one.id).then(item => item && (records.value[i] = item));
+        }
+    }
 }
 
 

@@ -188,3 +188,10 @@ export function arrayBufferToBase64(buffer: ArrayBuffer) {
     }
     return window.btoa(binary);
 }
+
+export function renderContent(content: string, max: number = 10): string {
+    if (content.length > max) {
+        return content.substring(0, max) + "...";
+    }
+    return content;
+}

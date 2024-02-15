@@ -78,10 +78,10 @@ function prettyDate(date: Date | string | number) {
 
 function update(record: DbRecord<NoteContent>) {
     openEditBox(record)
-        .then(() => {
+        .then(needUpdateIds => {
             MessageUtil.success("更新成功")
             // 更新列表
-            emits('update')
+            emits('update', needUpdateIds)
         }).catch(e => MessageUtil.error("更新失败", e))
 }
 

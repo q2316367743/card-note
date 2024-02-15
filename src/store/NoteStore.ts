@@ -179,7 +179,15 @@ export const useNoteStore = defineStore('note', () => {
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
     }
 
-    async function update(record: DbRecord<NoteContent>, content: string, relationNotes: Array<NoteRelation>) {
+    /**
+     * 更新记录
+     * @param record
+     * @param content
+     * @param relationNotes
+     *
+     * @return 受到影响的笔记
+     */
+    async function update(record: DbRecord<NoteContent>, content: string, relationNotes: Array<NoteRelation>): Promise<Array<number>> {
         const id = record.record.id;
         const index = indexes.value.findIndex(e => e.id === record.record.id);
         if (index >= 0) {
@@ -212,6 +220,7 @@ export const useNoteStore = defineStore('note', () => {
                     // 旧的有，新的没有，删除
                     if (!newRelation.has(old)) {
                         await removeAssociated(old);
+                        needUpdateIds.push(old.relationId);
                     }
                 }
                 for (let newItem of newRelation) {
@@ -226,6 +235,7 @@ export const useNoteStore = defineStore('note', () => {
 
                         // 增加反向关联
                         await addAssociated(relation);
+                        needUpdateIds.push(newItem.relationId);
                     }
 
                 }
@@ -249,8 +259,10 @@ export const useNoteStore = defineStore('note', () => {
             needUpdateIds.forEach(updateId => useSyncEvent.emit({
                 key: `${DbKeyEnum.NOTE_ITEM}/${updateId}`,
                 type: 'put'
-            }))
+            }));
+            return Promise.resolve(needUpdateIds);
         }
+        return Promise.resolve([]);
     }
 
     async function remove(id: number) {
