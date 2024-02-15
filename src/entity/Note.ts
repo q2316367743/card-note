@@ -23,7 +23,7 @@ export interface NoteIndex {
 }
 
 
-export interface NoteContent extends NoteIndex{
+export interface NoteContent extends NoteIndex {
 
     /**
      * 内容
@@ -33,7 +33,28 @@ export interface NoteContent extends NoteIndex{
     /**
      * 关联笔记
      */
-    relationNotes: Array<number>;
+    relationNotes: Array<NoteRelation>;
+
+}
+
+export interface NoteRelation {
+
+    /**
+     * 笔记ID
+     */
+    noteId: number;
+
+    /**
+     * 关联ID
+     */
+    relationId: number;
+
+    /**
+     * 类型：
+     * COMMENT：评论
+     * REFERENCE：引用
+     */
+    type: 'COMMENT' | 'REFERENCE'
 
 }
 

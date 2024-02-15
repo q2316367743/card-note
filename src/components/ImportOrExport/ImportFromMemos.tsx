@@ -66,13 +66,13 @@ interface RootObject {
 interface RelationList {
     memoId: number;
     relatedMemoId: number;
-    type: string;
+    type: 'COMMENT' | 'REFERENCE';
 }
 
 async function _importFromMemos(url: string, token: string) {
-    // https://memos-esion.tocmcc.cn/api/v1/memo?creatorUsername=admin&rowStatus=NORMAL&offset=20&limit=20
     let offset = 0;
     const limit = 20;
+    const noteContentMap = new Map<number, NoteContent>();
     while (true) {
         let rsp = await window.preload.axios.get<Array<RootObject>>("/api/v1/memo", {
             baseURL: url,
@@ -86,19 +86,20 @@ async function _importFromMemos(url: string, token: string) {
             }
         });
         const items = rsp.data;
-        const noteContents = new Array<NoteContent>();
         for (let item of items) {
-            noteContents.push({
+            noteContentMap.set(item.id, {
                 content: item.content,
                 top: false,
                 deleted: false,
                 updateTime: item.updatedTs * 1000,
                 id: item.createdTs * 1000,
-                relationNotes: item.relationList.map(e => e.relatedMemoId)
+                relationNotes: item.relationList.map(e => ({
+                    noteId: e.memoId,
+                    relationId: e.relatedMemoId,
+                    type: e.type
+                }))
             })
         }
-
-        await useNoteStore().addBatch(noteContents);
 
         offset += limit;
 
@@ -107,4 +108,21 @@ async function _importFromMemos(url: string, token: string) {
             break;
         }
     }
+
+    // 重新渲染ID
+    noteContentMap.forEach(v => {
+        v.relationNotes = v.relationNotes.map(relation => {
+            const noteContent = noteContentMap.get(relation.noteId);
+            const relationContent = noteContentMap.get(relation.relationId);
+            return {
+                noteId: noteContent ? noteContent.id : -1,
+                relationId: relationContent ? relationContent.id : -1,
+                type: relation.type
+            }
+        }).filter(e => e.noteId !== -1 && e.relationId !== -1);
+    })
+
+    // 批量新增
+    await useNoteStore().addBatch(Array.from(noteContentMap.values()));
+
 }
