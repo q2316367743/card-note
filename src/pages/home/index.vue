@@ -6,7 +6,7 @@
                 <p v-if="bottom">没有更多的笔记了</p>
                 <a-spin v-else/>
             </template>
-            <input-box @refresh="refresh()" style="margin: 7px 7px 0;"/>
+            <input-box @refresh="refresh()" class="card"/>
             <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
                        @update="e=>update(record, index, e)" @remove="remove(index)"/>
         </a-list>

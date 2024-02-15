@@ -1,6 +1,6 @@
 <template>
     <a-typography>
-        <a-typography-paragraph :ellipsis="{ rows: 3, expandable: true}">
+        <a-typography-paragraph :ellipsis="{ rows: 10, expandable: true}">
             <div v-html="preview" class="juejin"></div>
         </a-typography-paragraph>
         <a-typography-paragraph>
