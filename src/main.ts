@@ -11,6 +11,7 @@ import "@/main.less";
 import "highlight.js/styles/github.css";
 
 // utools挂载
+window.isUtools = !!window.utools;
 window.utools = window.utools || utools;
 
 // 额外引入图标库

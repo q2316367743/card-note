@@ -8,7 +8,7 @@
         </a-alert>
         <a-button-group style="margin-top: 7px;">
             <a-space>
-                <a-button type="primary" @click="openImportFromMemos()">
+                <a-button type="primary" @click="openImportFromMemos()" :disabled="!isUtools">
                     从Memos中导入
                 </a-button>
             </a-space>
@@ -30,6 +30,8 @@
 </template>
 <script lang="ts" setup>
 import {openImportFromMemos} from "@/components/ImportOrExport/ImportFromMemos";
+const isUtools = window.isUtools;
+console.log(isUtools)
 </script>
 <style scoped>
 

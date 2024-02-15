@@ -15,12 +15,19 @@ renderer.text = function (text) {
     }
     return text;
 };
+renderer.link = (href, title, text) => {
+    if (window.isUtools) {
+        return `<a href="${href}" title="${title}" onclick="utools.shellOpenExternal('${href}')">${text}</a>`;
+    } else {
+        return `<a href="${href}" title="${title}">${text}</a>`;
+    }
+}
 
 const marked = new Marked({
     renderer: renderer,
 }, markedHighlight({
     langPrefix: 'hljs language-',
-    highlight(code, lang, info) {
+    highlight(code, lang) {
         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
         return hljs.highlight(code, {language}).value;
     }

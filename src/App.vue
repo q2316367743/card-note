@@ -1,6 +1,6 @@
 <template>
     <a-layout class="main">
-        <link type="text/css"  rel="stylesheet" :href="href"/>
+        <link type="text/css" rel="stylesheet" :href="href"/>
         <a-layout-sider collapsed style="z-index: 50">
             <a-menu style="width: 200px;height: 100%;" breakpoint="xl" v-model:selected-keys="selectedKeys">
                 <a-menu-item key="/home">
@@ -42,11 +42,12 @@
 </template>
 <script lang="ts" setup>
 import {computed, ref, watch} from "vue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useTagStore} from "@/store/TagStore";
 import {useAppStore} from "@/store/AppStore";
 import {useSyncStore} from "@/store/SyncStore";
 
+const route = useRoute();
 const router = useRouter();
 const selectedKeys = ref(['/home']);
 
@@ -54,6 +55,11 @@ const href = computed(() => `/highlight.js/${useAppStore().dark ? 'github-dark' 
 
 watch(() => selectedKeys.value, value => router.push(value[0]));
 watch(() => useAppStore().dark, handleTheme, {immediate: true});
+watch(() => route.path, value => {
+    if (selectedKeys.value[0] !== value) {
+        selectedKeys.value[0] = value
+    }
+})
 
 useTagStore().init();
 useSyncStore().init();
