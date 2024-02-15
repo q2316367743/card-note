@@ -67,6 +67,7 @@ export const useNoteStore = defineStore('note', () => {
     }
 
     function getOne(id: number): Promise<DbRecord<NoteContent> | null> {
+        // TODO：此处需要缓存
         return getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`);
     }
 
@@ -78,7 +79,7 @@ export const useNoteStore = defineStore('note', () => {
             top: false,
             deleted: false
         }
-        const nodeContent: NoteContent = {
+        const noteContent: NoteContent = {
             ...noteIndex,
             content,
             relationNotes
@@ -86,7 +87,7 @@ export const useNoteStore = defineStore('note', () => {
         // 匹配标签
         useTagStore().addFromContent(content).then(() => console.debug("标签匹配完成"));
         // 先增加数据
-        await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${now}`, nodeContent);
+        await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${now}`, noteContent);
         // 在增加数组
         indexes.value.unshift(noteIndex);
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
@@ -94,6 +95,28 @@ export const useNoteStore = defineStore('note', () => {
         // 自动同步事件
         useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
         useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${now}`, type: 'put'});
+    }
+
+    async function addBatch(noteContents: Array<NoteContent>) {
+
+        for (let noteContent of noteContents) {
+            // 匹配标签
+            useTagStore().addFromContent(noteContent.content).then(() => console.debug("标签匹配完成"));
+            // 先增加数据
+            await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${noteContent.id}`, noteContent);
+            // 在增加数组
+            indexes.value.unshift({
+                id: noteContent.id,
+                updateTime: noteContent.updateTime,
+                top: noteContent.top,
+                deleted: noteContent.deleted
+            });
+        }
+        rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
+
+        // 自动同步事件
+        useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
+        noteContents.forEach(c => useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${c.id}`, type: 'put'}));
     }
 
     async function update(record: DbRecord<NoteContent>, content: string, relationNotes: Array<number>) {
@@ -141,6 +164,6 @@ export const useNoteStore = defineStore('note', () => {
         }
     }
 
-    return {init, allIds, page, oneDay, getOne, add, update, remove}
+    return {init, allIds, page, oneDay, getOne, add, addBatch, update, remove}
 
 });

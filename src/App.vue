@@ -1,5 +1,6 @@
 <template>
     <a-layout class="main">
+        <link type="text/css"  rel="stylesheet" :href="href"/>
         <a-layout-sider collapsed style="z-index: 50">
             <a-menu style="width: 200px;height: 100%;" breakpoint="xl" v-model:selected-keys="selectedKeys">
                 <a-menu-item key="/home">
@@ -40,7 +41,7 @@
     </a-layout>
 </template>
 <script lang="ts" setup>
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useTagStore} from "@/store/TagStore";
 import {useAppStore} from "@/store/AppStore";
@@ -49,13 +50,17 @@ import {useSyncStore} from "@/store/SyncStore";
 const router = useRouter();
 const selectedKeys = ref(['/home']);
 
+const href = computed(() => `/highlight.js/${useAppStore().dark ? 'github-dark' : 'github'}.css`);
+
 watch(() => selectedKeys.value, value => router.push(value[0]));
+watch(() => useAppStore().dark, handleTheme, {immediate: true});
+
+useTagStore().init();
+useSyncStore().init();
 useAppStore().init();
 
 
 utools.onPluginEnter(handleTheme);
-
-watch(() => useAppStore().dark, handleTheme, {immediate: true})
 
 function handleTheme() {
     if (useAppStore().isDarkColors()) {
@@ -65,9 +70,6 @@ function handleTheme() {
     }
 
 }
-
-useTagStore().init();
-useSyncStore().init();
 
 </script>
 <style scoped>

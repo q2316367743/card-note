@@ -3,10 +3,12 @@
         <a-tabs hide-content v-model:active-key="activeKey">
             <a-tab-pane title="基础设置" key="1"/>
             <a-tab-pane title="同步设置" key="2"/>
+            <a-tab-pane title="导入与导出" key="3"/>
         </a-tabs>
         <div class="container">
             <base-setting v-if="activeKey === '1'"/>
             <sync-setting v-else-if="activeKey === '2'"/>
+            <import-or-export v-else-if="activeKey === '3'" />
         </div>
     </div>
 </template>
@@ -14,6 +16,7 @@
 import {ref} from "vue";
 import BaseSetting from "@/pages/setting/module/BaseSetting.vue";
 import SyncSetting from "@/pages/setting/module/SyncSetting.vue";
+import ImportOrExport from "@/pages/setting/module/ImportOrExport.vue";
 
 const activeKey = ref('1');
 </script>

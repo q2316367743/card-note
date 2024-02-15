@@ -1,4 +1,10 @@
 /// <reference types="vite/client" />
-interface Window {
-    preload: {}
+import {AxiosInstance} from "axios";
+
+declare global {
+    interface Window {
+        preload: {
+            axios: AxiosInstance
+        }
+    }
 }

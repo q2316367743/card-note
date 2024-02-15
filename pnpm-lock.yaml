@@ -14,6 +14,9 @@ dependencies:
   axios:
     specifier: ^1.6.5
     version: 1.6.5
+  highlight.js:
+    specifier: ^11.9.0
+    version: 11.9.0
   html2canvas:
     specifier: ^1.4.1
     version: 1.4.1
@@ -29,6 +32,9 @@ dependencies:
   marked:
     specifier: ^12.0.0
     version: 12.0.0
+  marked-highlight:
+    specifier: ^2.1.1
+    version: 2.1.1(marked@12.0.0)
   pinia:
     specifier: ^2.1.7
     version: 2.1.7(typescript@4.9.5)(vue@3.4.15)
@@ -1390,6 +1396,11 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
+  /highlight.js@11.9.0:
+    resolution: {integrity: sha512-fJ7cW7fQGCYAkgv4CPfwFHrfd/cLS4Hau96JuJ+ZTOWhjnhoeN1ub1tFmALm/+lW5z4WCAuAV9bm05AP0mS6Gw==}
+    engines: {node: '>=12.0.0'}
+    dev: false
+
   /hot-patcher@2.0.1:
     resolution: {integrity: sha512-ECg1JFG0YzehicQaogenlcs2qg6WsXQsxtnbr1i696u5tLUjtJdQAh0u2g0Q5YV45f263Ta1GnUJsc8WIfJf4Q==}
     dev: false
@@ -1534,6 +1545,14 @@ packages:
       pify: 4.0.1
       semver: 5.7.2
     optional: true
+
+  /marked-highlight@2.1.1(marked@12.0.0):
+    resolution: {integrity: sha512-ktdqwtBne8rim5mb+vvZ9FzElGFb+CHCgkx/g6DSzTjaSrVnxsJdSzB5YgCkknFrcOW+viocM1lGyIjC0oa3fg==}
+    peerDependencies:
+      marked: '>=4 <13'
+    dependencies:
+      marked: 12.0.0
+    dev: false
 
   /marked@12.0.0:
     resolution: {integrity: sha512-Vkwtq9rLqXryZnWaQc86+FHLC6tr/fycMfYAhiOIXkrNmeGAyhSxjqu0Rs1i0bBqw5u0S7+lV9fdH2ZSVaoa0w==}

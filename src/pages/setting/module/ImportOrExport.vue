@@ -1,0 +1,35 @@
+<template>
+    <div>
+        <a-alert>
+            <template #icon>
+                <icon-import />
+            </template>
+            导入
+        </a-alert>
+        <a-button-group style="margin-top: 7px;">
+            <a-space>
+                <a-button type="primary">
+                    从Memos中导入
+                </a-button>
+            </a-space>
+        </a-button-group>
+        <a-alert style="margin-top: 7px;">
+            <template #icon>
+                <icon-export />
+            </template>
+            导出
+        </a-alert>
+        <a-button-group style="margin-top: 7px;">
+            <a-space>
+                <a-button type="primary">
+                    导出为Markdown
+                </a-button>
+            </a-space>
+        </a-button-group>
+    </div>
+</template>
+<script lang="ts" setup>
+</script>
+<style scoped>
+
+</style>
