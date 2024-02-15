@@ -1,5 +1,7 @@
 <template>
-    <div v-html="preview" class="juejin"></div>
+    <a-typography-paragraph :ellipsis="{ rows: 3, expandable: true}">
+        <div v-html="preview" class="juejin"></div>
+    </a-typography-paragraph>
 </template>
 <script lang="ts" setup>
 import {PropType, ref, watch} from "vue";
