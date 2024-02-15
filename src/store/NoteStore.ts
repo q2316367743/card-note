@@ -8,24 +8,30 @@ import {
     saveOneByAsync
 } from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {NoteContent, NoteIndex} from "@/entity/Note";
 import {useTagStore} from "@/store/TagStore";
+import {useSyncEvent} from "@/store/SyncStore";
 
 const HOUR = 1000 * 60 * 60;
 
 export const useNoteStore = defineStore('note', () => {
-    const ids = ref(new Array<NoteIndex>());
+    const indexes = ref(new Array<NoteIndex>());
     let rev: string | undefined = undefined;
     let isInit = false;
 
-    async function init() {
-        if (isInit) {
+    const ids = computed(() => indexes.value
+        .filter(index => !index.deleted)
+        .map(index => index.id)
+        .sort((a, b) => b - a));
+
+    async function init(force: boolean = false) {
+        if (isInit && !force) {
             return;
         }
         isInit = true;
         const res = await listByAsync(DbKeyEnum.LIST_NOTE);
-        ids.value = res.list;
+        indexes.value = res.list;
         rev = res.rev;
     }
 
@@ -40,8 +46,8 @@ export const useNoteStore = defineStore('note', () => {
         if (offset >= ids.value.length) {
             return Promise.resolve([]);
         }
-        const indexes = ids.value.slice(offset, Math.min(offset + limit, ids.value.length));
-        return listRecordByAsync<NoteContent>(indexes.map(index => `${DbKeyEnum.NOTE_ITEM}/${index.id}`))
+        const items = ids.value.slice(offset, Math.min(offset + limit, ids.value.length));
+        return listRecordByAsync<NoteContent>(items.map(item => `${DbKeyEnum.NOTE_ITEM}/${item}`))
     }
 
     /**
@@ -52,12 +58,12 @@ export const useNoteStore = defineStore('note', () => {
         const start = date - 8 * HOUR;
         const end = date + 16 * HOUR;
         return listRecordByAsync<NoteContent>(ids.value
-            .filter(index => index.id >= start && index.id <= end)
-            .map(index => `${DbKeyEnum.NOTE_ITEM}/${index.id}`))
+            .filter(id => id >= start && id <= end)
+            .map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`))
     }
 
     function allIds(): Array<number> {
-        return ids.value.map(e => e.id);
+        return ids.value;
     }
 
     function getOne(id: number): Promise<DbRecord<NoteContent> | null> {
@@ -69,7 +75,8 @@ export const useNoteStore = defineStore('note', () => {
         const noteIndex: NoteIndex = {
             id: now,
             updateTime: now,
-            top: false
+            top: false,
+            deleted: false
         }
         const nodeContent: NoteContent = {
             ...noteIndex,
@@ -81,13 +88,17 @@ export const useNoteStore = defineStore('note', () => {
         // 先增加数据
         await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${now}`, nodeContent);
         // 在增加数组
-        ids.value.unshift(noteIndex);
-        rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, ids.value, rev);
+        indexes.value.unshift(noteIndex);
+        rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
+
+        // 自动同步事件
+        useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
+        useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${now}`, type: 'put'});
     }
 
     async function update(record: DbRecord<NoteContent>, content: string, relationNotes: Array<number>) {
         const id = record.record.id;
-        const index = ids.value.findIndex(e => e.id === record.record.id);
+        const index = indexes.value.findIndex(e => e.id === record.record.id);
         if (index >= 0) {
             // 匹配标签
             useTagStore().addFromContent(content).then(() => console.debug("标签匹配完成"));
@@ -97,26 +108,36 @@ export const useNoteStore = defineStore('note', () => {
                 id: id,
                 updateTime: now,
                 top: false,
+                deleted: false,
                 content,
                 relationNotes
             }, record.rev);
             // 更新数组
-            ids.value[index] = {
+            indexes.value[index] = {
                 id: id,
                 updateTime: now,
                 top: false,
+                deleted: false,
             }
-            rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, ids.value, rev);
+            rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
+
+            // 自动同步事件
+            useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
+            useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${id}`, type: 'put'});
         }
     }
 
     async function remove(id: number) {
-        const index = ids.value.findIndex(e => e.id === id);
+        const index = indexes.value.findIndex(e => e.id === id);
         if (index >= 0) {
-            ids.value.splice(index, 1);
-            rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, ids.value, rev);
+            indexes.value[index].deleted = true;
+            rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
             // 删除数据
             await removeOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${id}`);
+
+            // 自动同步事件
+            useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
+            useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${id}`, type: 'remove'});
         }
     }
 

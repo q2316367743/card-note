@@ -15,6 +15,11 @@ export interface NoteIndex {
      */
     top: boolean;
 
+    /**
+     * 是否被删除
+     */
+    deleted: boolean;
+
 }
 
 

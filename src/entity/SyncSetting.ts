@@ -25,6 +25,11 @@ export interface SyncSetting {
      */
     idleSync: boolean;
 
+    /**
+     *  空闲时全量同步的时间间隔，单位为毫秒
+     */
+    idleSyncInterval: number;
+
 }
 
 export function getDefaultSyncSetting(): SyncSetting {
@@ -32,7 +37,9 @@ export function getDefaultSyncSetting(): SyncSetting {
         url: "",
         username: "",
         password: "",
-        autoSync: true,
+        autoSync: false,
         idleSync: true,
+        // 默认5分钟
+        idleSyncInterval: 300000
     };
 }
