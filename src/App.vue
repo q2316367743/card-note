@@ -51,7 +51,7 @@ const route = useRoute();
 const router = useRouter();
 const selectedKeys = ref(['/home']);
 
-const href = computed(() => `/highlight.js/${useAppStore().dark ? 'github-dark' : 'github'}.css`);
+const href = computed(() => `./highlight.js/${useAppStore().dark ? 'github-dark' : 'github'}.css`);
 
 watch(() => selectedKeys.value, value => router.push(value[0]));
 watch(() => useAppStore().dark, handleTheme, {immediate: true});

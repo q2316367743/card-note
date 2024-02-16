@@ -42,7 +42,7 @@ export function createExportImage(note: NoteContent) {
                 <div class="title">
                     <span class="create-time">{toDateString(note.id)}</span>
                 </div>
-                <NotePreview content={note} class="body"/>
+                <NotePreview content={note} class="body" ellipsis={false}/>
                 {user && <div class="bottom">
                     <div class="user">
                         <Avatar imageUrl={user.avatar}/>

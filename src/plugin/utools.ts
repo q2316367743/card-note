@@ -218,7 +218,7 @@ export const utools = {
         return Promise.resolve([]);
     },
     getUser() {
-        return {avatar: "", nickname: "web用户", type: ""};
+        return {avatar: "./logo.png", nickname: "web用户", type: ""};
     },
     fetchUserServerTemporaryToken(): Promise<{ token: string, expiredAt: number }> {
         let token = localStorage.getItem("token");
