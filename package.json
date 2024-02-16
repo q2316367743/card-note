@@ -24,6 +24,7 @@
     "pinia": "^2.1.7",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
+    "vue3-styled-components": "^1.2.1",
     "webdav": "^5.3.2",
     "xe-utils": "^3.5.18"
   },

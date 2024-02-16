@@ -1,7 +1,7 @@
 <template>
     <a-card v-if="record" class="card" :key="record.record.id">
         <template #title>
-            <span class="create-time">{{ prettyDate(record.record.id) }}</span>
+            <span class="create-time" @click="openNoteInfo(record, needUpdateIds => emits('update', needUpdateIds))">{{ prettyDate(record.record.id) }}</span>
             <span class="id"> · #{{ record.record.id }}</span>
         </template>
         <template #extra>
@@ -65,6 +65,7 @@ import MessageUtil from "@/utils/MessageUtil";
 import {useNoteStore} from "@/store/NoteStore";
 import MessageBoxUtil from "@/utils/MessageBoxUtil";
 import {toDateString} from "xe-utils";
+import {openNoteInfo} from "@/pages/note";
 
 defineProps({
     record: Object as PropType<DbRecord<NoteContent>>,

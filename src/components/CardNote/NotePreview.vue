@@ -3,7 +3,7 @@
         <a-typography-paragraph :ellipsis="{ rows: 10, expandable: true}">
             <div v-html="preview" class="juejin"></div>
         </a-typography-paragraph>
-        <a-typography-paragraph>
+        <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
                 <a-tag color="arcoblue" bordered>
                     <template #icon>
@@ -13,7 +13,7 @@
                 </a-tag>
             </div>
         </a-typography-paragraph>
-        <a-typography-paragraph>
+        <a-typography-paragraph v-if="associatedNotes.length > 0">
             <div v-for="associatedNote in associatedNotes" style="margin-bottom: 4px;" :key="associatedNote.record.id">
                 <a-tag color="green" bordered>
                     <template #icon>
@@ -23,7 +23,7 @@
                 </a-tag>
             </div>
         </a-typography-paragraph>
-        <a-typography-paragraph>
+        <a-typography-paragraph v-if="commentNotes.length > 0">
             <div v-for="commentNote in commentNotes" style="margin-bottom: 4px;" :key="commentNote.record.id">
                 <a-tag color="gold" bordered>
                     <template #icon>

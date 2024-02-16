@@ -1,7 +1,7 @@
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent, NoteRelation} from "@/entity/Note";
 import {Modal} from "@arco-design/web-vue";
-import TextEditor from "@/pages/home/components/TextEditor.vue";
+import TextEditor from "@/components/TextEditor/index.vue";
 import {useNoteStore} from "@/store/NoteStore";
 
 export function openEditBox(record: DbRecord<NoteContent>): Promise<Array<number>> {

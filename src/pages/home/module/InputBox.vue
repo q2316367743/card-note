@@ -6,8 +6,7 @@
 <script lang="ts" setup>
 import {useNoteStore} from "@/store/NoteStore";
 import MessageUtil from "@/utils/MessageUtil";
-import TextEditor from "@/pages/home/components/TextEditor.vue";
-import {ref} from "vue";
+import TextEditor from "@/components/TextEditor/index.vue";
 import {NoteRelation} from "@/entity/Note";
 
 const emits = defineEmits(['refresh']);
