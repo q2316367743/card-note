@@ -16,11 +16,12 @@
 <script lang="ts" setup>
 import {computed, ref} from "vue";
 import {useWindowSize} from "@vueuse/core";
-import {useNoteStore} from "@/store/NoteStore";
+import {useNoteStore, useOpenNoteEvent, useResetNoteEvent} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import InputBox from "@/pages/home/module/InputBox.vue";
 import CardNote from "@/components/CardNote/index.vue";
+import {openNoteInfo} from "@/pages/note";
 
 const size = useWindowSize();
 
@@ -53,16 +54,31 @@ function refresh() {
 
 
 function update(record: DbRecord<NoteContent>, index: number, needUpdateIds: Array<number>) {
-    useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item));
-    for (let i = 0; i < records.value.length; i++) {
-        let one = records.value[i].record;
-        if (needUpdateIds.indexOf(one.id) > -1) {
-            // 存在
-            useNoteStore().getOne(one.id).then(item => item && (records.value[i] = item));
+    if (index > -1) {
+        useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item));
+    }
+    if (needUpdateIds.length > 0) {
+        for (let i = 0; i < records.value.length; i++) {
+            let one = records.value[i].record;
+            if (needUpdateIds.indexOf(one.id) > -1) {
+                // 存在
+                useNoteStore().getOne(one.id).then(item => item && (records.value[i] = item));
+            }
         }
     }
 }
 
+useOpenNoteEvent.reset();
+useOpenNoteEvent.on(id => {
+    useNoteStore().getOne(id)
+        .then(res => {
+            if (res) {
+                openNoteInfo(res, needUpdateIds => update(res, records.value.findIndex(item => item.record.id === res.record.id), needUpdateIds))
+            }
+        })
+});
+useResetNoteEvent.reset();
+useResetNoteEvent.on(refresh)
 
 function remove(index: number) {
     records.value.splice(index, 1);

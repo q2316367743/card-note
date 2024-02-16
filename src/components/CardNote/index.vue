@@ -1,7 +1,7 @@
 <template>
     <a-card v-if="record" class="card" :key="record.record.id">
         <template #title>
-            <span class="create-time" @click="openNoteInfo(record, needUpdateIds => emits('update', needUpdateIds))">{{ prettyDate(record.record.id) }}</span>
+            <span class="create-time" @click="openNoteInfo(record, onUpdate)">{{ prettyDate(record.record.id) }}</span>
             <span class="id"> · #{{ record.record.id }}</span>
         </template>
         <template #extra>
@@ -12,12 +12,12 @@
                     </template>
                 </a-button>
                 <template #content>
-                    <!--                            <a-doption>-->
-                    <!--                                <template #icon>-->
-                    <!--                                    <icon-subscribe-add />-->
-                    <!--                                </template>-->
-                    <!--                                置顶-->
-                    <!--                            </a-doption>-->
+                    <a-doption @click="openNoteInfo(record, onUpdate)">
+                        <template #icon>
+                            <icon-info />
+                        </template>
+                        详情
+                    </a-doption>
                     <a-doption @click="update(record)">
                         <template #icon>
                             <icon-edit/>
@@ -35,12 +35,6 @@
                             <icon-shake/>
                         </template>
                         分享
-                    </a-doption>
-                    <a-doption disabled>
-                        <template #icon>
-                            <icon-bookmark/>
-                        </template>
-                        归档
                     </a-doption>
                     <a-doption @click="remove(record)">
                         <template #icon>
@@ -82,7 +76,7 @@ function update(record: DbRecord<NoteContent>) {
         .then(needUpdateIds => {
             MessageUtil.success("更新成功")
             // 更新列表
-            emits('update', needUpdateIds)
+            onUpdate(needUpdateIds)
         }).catch(e => MessageUtil.error("更新失败", e))
 }
 
@@ -94,6 +88,10 @@ function remove(record: DbRecord<NoteContent>) {
             MessageUtil.success("删除成功");
             emits('remove')
         }).catch(e => MessageUtil.error("删除失败", e)))
+}
+
+function onUpdate(needUpdateIds: Array<number>) {
+    emits('update', needUpdateIds)
 }
 
 </script>

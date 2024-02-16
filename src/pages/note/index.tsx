@@ -9,7 +9,7 @@ import {IconEdit, IconExport, IconMessage} from "@arco-design/web-vue/es/icon";
 import {createExportImage} from "@/components/CardNote/ExportImage";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
 import TextEditor from '@/components/TextEditor/index.vue';
-import {useNoteStore} from "@/store/NoteStore";
+import {useNoteStore, useResetNoteEvent} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {openEditBox} from "@/pages/home/module/EditBox";
 import MessageUtil from "@/utils/MessageUtil";
@@ -95,14 +95,15 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             MessageUtil.warning("请输入内容");
             return;
         }
-        useNoteStore().add(content, [
+        relationNotes = [
             ...relationNotes,
             {
                 noteId: 0,
                 relationId: noteContent.value.id,
                 type: 'COMMENT'
             }
-        ])
+        ];
+        useNoteStore().add(content, relationNotes)
             .then(() => {
                 MessageUtil.success("新增成功");
                 // 更新自身数据
@@ -114,6 +115,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                             record.rev = res.rev;
                         }
                     });
+                useResetNoteEvent.emit()
             })
             .catch(e => MessageUtil.error("新增失败", e));
     }
@@ -137,7 +139,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             <Container>
                 <Content>
                     <Card>
-                        <NotePreview content={noteContent.value}/>
+                        <NotePreview content={noteContent.value} ellipsis={false}/>
                     </Card>
                     <Card style="margin-top: 7px;">
                         <Bottom>
@@ -172,8 +174,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                     </Card>
                     <Card style="margin-top: 7px;">
                         {commentNotes.value.length > 0 && <div style={{marginBottom: '14px'}}>
-                            <IconMessage/>
-                            评论 ({commentNotes.value.length})
+                            <IconMessage/> 评论 ({commentNotes.value.length})
                         </div>}
                         <List style="margin: 7px 0;">
                             {{

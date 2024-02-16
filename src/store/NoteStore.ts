@@ -12,6 +12,7 @@ import {computed, ref} from "vue";
 import {NoteContent, NoteIndex, NoteRelation} from "@/entity/Note";
 import {useTagStore} from "@/store/TagStore";
 import {useSyncEvent} from "@/store/SyncStore";
+import {useEventBus} from "@vueuse/core";
 
 const HOUR = 1000 * 60 * 60;
 
@@ -47,6 +48,8 @@ async function removeAssociated(relation: NoteRelation) {
     }
 }
 
+export const useOpenNoteEvent = useEventBus<number>('open-note');
+export const useResetNoteEvent = useEventBus<void>('reset-note');
 
 export const useNoteStore = defineStore('note', () => {
     const indexes = ref(new Array<NoteIndex>());
