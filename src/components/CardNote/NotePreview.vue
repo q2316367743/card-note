@@ -51,7 +51,9 @@ import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/ico
 import {renderContent} from "@/utils/BrowserUtil";
 
 const props = defineProps({
-    content: Object as PropType<NoteContent>
+    content: Object as PropType<NoteContent>,
+    // 屏蔽的评论
+    commentId: Number
 });
 
 const preview = ref("");
@@ -70,7 +72,7 @@ watch(() => props.content,
             // 渲染关联内容
             for (let relationNote of value.relationNotes) {
                 if (relationNote.type === 'COMMENT') {
-                    if (relationNote.noteId === value.id) {
+                    if (relationNote.noteId === value.id && relationNote.relationId !== props.commentId) {
                         useNoteStore().getOne(relationNote.relationId).then(res => res && commentNotes.value.push(res))
                     }
                 } else if (relationNote.type === 'REFERENCE') {

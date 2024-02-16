@@ -3,7 +3,7 @@ import {computed, createApp, ref, watch} from "vue";
 import {toDateString} from "xe-utils";
 import {Avatar, Button, ButtonGroup, Card, Empty, List, ListItem, PageHeader} from "@arco-design/web-vue";
 import {useAppStore} from "@/store/AppStore";
-import {NoteContent} from "@/entity/Note";
+import {NoteContent, NoteRelation} from "@/entity/Note";
 import {IconEdit, IconExport, IconMessage} from "@arco-design/web-vue/es/icon";
 
 import {createExportImage} from "@/components/CardNote/ExportImage";
@@ -90,6 +90,35 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             }).catch(e => MessageUtil.error("更新失败", e))
     }
 
+    function onSave(content: string, relationNotes: Array<NoteRelation>) {
+        if (!content) {
+            MessageUtil.warning("请输入内容");
+            return;
+        }
+        useNoteStore().add(content, [
+            ...relationNotes,
+            {
+                noteId: 0,
+                relationId: noteContent.value.id,
+                type: 'COMMENT'
+            }
+        ])
+            .then(() => {
+                MessageUtil.success("新增成功");
+                // 更新自身数据
+                useNoteStore().getOne(noteContent.value.id)
+                    .then(res => {
+                        if (res) {
+                            noteContent.value = res.record;
+                            record.record = res.record;
+                            record.rev = res.rev;
+                        }
+                    });
+            })
+            .catch(e => MessageUtil.error("新增失败", e));
+    }
+
+
     // 处理评论
     const commentIds = computed(() => noteContent.value.relationNotes
         .filter(item => item.type === 'COMMENT' && item.relationId === noteContent.value.id)
@@ -99,7 +128,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
         commentNotes.value = [];
         useNoteStore().getMany(value)
             .then(items => commentNotes.value = items.map(item => item.record));
-    })
+    }, {immediate: true})
 
 
     const app = createApp({
@@ -149,19 +178,18 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                         <List style="margin: 7px 0;">
                             {{
                                 default: () => commentNotes.value.map(note => <ListItem>
-                                    <NotePreview content={note}/>
+                                    <NotePreview content={note} commentId={noteContent.value.id}/>
                                 </ListItem>),
                                 empty: () => <Empty>暂无评论</Empty>
                             }}
                         </List>
-                        <TextEditor noteId={noteContent.value.id}/>
+                        <TextEditor noteId={noteContent.value.id} onSave={onSave}/>
                     </Card>
                 </Content>
             </Container>
         </NoteInfo>,
         provide: {
             theme: useAppStore().dark ? 'dark' : 'light'
-
         }
     });
     app.mount(divElement);
