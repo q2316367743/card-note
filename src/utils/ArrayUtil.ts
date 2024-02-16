@@ -159,3 +159,18 @@ export function startWith(arr: Array<string>, keyword: string, ignoreCase: boole
     return false;
 
 }
+
+/**
+ * 两个数组是否有相同的元素
+ * @param arr1
+ * @param arr2
+ */
+export function arraysHaveSameElements<T>(arr1: T[], arr2: T[]) {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    return arr1.every(function (element) {
+        return arr2.includes(element);
+    });
+}

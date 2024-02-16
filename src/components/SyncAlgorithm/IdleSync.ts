@@ -9,9 +9,9 @@ import {
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {WebDAVClient} from "webdav";
 import {NoteIndex} from "@/entity/Note";
-import {map, set} from "@/utils/ArrayUtil";
+import {arraysHaveSameElements, map} from "@/utils/ArrayUtil";
 import MessageUtil from "@/utils/MessageUtil";
-import {buildPath} from "@/components/SyncAlgorithm/AutoSync";
+import {buildPath, folderCreate} from "@/components/SyncAlgorithm/CommonSync";
 import {MessageBoxLoadingReturn} from "@/utils/MessageBoxUtil";
 import {useNoteStore} from "@/store/NoteStore";
 import {useTagStore} from "@/store/TagStore";
@@ -39,21 +39,13 @@ export function useIdleSync() {
  * @param loading 加载框
  */
 export async function fullSynchronization(client: WebDAVClient, loading?: MessageBoxLoadingReturn) {
-    const isSync = await client.exists(buildPath(DbKeyEnum.LIST_NOTE));
-    if (isSync) {
-        // 全量同步笔记
-        loading && loading.append("正在同步笔记...");
-        await fullSynchronizationByNote(client);
-        // 全量同步标签
-        loading && loading.append("正在同步标签...");
-        await fullSynchronizationByTag(client);
-    } else {
-        // 第一次同步
-        loading && loading.append("正在第一次同步笔记...");
-        await firstSyncByNote(client);
-        loading && loading.append("正在第一次同步标签...");
-        await firstSyncByTag(client);
-    }
+    await folderCreate(client);
+    // 全量同步笔记
+    loading && loading.append("正在同步笔记...");
+    await fullSynchronizationByNote(client);
+    // 全量同步标签
+    loading && loading.append("正在同步标签...");
+    await fullSynchronizationByTag(client);
     loading && loading.append("正在初始化笔记");
     await useNoteStore().init(true);
     loading && loading.append("正在初始化标签");
@@ -89,6 +81,7 @@ async function fullSynchronizationByNote(client: WebDAVClient) {
     originNoteIndexes.forEach(index => unionNoteIndexes.add(index.id));
     // 新的笔记索引
     const newNoteIndexes = new Array<NoteIndex>();
+    let noteUpdateCount = 0;
     // 同步笔记，处理完成后，map中数据为最新数据
     for (let unionNoteIndex of unionNoteIndexes) {
         // 先获取本地数据
@@ -102,12 +95,12 @@ async function fullSynchronizationByNote(client: WebDAVClient) {
                 await client.deleteFile(buildPath(key));
                 // 索引使用本地数据
                 newNoteIndexes.push(localNoteIndex);
-            }else if (!localNoteIndex.deleted && originNoteIndex.deleted) {
+            } else if (!localNoteIndex.deleted && originNoteIndex.deleted) {
                 // 远程删除了，本地没删除，删除本地内容
                 await removeOneByAsync(key, true);
                 // 索引使用远程数据
                 newNoteIndexes.push(originNoteIndex);
-            }else if (localNoteIndex.updateTime > originNoteIndex.updateTime) {
+            } else if (localNoteIndex.updateTime > originNoteIndex.updateTime) {
                 // 本地更新时间大于远程，说明本地有更新，需要上传
                 const content = await getFromOneByAsync(key);
                 await client.putFileContents(buildPath(key), JSON.stringify(content));
@@ -122,21 +115,22 @@ async function fullSynchronizationByNote(client: WebDAVClient) {
                 await saveOneByAsync(key, content);
                 // 索引使用远程数据
                 newNoteIndexes.push(originNoteIndex);
-            }else {
+            } else {
                 // 数据完全一致，使用本地
+                noteUpdateCount += 1;
                 newNoteIndexes.push(localNoteIndex);
             }
-        }else if (localNoteIndex) {
+        } else if (localNoteIndex) {
             // 本地有的，但是远程没有的，需要新增
             const key = `${DbKeyEnum.NOTE_ITEM}/${localNoteIndex.id}`;
-            if(!localNoteIndex.deleted) {
+            if (!localNoteIndex.deleted) {
                 // 本地有的，但是远程没有的，需要新增到远程
                 let content = await getFromOneByAsync(key);
                 content && await client.putFileContents(buildPath(key), JSON.stringify(content.record));
             }
             // 新增到本地索引中
             newNoteIndexes.push(localNoteIndex);
-        }else if (originNoteIndex) {
+        } else if (originNoteIndex) {
             // 本地没有，但是远程有的，需要新增到本地
             const key = `${DbKeyEnum.NOTE_ITEM}/${originNoteIndex.id}`;
             // 下载内容
@@ -149,9 +143,15 @@ async function fullSynchronizationByNote(client: WebDAVClient) {
             }
             // 新增到本地索引中
             newNoteIndexes.push(originNoteIndex);
-        }else {
+        } else {
             // 本地远程都没有
         }
+    }
+
+    if (noteUpdateCount === unionNoteIndexes.size) {
+        // 没有变化
+        console.log(`更新数量：【${noteUpdateCount}】，合并数量：【${unionNoteIndexes.size}】，未发现更新`)
+        return;
     }
 
     // 保存本地索引
@@ -180,35 +180,20 @@ async function fullSynchronizationByTag(client: WebDAVClient) {
         console.error("获取远程标签失败，尝试删除文件后重试", e);
         originTags = new Array<string>();
     }
-    const newTags = new Set([
-        ...localTags.list,
-        ...originTags
-    ]);
 
-    // 保存本地标签
-    await saveListByAsync(DbKeyEnum.LIST_TAG, Array.from(newTags), localTags.rev);
-    // 保存远程标签
-    await client.putFileContents(buildPath(DbKeyEnum.LIST_TAG), JSON.stringify(Array.from(newTags)));
-}
-
-async function firstSyncByNote(client: WebDAVClient) {
-    // 第一次同步笔记
-    const localNoteRes = await listByAsync<NoteIndex>(DbKeyEnum.LIST_NOTE);
-    for (let noteIndex of localNoteRes.list) {
-        const key = `${DbKeyEnum.NOTE_ITEM}/${noteIndex.id}`;
-        let content = await getFromOneByAsync(key);
-        if (content) {
-            await client.putFileContents(buildPath(key), JSON.stringify(content.record));
-        }
+    if (arraysHaveSameElements(localTags.list, originTags)){
+        console.log("远程标签与本地标签一致，无需同步");
+        return;
     }
 
-    // 保存远程索引
-    await client.putFileContents(buildPath(DbKeyEnum.LIST_NOTE), JSON.stringify(localNoteRes.list));
-}
 
-async function firstSyncByTag(client: WebDAVClient) {
-    // 获取本地标签
-    const localTags = await listByAsync<string>(DbKeyEnum.LIST_TAG);
+    const newTags = Array.from(new Set([
+        ...localTags.list,
+        ...originTags
+    ]));
+
+    // 保存本地标签
+    await saveListByAsync(DbKeyEnum.LIST_TAG, newTags, localTags.rev);
     // 保存远程标签
-    await client.putFileContents(buildPath(DbKeyEnum.LIST_TAG), JSON.stringify(localTags.list));
+    await client.putFileContents(buildPath(DbKeyEnum.LIST_TAG), JSON.stringify(newTags));
 }

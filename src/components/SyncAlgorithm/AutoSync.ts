@@ -1,16 +1,13 @@
 import {getFromOneByAsync} from "@/utils/utools/DbStorageUtil";
 import {useSyncStore} from "@/store/SyncStore";
 import MessageUtil from "@/utils/MessageUtil";
-import Constant from "@/global/Constant";
+import {buildPath} from "@/components/SyncAlgorithm/CommonSync";
 
 export interface SyncState {
     key: string;
     type: 'put' | 'remove';
 }
 
-export function buildPath(key: string){
-   return `/${Constant.id}/${key}`;
-}
 
 
 export function handleAutoSync(state: SyncState) {
