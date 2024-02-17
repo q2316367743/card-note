@@ -18,32 +18,40 @@ const HOUR = 1000 * 60 * 60;
 
 // 增加被关联
 async function addAssociated(relation: NoteRelation) {
-
     const relationNoteContent = await getFromOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${relation.relationId}`);
     if (relationNoteContent) {
-
         // 此处需要修改旧的
         relationNoteContent.record.relationNotes.push(relation);
         await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${relationNoteContent.record.id}`, relationNoteContent.record, relationNoteContent.rev);
     }
 }
 
-//  删除被关联
-async function removeAssociated(relation: NoteRelation) {
-    const relationNoteContent = await getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${relation.relationId}`);
+/**
+ * 删除被关联，被关联着，关联ID等于自己的ID
+ * @param relationId
+ */
+async function removeAssociated(relationId: number) {
+    const relationNoteContent = await getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${relationId}`);
 
     if (relationNoteContent) {
 
-        const index = relationNoteContent.record.relationNotes
-            .findIndex(e => e.noteId === relation.noteId &&
-                e.relationId === relation.relationId &&
-                e.type === relation.type);
+        relationNoteContent.record.relationNotes = relationNoteContent.record.relationNotes.filter(e => e.relationId === relationId);
+        // 此处需要修改旧的
+        await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${relationNoteContent.record.id}`, relationNoteContent.record, relationNoteContent.rev);
 
-        if (index > -1) {
-            relationNoteContent.record.relationNotes.splice(index, 1);
-            // 此处需要修改旧的
-            await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${relationNoteContent.record.id}`, relationNoteContent.record, relationNoteContent.rev);
-        }
+    }
+}
+
+// 删除关联，正向反向都删除
+async function removeRelation(id: number) {
+    const relationNoteContent = await getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`);
+
+    if (relationNoteContent) {
+
+        relationNoteContent.record.relationNotes = relationNoteContent.record.relationNotes
+            .filter(e => e.relationId === id || e.noteId === id);
+        // 此处需要修改旧的
+        await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${relationNoteContent.record.id}`, relationNoteContent.record, relationNoteContent.rev);
 
     }
 }
@@ -111,8 +119,7 @@ export const useNoteStore = defineStore('note', () => {
         if (!ids) {
             return Promise.resolve([]);
         }
-        const items = await Promise.all(ids.map(id => getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`)));
-        return items.filter(item => item !== null) as Array<DbRecord<NoteContent>>;
+        return listRecordByAsync<NoteContent>(ids.map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`));
     }
 
     async function add(content: string, relationNotes: Array<NoteRelation>) {
@@ -133,19 +140,16 @@ export const useNoteStore = defineStore('note', () => {
 
         // 修改关联数据
         for (let relationNote of relationNotes) {
-            const relationNoteContent = await getOne(relationNote.relationId);
-            if (relationNoteContent) {
-                const relation = {
-                    noteId: now,
-                    relationId: relationNote.relationId,
-                    type: relationNote.type
-                };
+            const relation = {
+                noteId: now,
+                relationId: relationNote.relationId,
+                type: relationNote.type
+            };
 
-                // 增加反向关联
-                await addAssociated(relation);
+            // 增加反向关联
+            await addAssociated(relation);
 
-                noteContent.relationNotes.push(relation)
-            }
+            noteContent.relationNotes.push(relation)
         }
 
 
@@ -186,62 +190,71 @@ export const useNoteStore = defineStore('note', () => {
      * 更新记录
      * @param record
      * @param content
-     * @param relationNotes
+     * @param noteRelations 此处是全部关联的笔记
      *
      * @return 受到影响的笔记
      */
-    async function update(record: DbRecord<NoteContent>, content: string, relationNotes: Array<NoteRelation>): Promise<Array<number>> {
+    async function update(record: DbRecord<NoteContent>, content: string, noteRelations: Array<NoteRelation>): Promise<Array<number>> {
         const id = record.record.id;
         const index = indexes.value.findIndex(e => e.id === record.record.id);
+        const relationNoteIds = noteRelations.map(e => e.relationId);
         if (index >= 0) {
             const needUpdateIds = new Array<number>();
             // 旧的笔记内容
-            const oldNoteContent = await getOne(indexes.value[index].id);
+            const oldNoteContent = await getOne(id);
+            const oldRelations = oldNoteContent ? oldNoteContent.record.relationNotes : [];
+            const oldComments = oldRelations.filter(e => e.type === 'COMMENT');
+            // 旧的被关联
+            const oldAssociated = oldRelations.filter(e => e.type === 'REFERENCE' && e.relationId === id);
+            // 旧的正向关联
+            const oldReferences = oldRelations.filter(e => e.type === 'REFERENCE' && e.noteId === id);
+            const newNoteRelations = relationNoteIds.map(e => ({
+                noteId: id,
+                type: 'REFERENCE',
+                relationId: e
+            } as NoteRelation));
             // 匹配标签
             useTagStore().addFromContent(content).then(() => console.debug("标签匹配完成"));
             // 更新数据
             const now = new Date().getTime();
+
             const newNoteContent: NoteContent = {
                 id: id,
                 updateTime: now,
                 top: false,
                 deleted: false,
                 content,
-                relationNotes: relationNotes.map(e => ({
-                    noteId: id,
-                    type: e.type,
-                    relationId: e.relationId
-                }))
+                relationNotes: [
+                    // 评论不动
+                    ...oldComments,
+                    // 旧的反向关联不动
+                    ...oldAssociated,
+                    // 新的关联
+                    ...newNoteRelations
+                ]
             };
 
             // 处理链接问题
-            if ((oldNoteContent && oldNoteContent.record.relationNotes.length > 0) || relationNotes.length > 0) {
-                // 旧的关系
-                const oldRelation = new Set(oldNoteContent ? oldNoteContent.record.relationNotes : []);
-                const newRelation = new Set(relationNotes);
-                for (let old of oldRelation) {
-                    // 旧的有，新的没有，删除
-                    if (!newRelation.has(old)) {
-                        await removeAssociated(old);
-                        needUpdateIds.push(old.relationId);
-                    }
+            const oldRelation = new Set(oldReferences.map(e => e.relationId));
+            const newRelation = new Set(relationNoteIds);
+            for (let old of oldRelation) {
+                // 旧的有，新的没有，删除关联
+                if (!newRelation.has(old)) {
+                    await removeAssociated(old);
+                    needUpdateIds.push(old);
                 }
-                for (let newItem of newRelation) {
-                    if (!oldRelation.has(newItem)) {
-                        // 新的有，旧的没有，添加
-
-                        const relation = {
-                            noteId: id,
-                            relationId: newItem.relationId,
-                            type: newItem.type
-                        };
-
-                        // 增加反向关联
-                        await addAssociated(relation);
-                        needUpdateIds.push(newItem.relationId);
-                    }
-
+            }
+            for (let newItem of newRelation) {
+                if (!oldRelation.has(newItem)) {
+                    // 新的有，旧的没有，增加反向关联
+                    await addAssociated({
+                        noteId: id,
+                        relationId: newItem,
+                        type: "REFERENCE"
+                    });
+                    needUpdateIds.push(newItem);
                 }
+
             }
 
             await saveOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`, newNoteContent, record.rev);
@@ -268,18 +281,34 @@ export const useNoteStore = defineStore('note', () => {
         return Promise.resolve([]);
     }
 
-    async function remove(id: number) {
+    async function remove(id: number): Promise<Array<number>> {
         const index = indexes.value.findIndex(e => e.id === id);
+        const needUpdateIds = new Array<number>();
         if (index >= 0) {
+
+            // 1. 删除索引
             indexes.value[index].deleted = true;
             rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
-            // 删除数据
+            // 2. 删除数据
+            const old = await getOne(id);
             await removeOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${id}`);
+            if (old) {
+                // 3. 删除关联及评论
+                const relations = old.record.relationNotes;
+                const relationIds = new Set(relations.flatMap(e => [e.relationId, e.noteId]));
+                relationIds.delete(id);
+                for (let relationId of Array.from(relationIds)) {
+                    await removeRelation(relationId);
+                    needUpdateIds.push(relationId);
+                }
+            }
 
             // 自动同步事件
             useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
             useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${id}`, type: 'remove'});
+            needUpdateIds.forEach(id => useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${id}`, type: 'put'}))
         }
+        return Promise.resolve(needUpdateIds);
     }
 
     return {init, allIds, page, oneDay, getOne, getMany, add, addBatch, update, remove}

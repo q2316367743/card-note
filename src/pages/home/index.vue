@@ -8,7 +8,7 @@
             </template>
             <input-box @refresh="refresh()" class="card"/>
             <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
-                       @update="e=>update(record, index, e)" @remove="remove(index)"/>
+                       @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
         </a-list>
         <a-back-top target-container=".arco-list"/>
     </div>
@@ -57,15 +57,7 @@ function update(record: DbRecord<NoteContent>, index: number, needUpdateIds: Arr
     if (index > -1) {
         useNoteStore().getOne(record.record.id).then(item => item && (records.value[index] = item));
     }
-    if (needUpdateIds.length > 0) {
-        for (let i = 0; i < records.value.length; i++) {
-            let one = records.value[i].record;
-            if (needUpdateIds.indexOf(one.id) > -1) {
-                // 存在
-                useNoteStore().getOne(one.id).then(item => item && (records.value[i] = item));
-            }
-        }
-    }
+    onUpdate(needUpdateIds);
 }
 
 useOpenNoteEvent.reset();
@@ -80,8 +72,21 @@ useOpenNoteEvent.on(id => {
 useResetNoteEvent.reset();
 useResetNoteEvent.on(refresh)
 
-function remove(index: number) {
+function remove(index: number, needUpdateIds: Array<number>) {
     records.value.splice(index, 1);
+    onUpdate(needUpdateIds);
+}
+
+function onUpdate(needUpdateIds: Array<number>) {
+    if (needUpdateIds.length > 0) {
+        for (let i = 0; i < records.value.length; i++) {
+            let one = records.value[i].record;
+            if (needUpdateIds.indexOf(one.id) > -1) {
+                // 存在
+                useNoteStore().getOne(one.id).then(item => item && (records.value[i] = item));
+            }
+        }
+    }
 }
 
 </script>

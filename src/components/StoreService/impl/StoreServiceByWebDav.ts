@@ -2,7 +2,6 @@ import { SyncSetting } from "@/entity/SyncSetting";
 import Constant from "@/global/Constant";
 import { createClient, WebDAVClient } from "webdav";
 import { StoreService } from "..";
-import MessageUtil from "@/utils/MessageUtil";
 
 export function buildPath(key ?: string) {
     if (!key) {
@@ -40,7 +39,7 @@ export class StoreServiceByWebDav implements StoreService {
             password: syncSetting.password
         });
         // 检查文件夹
-        folderCreate(this.client).then(() => MessageUtil.success("检查文件夹完成"));
+        folderCreate(this.client).then(() => console.log("检查文件夹完成"));
     }
 
     exist(key : string) : Promise<boolean> {

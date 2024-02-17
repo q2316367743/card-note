@@ -14,7 +14,7 @@
                 <template #content>
                     <a-doption @click="openNoteInfo(record, onUpdate)">
                         <template #icon>
-                            <icon-info />
+                            <icon-info/>
                         </template>
                         详情
                     </a-doption>
@@ -83,11 +83,12 @@ function update(record: DbRecord<NoteContent>) {
 
 function remove(record: DbRecord<NoteContent>) {
     MessageBoxUtil.confirm("是否删除此条笔记", "删除笔记")
-        .then(() => useNoteStore().remove(record.record.id).then(() => {
-            // 从列表中移除
-            MessageUtil.success("删除成功");
-            emits('remove')
-        }).catch(e => MessageUtil.error("删除失败", e)))
+        .then(() => useNoteStore().remove(record.record.id)
+            .then(needUpdateIds => {
+                // 从列表中移除
+                MessageUtil.success("删除成功");
+                emits('remove', needUpdateIds)
+            }).catch(e => MessageUtil.error("删除失败", e)))
 }
 
 function onUpdate(needUpdateIds: Array<number>) {
