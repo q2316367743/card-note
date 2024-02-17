@@ -1,7 +1,6 @@
 import {getFromOneByAsync} from "@/utils/utools/DbStorageUtil";
 import {useSyncStore} from "@/store/SyncStore";
 import MessageUtil from "@/utils/MessageUtil";
-import {buildPath} from "@/components/SyncAlgorithm/CommonSync";
 
 export interface SyncState {
     key: string;
@@ -23,7 +22,7 @@ export function handleAutoSync(state: SyncState) {
     if (state.type === 'put') {
         getFromOneByAsync(state.key)
             .then(res => {
-                res && client.putFileContents(buildPath(state.key), JSON.stringify(res.record))
+                res && client.set(state.key, JSON.stringify(res.record))
                     .then(() => {
                         console.log('自动同步成功')
                     })
@@ -32,7 +31,7 @@ export function handleAutoSync(state: SyncState) {
                     })
             })
     } else if (state.type === 'remove') {
-        client.deleteFile(buildPath(state.key))
+        client.delete(state.key)
             .then(() => {
                 console.log('自动同步成功')
             })

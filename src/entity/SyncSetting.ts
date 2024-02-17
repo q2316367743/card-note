@@ -1,4 +1,6 @@
 export interface SyncSetting {
+    
+    type: 'WebDAV' | 'AList';
 
     /**
      * 链接
@@ -34,6 +36,7 @@ export interface SyncSetting {
 
 export function getDefaultSyncSetting(): SyncSetting {
     return {
+        type: 'WebDAV',
         url: "",
         username: "",
         password: "",

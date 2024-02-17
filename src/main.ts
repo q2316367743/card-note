@@ -7,7 +7,9 @@ import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css';
 import {utools} from "@/plugin/utools";
-import "@/main.less";
+import "@/less/main.less";
+import "@/less/post.less";
+import "@/less/customer.less";
 import "highlight.js/styles/github.css";
 
 // utools挂载

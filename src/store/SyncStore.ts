@@ -4,9 +4,10 @@ import {getDefaultSyncSetting, SyncSetting} from "@/entity/SyncSetting";
 import {getFromOneByDefault, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {useDocumentVisibility, useEventBus, useIntervalFn} from "@vueuse/core";
-import {createClient, WebDAVClient} from 'webdav'
 import {handleAutoSync, SyncState} from "@/components/SyncAlgorithm/AutoSync";
 import {fullSynchronization, useIdleSync} from "@/components/SyncAlgorithm/IdleSync";
+import {StoreService} from "@/components/StoreService";
+import {StoreServiceByWebDav} from "@/components/StoreService/impl/StoreServiceByWebDav";
 
 
 export const useSyncEvent = useEventBus<SyncState>('sync');
@@ -16,11 +17,10 @@ useSyncEvent.reset();
 useSyncEvent.on(handleAutoSync);
 
 
-
 export const useSyncStore = defineStore('sync', () => {
     const syncSetting = ref(getDefaultSyncSetting());
     let rev: string | undefined = undefined;
-    let client = shallowRef<WebDAVClient | null>(null);
+    let client = shallowRef<StoreService | null>(null);
 
     const disableAutoSync = computed(() => client.value == null || !syncSetting.value.autoSync);
     const disableIdleSync = computed(() => client.value == null || !syncSetting.value.idleSync);
@@ -32,7 +32,7 @@ export const useSyncStore = defineStore('sync', () => {
     watch(() => visibility.value, value => {
         if (value === 'hidden') {
             intervalFn.resume();
-        }else if (value === 'visible') {
+        } else if (value === 'visible') {
             intervalFn.pause();
         }
     }, {immediate: true})
@@ -57,10 +57,9 @@ export const useSyncStore = defineStore('sync', () => {
     function buildClient() {
         client.value = null;
         if (syncSetting.value.url !== '') {
-            client.value = createClient(syncSetting.value.url, {
-                username: syncSetting.value.username,
-                password: syncSetting.value.password
-            });
+            if (syncSetting.value.type === 'WebDAV') {
+                client.value = new StoreServiceByWebDav(syncSetting.value);
+            }
         }
     }
 

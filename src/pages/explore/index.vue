@@ -30,5 +30,6 @@ function init() {
 </script>
 <style scoped>
 .explore {
+    padding: 0 7px;
 }
 </style>
