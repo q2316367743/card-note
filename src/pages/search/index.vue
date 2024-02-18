@@ -21,15 +21,11 @@ import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
 import {useNoteStore} from "@/store/NoteStore";
-import {toDateString} from "xe-utils";
 
 const searching = ref(false);
 const keyword = ref("");
 const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent>>());
 
-function prettyDate(date: Date | string | number) {
-    return toDateString(date);
-}
 
 function clear() {
     searching.value = false;

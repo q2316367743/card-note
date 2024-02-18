@@ -99,8 +99,8 @@ export const useNoteStore = defineStore('note', () => {
      * @param date 当天的早八点时间戳
      */
     function oneDay(date: number): Promise<Array<DbRecord<NoteContent>>> {
-        const start = date - 8 * HOUR;
-        const end = date + 16 * HOUR;
+        const start = date;
+        const end = date + 24 * HOUR;
         return listRecordByAsync<NoteContent>(ids.value
             .filter(id => id >= start && id <= end)
             .map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`))

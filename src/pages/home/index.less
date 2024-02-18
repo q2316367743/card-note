@@ -4,5 +4,74 @@
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 0 7px;
+    background-color: var(--color-neutral-2);
+
+    .header {
+        height: 32px;
+        display: flex;
+        justify-content: space-between;
+        background-color: var(--color-bg-1);
+        line-height: 32px;
+        .title {
+            margin-left: 1rem;
+            font-weight: bold;
+        }
+        .statistics {
+            margin-right: 1rem;
+        }
+    }
+
+    .body{
+    }
+
+    .keyword {
+        margin-right: 4px;
+    }
+
+    .side {
+        background-color: var(--color-bg-1);
+        padding: 7px;
+        overflow-y: auto;
+        .arco-layout-sider-children {
+            overflow-x: hidden;
+        }
+        .all-tag {
+            margin-top: 1.25rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: row;
+            width: 100%;
+            display: flex;
+            color: var(--color-neutral-8);
+            font-size: .85rem;
+            margin-bottom: 0.25rem;
+        }
+        .tag {
+            font-size: 1rem;
+            padding: 0 1rem;
+            border-radius: 0.5rem;
+            align-items: center;
+            flex-direction: row;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+            cursor: pointer;
+            flex-shrink: 0;
+            width: 100%;
+            height: 2.5rem;
+            display: flex;
+            margin-top: 1px;
+            position: relative;
+
+            .icon {
+                width: 1rem;
+            }
+
+            &:hover {
+                opacity: 0.6;
+            }
+        }
+    }
 }
