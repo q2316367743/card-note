@@ -7,13 +7,13 @@
                 进行同步
             </a-alert>
             <a-form-item label="链接">
-                <a-input v-model="syncSetting.url" placeholder="请输入webdav地址"/>
+                <a-input allow-clear v-model="syncSetting.url" placeholder="请输入webdav地址"/>
             </a-form-item>
             <a-form-item label="用户名">
-                <a-input v-model="syncSetting.username"/>
+                <a-input allow-clear v-model="syncSetting.username"/>
             </a-form-item>
             <a-form-item label="密码">
-                <a-input-password v-model="syncSetting.password"/>
+                <a-input-password allow-clear v-model="syncSetting.password"/>
             </a-form-item>
             <a-form-item label="是否开启自动同步">
                 <a-switch v-model="syncSetting.autoSync"/>

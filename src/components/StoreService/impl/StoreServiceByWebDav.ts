@@ -26,6 +26,10 @@ export async function folderCreate(client : WebDAVClient) {
     if (!noteExist) {
         await client.createDirectory(buildPath("note"));
     }
+    const settingExist = await client.exists(buildPath("setting"));
+    if (!settingExist) {
+        await client.createDirectory(buildPath("setting"));
+    }
 }
 
 

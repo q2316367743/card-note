@@ -81,10 +81,8 @@
 <script lang="ts" setup>
 import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {useTagStore} from "@/store/TagStore";
-import {useAppStore} from "@/store/AppStore";
-import {useSyncStore} from "@/store/SyncStore";
 import { useWindowSize } from "@vueuse/core";
+import {useAppStore} from "@/store/AppStore";
 
 const size = useWindowSize();
 
@@ -94,7 +92,7 @@ const selectedKeys = ref(['/home']);
 const visible = ref(false);
 
 const href = computed(() => `./highlight.js/${useAppStore().dark ? 'github-dark' : 'github'}.css`);
-const wap = computed(() => size.width.value < 800);
+const wap = computed(() => size.width.value < 790);
 
 watch(() => selectedKeys.value, value => {
     router.push(value[0]);
@@ -107,11 +105,13 @@ watch(() => route.path, value => {
     if (selectedKeys.value[0] !== value) {
         selectedKeys.value[0] = value
     }
-})
+});
 
-useTagStore().init();
-useSyncStore().init();
-useAppStore().init();
+useAppStore().init()
+
+import("@/store/TagStore").then(res => res.useTagStore().init());
+import("@/store/SyncStore").then(res => res.useSyncStore().init());
+import("@/store/AiStore").then(res => res.useAiStore().init());
 
 
 utools.onPluginEnter(handleTheme);

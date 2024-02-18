@@ -8,7 +8,9 @@ enum DbKeyEnum {
 
     KEY_THEME = '/key/theme',
 
-    SETTING_SYNC = '/setting/sync'
+    SETTING_SYNC = '/setting/sync',
+
+    SETTING_AI = '/setting/ai'
 
 }
 
