@@ -3,7 +3,7 @@
         <a-tabs hide-content v-model:active-key="activeKey">
             <a-tab-pane title="基础设置" key="1"/>
             <a-tab-pane title="同步设置" key="2"/>
-            <a-tab-pane title="AI设置" key="3"/>
+            <a-tab-pane title="AI设置" key="3" disabled/>
             <a-tab-pane title="导入与导出" key="4"/>
         </a-tabs>
         <div class="container">

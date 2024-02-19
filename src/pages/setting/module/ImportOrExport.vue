@@ -1,5 +1,6 @@
 <template>
     <div>
+        <a-alert type="warning" style="margin-bottom: 7px;">增加装修中...</a-alert>
         <a-alert>
             <template #icon>
                 <icon-import/>
@@ -21,7 +22,7 @@
         </a-alert>
         <a-button-group style="margin-top: 7px;">
             <a-space>
-                <a-button type="primary">
+                <a-button type="primary" disabled>
                     导出为Markdown
                 </a-button>
             </a-space>
