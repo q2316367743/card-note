@@ -3,7 +3,7 @@
   "description": "卡片笔记",
   "author": "落雨不悔 <m17762618644@163.com>",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -23,6 +23,7 @@
     "marked-highlight": "^2.1.1",
     "pinia": "^2.1.7",
     "tippy.js": "^6.3.7",
+    "vite-plugin-pwa": "^0.19.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vue3-calendar-heatmap": "^2.0.5",

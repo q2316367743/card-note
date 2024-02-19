@@ -9,7 +9,7 @@
                 </template>
                 <input-box @refresh="refresh()" class="card"/>
                 <div v-if="keywords.length > 0" class="card">过滤器：
-                    <a-tag v-for="keyword of keywords" :key="keyword" class="keyword" closable
+                    <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
                            @close="keywordRemove(keyword)" color="arcoblue">
                         <span v-if="keyword.type === 'TAG'" style="width: 1rem">#</span>
                         <span v-if="keyword.type === 'KEY'" style="width: 1rem">
