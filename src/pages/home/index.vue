@@ -24,8 +24,11 @@
             <a-back-top target-container=".arco-list" style="bottom: 60px" ref="backTopInstance"/>
         </a-layout-content>
         <a-layout-footer class="footer">
+            <div class="title">
+                <a-input-search v-model="keyword" size="mini" placeholder="请输入关键字" allow-clear search-button
+                                @search="keyAdd()" @keydown.enter="keyAdd()"/>
+            </div>
             <div class="statistics">在过去的 {{ day }} 天中，共记录 {{ noteLength }} 条笔记</div>
-            <div class="title"></div>
         </a-layout-footer>
     </a-layout>
 </template>

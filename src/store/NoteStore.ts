@@ -107,11 +107,8 @@ export const useNoteStore = defineStore('note', () => {
         for (let id of ids.value) {
             const content = await getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`);
             if (content) {
-                for (let keyword of keywords) {
-                    if (content.record.content.indexOf(keyword) > -1) {
-                        items.push(content);
-                        break;
-                    }
+                if (keywords.every(keyword => content.record.content.indexOf(keyword) > -1)) {
+                    items.push(content);
                 }
             }
         }

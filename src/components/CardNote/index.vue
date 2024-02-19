@@ -24,12 +24,6 @@
                         </template>
                         编辑
                     </a-doption>
-                    <a-doption disabled>
-                        <template #icon>
-                            <icon-link/>
-                        </template>
-                        引用
-                    </a-doption>
                     <a-doption @click="createExportImage(record.record)">
                         <template #icon>
                             <icon-shake/>
