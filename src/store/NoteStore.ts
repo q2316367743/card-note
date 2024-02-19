@@ -58,6 +58,7 @@ async function removeRelation(id: number) {
 
 export const useOpenNoteEvent = useEventBus<number>('open-note');
 export const useResetNoteEvent = useEventBus<void>('reset-note');
+export const useSearchNoteEvent = useEventBus<string>('search-note');
 
 export const useNoteStore = defineStore('note', () => {
     const indexes = ref(new Array<NoteIndex>());
@@ -92,6 +93,29 @@ export const useNoteStore = defineStore('note', () => {
         }
         const items = ids.value.slice(offset, Math.min(offset + limit, ids.value.length));
         return listRecordByAsync<NoteContent>(items.map(item => `${DbKeyEnum.NOTE_ITEM}/${item}`))
+    }
+
+    /**
+     * 搜索获取笔记
+     *
+     * @param keywords 关键字
+     *
+     * @return 笔记列表
+     */
+    async function search(keywords: string[]): Promise<Array<DbRecord<NoteContent>>> {
+        const items = new Array<DbRecord<NoteContent>>();
+        for (let id of ids.value) {
+            const content = await getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`);
+            if (content) {
+                for (let keyword of keywords) {
+                    if (content.record.content.indexOf(keyword) > -1) {
+                        items.push(content);
+                        break;
+                    }
+                }
+            }
+        }
+        return items;
     }
 
     /**
@@ -311,6 +335,6 @@ export const useNoteStore = defineStore('note', () => {
         return Promise.resolve(needUpdateIds);
     }
 
-    return {init, allIds, page, oneDay, getOne, getMany, add, addBatch, update, remove}
+    return {init, allIds, page, search, oneDay, getOne, getMany, add, addBatch, update, remove}
 
 });

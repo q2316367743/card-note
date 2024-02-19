@@ -83,6 +83,7 @@ import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import { useWindowSize } from "@vueuse/core";
 import {useAppStore} from "@/store/AppStore";
+import {useSearchNoteEvent} from "@/store/NoteStore";
 
 const size = useWindowSize();
 
@@ -124,6 +125,8 @@ function handleTheme() {
     }
 
 }
+
+window.onTagSearch = useSearchNoteEvent.emit
 
 </script>
 <style scoped>

@@ -9,7 +9,7 @@ renderer.text = function (text) {
     const tags = text.match(SOURCE_TAG_REGEX);
     if (tags) {
         tags.forEach(tag => {
-            const tagHTML = `<span class="card-tag">${tag}</span>`;
+            const tagHTML = `<span class="card-tag" onclick="window.onTagSearch('${tag.substring(1)}')">${tag}</span>`;
             text = text.replace(tag, tagHTML);
         });
     }
