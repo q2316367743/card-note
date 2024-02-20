@@ -12,6 +12,9 @@
                 <a-button type="primary" @click="openImportFromMemos()" :disabled="!isUtools">
                     从Memos中导入
                 </a-button>
+                <a-button type="primary" @click="openImportFromCardNote()">
+                    从卡片笔记中导入
+                </a-button>
             </a-space>
         </a-button-group>
         <a-alert style="margin-top: 7px;">
@@ -25,12 +28,16 @@
                 <a-button type="primary" disabled>
                     导出为Markdown
                 </a-button>
+                <a-button type="primary" @click="openExportForCardNote()">导出为卡片笔记</a-button>
             </a-space>
         </a-button-group>
     </div>
 </template>
 <script lang="ts" setup>
 import {openImportFromMemos} from "@/components/ImportOrExport/ImportFromMemos";
+import {openExportForCardNote} from "@/components/ImportOrExport/ExportForCardNote";
+import {openImportFromCardNote} from "@/components/ImportOrExport/ImportFromCardNote";
+
 const isUtools = window.isUtools;
 console.log(isUtools)
 </script>
