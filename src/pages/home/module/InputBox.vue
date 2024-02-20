@@ -19,6 +19,7 @@ function add(content: string, relationNotes: Array<NoteRelation>) {
     }
     useNoteStore().add(content, relationNotes)
         .then(() => {
+            LA.track('create_note');
             MessageUtil.success("新增成功");
             emits('refresh');
         })

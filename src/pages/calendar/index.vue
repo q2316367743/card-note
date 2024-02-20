@@ -55,6 +55,7 @@ const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent
 
 function dayClick(args: any) {
     records.value = [];
+    LA.track('show_day');
     useNoteStore().init().then(() => useNoteStore().oneDay(new Date(toRaw(args).date).getTime())
         .then(items => records.value = items));
 }

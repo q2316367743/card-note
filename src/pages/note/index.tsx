@@ -58,6 +58,8 @@ const BottomLeft = styled.div`
 
 export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateIds: Array<number>) => void) {
 
+    LA.track('note_info');
+
     const noteContent = ref(record.record);
 
     const commentNotes = ref<Array<NoteContent>>(new Array<NoteContent>());

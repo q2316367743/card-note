@@ -21,6 +21,8 @@ export function createExportImage(note: NoteContent) {
     const id = "preview-" + note.id;
     const theme = ref(0);
 
+    LA.track('share_note');
+
     Modal.open({
         title: "分享 卡片笔记",
         draggable: true,

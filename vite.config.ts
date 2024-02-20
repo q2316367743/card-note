@@ -31,7 +31,7 @@ export default defineConfig({
                 theme_color: '#3C7EFF',
                 icons: [		//添加图标， 注意路径和图像像素正确
                     {
-                        src: '/logo.png',
+                        src: './logo.png',
                         sizes: '256x256',
                         type: 'image/png',
                     },

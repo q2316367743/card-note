@@ -27,6 +27,8 @@ function init() {
         .then(res => record.value = res);
 }
 
+LA.track('export');
+
 </script>
 <style scoped>
 .explore {
