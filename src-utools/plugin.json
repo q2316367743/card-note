@@ -27,6 +27,24 @@
             "cmds": [
                 "卡片笔记"
             ]
+        },
+        {
+            "code": "append",
+            "explain": "card-note",
+            "icon": "public/logo.png",
+            "platform": [
+                "win32",
+                "darwin",
+                "linux"
+            ],
+            "cmds": [
+                {
+                    "type": "over",
+                    "label": "新增卡片笔记",
+                    "minLength": 1,
+                    "maxLength": 500
+                }
+            ]
         }
     ]
 }

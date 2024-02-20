@@ -67,7 +67,12 @@ import("@/store/SyncStore").then(res => res.useSyncStore().init());
 import("@/store/AiStore").then(res => res.useAiStore().init());
 
 
-utools.onPluginEnter(handleTheme);
+utools.onPluginEnter(action => {
+    handleTheme();
+    if (action.code === 'append') {
+        import("@/store/NoteStore").then(res => res.useNoteStore().init().then(() => res.useNoteStore().add(action.payload, [])));
+    }
+});
 
 function handleTheme() {
     if (useAppStore().isDarkColors()) {

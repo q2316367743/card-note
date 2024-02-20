@@ -1,5 +1,5 @@
 <template>
-    <a-card>
+    <a-card style="border: none;">
         <text-editor @save="add"/>
     </a-card>
 </template>

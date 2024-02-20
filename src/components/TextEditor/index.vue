@@ -22,11 +22,20 @@
                             </template>
                         </a-button>
                     </Tooltip>
-                    <a-button @click="addCheckbox()">
-                        <template #icon>
-                            <IconCheckSquare :size="16"/>
-                        </template>
-                    </a-button>
+                    <Tooltip content="待办">
+                        <a-button @click="addCheckbox()">
+                            <template #icon>
+                                <IconCheckSquare :size="16"/>
+                            </template>
+                        </a-button>
+                    </Tooltip>
+                    <Tooltip content="表格">
+                        <a-button @click="addTable()">
+                            <template #icon>
+                                <IconNav :size="16"/>
+                            </template>
+                        </a-button>
+                    </Tooltip>
                     <a-button @click="addCode()">
                         <template #icon>
                             <IconCode :size="16"/>
@@ -71,7 +80,7 @@ import {
     InputGroup as AInputGroup,
     Input as AInput
 } from "@arco-design/web-vue";
-import {IconLink, IconCheckSquare, IconCode, IconCheck} from "@arco-design/web-vue/es/icon";
+import {IconLink, IconCheckSquare, IconCode, IconCheck, IconNav} from "@arco-design/web-vue/es/icon";
 import {getCursorPosition} from "@/utils/DomUtil";
 import {useTagStore} from "@/store/TagStore";
 import {NoteContent, NoteRelation} from "@/entity/Note";
@@ -151,6 +160,35 @@ function addCode() {
     nextTick(() => {
         textarea.focus();
         const start = lines.slice(0, cursorPosition).join("\n").length - 4
+        textarea.setSelectionRange(start, start);
+    })
+}
+
+const TABLE_TEMPLATE = '|  |  |\n|---|---|\n|  |  |';
+
+function addTable() {
+
+    if (!textareaRef.value) {
+        return;
+    }
+    const textarea = textareaRef.value.inputRef.$refs.textareaRef as HTMLTextAreaElement;
+
+    if (!content.value) {
+        content.value = TABLE_TEMPLATE;
+        nextTick(() => {
+            textarea.focus();
+            textarea.setSelectionRange(2, 2);
+        });
+        return;
+    }
+
+    const cursorPosition = getCursorPosition(textarea);
+    const lines = content.value.split("\n");
+    lines[Math.max(cursorPosition - 1, 0)] += ('\n' + TABLE_TEMPLATE);
+    content.value = lines.join("\n");
+    nextTick(() => {
+        textarea.focus();
+        const start = lines.slice(0, cursorPosition).join("\n").length - 23
         textarea.setSelectionRange(start, start);
     })
 }

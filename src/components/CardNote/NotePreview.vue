@@ -1,7 +1,7 @@
 <template>
-    <a-typography class="note-preview">
+    <a-typography class="note-preview juejin">
         <a-typography-paragraph :ellipsis="ellipsis">
-            <div v-html="preview" class="juejin"></div>
+            <div v-html="preview" ></div>
         </a-typography-paragraph>
         <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">

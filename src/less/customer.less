@@ -67,12 +67,31 @@
 .card {
     margin: 7px auto;
     max-width: 730px;
+    color: var(--color-text-1);
+    background-color: var(--color-fill-1);
+
+    overflow: hidden;
+    position: relative;
+    border-radius: 2px;
+    transition: box-shadow 0.3s ease;
+    box-shadow: none;
+
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 20px;
+        margin-bottom: 10px;
+        padding: 15px 15px 0;
+    }
 
     .create-time {
         font-size: .875rem;
         color: var(--color-neutral-6);
         cursor: pointer;
     }
+
 
     .id {
         font-size: .875rem;

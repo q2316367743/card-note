@@ -1,46 +1,50 @@
 <template>
-    <a-card v-if="record" class="card" :key="record.record.id">
-        <template #title>
-            <span class="create-time" @click="openNoteInfo(record, onUpdate)">{{ prettyDate(record.record.id) }}</span>
-            <span class="id"> · #{{ record.record.id }}</span>
-        </template>
-        <template #extra>
-            <a-dropdown position="br">
-                <a-button type="text">
-                    <template #icon>
-                        <icon-more-vertical/>
+    <div v-if="record" class="card" :key="record.record.id">
+        <div class="header">
+            <div class="title">
+                <span class="create-time" @click="openNoteInfo(record, onUpdate)">{{
+                        prettyDate(record.record.id)
+                    }}</span>
+                <span class="id"> · #{{ record.record.id }}</span>
+            </div>
+            <div class="extra">
+                <a-dropdown position="br">
+                    <a-button type="text">
+                        <template #icon>
+                            <icon-more-vertical/>
+                        </template>
+                    </a-button>
+                    <template #content>
+                        <a-doption @click="openNoteInfo(record, onUpdate)">
+                            <template #icon>
+                                <icon-info/>
+                            </template>
+                            详情
+                        </a-doption>
+                        <a-doption @click="update(record)">
+                            <template #icon>
+                                <icon-edit/>
+                            </template>
+                            编辑
+                        </a-doption>
+                        <a-doption @click="createExportImage(record.record)">
+                            <template #icon>
+                                <icon-shake/>
+                            </template>
+                            分享
+                        </a-doption>
+                        <a-doption @click="remove(record)">
+                            <template #icon>
+                                <icon-delete/>
+                            </template>
+                            删除
+                        </a-doption>
                     </template>
-                </a-button>
-                <template #content>
-                    <a-doption @click="openNoteInfo(record, onUpdate)">
-                        <template #icon>
-                            <icon-info/>
-                        </template>
-                        详情
-                    </a-doption>
-                    <a-doption @click="update(record)">
-                        <template #icon>
-                            <icon-edit/>
-                        </template>
-                        编辑
-                    </a-doption>
-                    <a-doption @click="createExportImage(record.record)">
-                        <template #icon>
-                            <icon-shake/>
-                        </template>
-                        分享
-                    </a-doption>
-                    <a-doption @click="remove(record)">
-                        <template #icon>
-                            <icon-delete/>
-                        </template>
-                        删除
-                    </a-doption>
-                </template>
-            </a-dropdown>
-        </template>
+                </a-dropdown>
+            </div>
+        </div>
         <note-preview :content="record.record"/>
-    </a-card>
+    </div>
 </template>
 <script lang="ts" setup>
 import {createExportImage} from "@/components/CardNote/ExportImage";
