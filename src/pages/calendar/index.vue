@@ -70,7 +70,11 @@ const heatmap = computed(() => {
 
 function dayClick(args: any) {
     records.value = [];
-    LA.track('show_day');
+    try {
+        LA.track('show_day');
+    }catch (e) {
+        console.error(e);
+    }
     useNoteStore().init().then(() => useNoteStore().oneDay(new Date(toRaw(args).date).getTime())
         .then(items => records.value = items));
 }
@@ -103,7 +107,7 @@ function renderColor(count: number): string {
     right: 7px;
     bottom: 7px;
     overflow: auto;
-    button {
+    :is(button) {
         background-color: var(--color-fill-1);
     }
 }

@@ -8,6 +8,7 @@ import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css';
 
 import {utools, preload} from "@/plugin/utools";
+import {preload as tauriPreload, utools as tauriUtools} from '@/plugin/tauri';
 import "@/less/main.less";
 import "@/less/post.less";
 import "@/less/customer.less";
@@ -16,11 +17,17 @@ import "highlight.js/styles/github.css";
 import { setupCalendar } from 'v-calendar';
 
 import {loadScript} from "@/utils/DomUtil";
+import Constant from "@/global/Constant";
 
 // utools挂载
 window.isUtools = !!window.utools;
 window.utools = window.utools || utools;
 window.preload = window.preload || preload;
+if (Constant.platform === 'tauri') {
+    // @ts-ignore
+    window.preload = tauriPreload;
+    window.utools = Object.assign(window.utools, tauriUtools)
+}
 
 if (window.utools.isDev()) {
     console.log("开发环境，不加载统计")
@@ -35,12 +42,16 @@ if (window.utools.isDev()) {
     if (window.isUtools) {
         // utools，本地引用
         loadScript("./51/js-sdk-pro.min.js", {id: 'LA_COLLECT'}, () => {
-            LA.init({id: "3HYNN6TT7aizMbSW", ck: "3HYNN6TT7aizMbSW", autoTrack: true, hashMode: true})
+            LA.init({id: "3HYNN6TT7aizMbSW", ck: "3HYNN6TT7aizMbSW", autoTrack: true, hashMode: true});
+            // @ts-ignore
+            window.LA = LA;
         });
     }else {
         // 非utools，线上引用
         loadScript("https://sdk.51.la/js-sdk-pro.min.js", {id: 'LA_COLLECT'}, () => {
-            LA.init({id: "3HYNN6TT7aizMbSW", ck: "3HYNN6TT7aizMbSW", autoTrack: true, hashMode: true})
+            LA.init({id: "3HYNN6TT7aizMbSW", ck: "3HYNN6TT7aizMbSW", autoTrack: true, hashMode: true});
+            // @ts-ignore
+            window.LA = LA;
         });
     }
 }

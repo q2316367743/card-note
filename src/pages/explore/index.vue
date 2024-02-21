@@ -27,7 +27,11 @@ function init() {
         .then(res => record.value = res);
 }
 
-LA.track('export');
+try {
+    LA.track('export');
+}catch (e) {
+    console.error(e);
+}
 
 </script>
 <style scoped>
