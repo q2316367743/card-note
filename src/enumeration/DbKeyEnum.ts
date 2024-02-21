@@ -8,6 +8,8 @@ enum DbKeyEnum {
 
     KEY_THEME = '/key/theme',
 
+    KEY_ELLIPSE_ROWS = '/key/ellipse-rows',
+
     SETTING_SYNC = '/setting/sync',
 
     SETTING_AI = '/setting/ai'

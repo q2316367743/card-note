@@ -49,6 +49,7 @@ import {
 } from "@arco-design/web-vue";
 import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
 import {renderContent} from "@/utils/BrowserUtil";
+import {useAppStore} from "@/store/AppStore";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>,
@@ -65,7 +66,17 @@ const relationNotes = ref<Array<DbRecord<NoteContent>>>([]);
 const associatedNotes = ref<Array<DbRecord<NoteContent>>>([]);
 const commentNotes = ref<Array<DbRecord<NoteContent>>>([]);
 
-const ellipsis = computed(() => props.ellipsis ? {rows: 10, expandable: true} : false)
+const ellipsis = computed(() => {
+    if (props.ellipsis) {
+        const ellipseRows = useAppStore().ellipseRows
+        if (ellipseRows > -1) {
+            return {rows: ellipseRows, expandable: true};
+        }else {
+            return false;
+        }
+    }
+    return false;
+})
 
 watch(() => props.content,
     value => {

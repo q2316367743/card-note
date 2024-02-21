@@ -11,7 +11,10 @@
     "build:utools": "vue-tsc && vite build -c config/vite.utools.ts --mode=utools",
     "build:web": "vue-tsc && vite build -c config/vite.web.ts --mode=web",
     "build:mobile": "vue-tsc && vite build -c config/vite.mobile.ts --mode=mobile",
-    "preview": "vite preview"
+    "build:tauri": "vue-tsc && vite build -c config/vite.tauri.ts --mode=tauri",
+    "preview": "vite preview",
+    "tauri:build": "tauri build",
+    "tauri:dev": "tauri dev"
   },
   "dependencies": {
     "@arco-design/web-vue": "^2.54.3",
@@ -37,6 +40,8 @@
     "xe-utils": "^3.5.18"
   },
   "devDependencies": {
+    "@tauri-apps/api": "^1.5.3",
+    "@tauri-apps/cli": "^1.5.10",
     "@vitejs/plugin-vue": "^4.6.2",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "typescript": "^4.9.5",

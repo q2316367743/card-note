@@ -140,7 +140,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             <PageHeader title="卡片笔记" subtitle={toDateString(noteContent.value.id)} onBack={close}/>
             <Container>
                 <Content>
-                    <Card>
+                    <Card class="card no-padding">
                         <NotePreview content={noteContent.value} ellipsis={false}/>
                     </Card>
                     <Card style="margin-top: 7px;">

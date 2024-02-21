@@ -76,7 +76,6 @@
     transition: box-shadow 0.3s ease;
     box-shadow: none;
 
-
     .header {
         display: flex;
         justify-content: space-between;
@@ -91,7 +90,6 @@
         color: var(--color-neutral-6);
         cursor: pointer;
     }
-
 
     .id {
         font-size: .875rem;
@@ -136,6 +134,19 @@
         background-color: var(--color-bg-1);
     }
 
+    &.no-padding {
+        .arco-card-body {
+            padding: 0;
+            .arco-typography:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    .hljs {
+        width: calc(100% - 30px);
+    }
+
     pre {
         font-family: JetBrainsMono, Consolas, serif !important;
     }
@@ -143,4 +154,5 @@
     code {
         font-family: JetBrainsMono, Consolas, serif !important;
     }
+
 }

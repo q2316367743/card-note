@@ -8,6 +8,10 @@
                     <a-option :value="2">黑夜</a-option>
                 </a-select>
             </a-form-item>
+            <a-form-item label="笔记折叠行数">
+                <a-input-number v-model="ellipseRows" :min="-1" style="width: 150px"/>
+                <template #help>-1表示不折叠</template>
+            </a-form-item>
             <a-form-item label="开发者工具">
                 <a-switch v-model="devTool"/>
             </a-form-item>
@@ -18,9 +22,11 @@
 import {ref, watch} from "vue";
 import {useAppStore, devTool} from "@/store/AppStore";
 
-const themeType = ref(useAppStore().getThemeType());
+const themeType = ref(useAppStore().themeType);
+const ellipseRows = ref(useAppStore().ellipseRows);
 
 watch(() => themeType.value, value => useAppStore().saveThemeType(value));
+watch(() => ellipseRows.value, value => useAppStore().saveEllipseRows(value));
 
 </script>
 <style scoped>
