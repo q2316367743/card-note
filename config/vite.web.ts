@@ -12,7 +12,7 @@ import {VitePWA} from 'vite-plugin-pwa'
 
 function _resolve(dir: string) {
     // @ts-ignore
-    return path.resolve(__dirname, dir);
+    return path.resolve(__dirname, '../', dir);
 }
 
 export default defineConfig({
@@ -114,6 +114,7 @@ export default defineConfig({
     ],
     base: "./",
     build: {
-        outDir: "src-utools/dist"
-    }
+        outDir: "dist"
+    },
+    envDir: 'env'
 });

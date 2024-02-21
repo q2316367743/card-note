@@ -85,7 +85,6 @@ function handleTheme() {
     } else {
         document.body.removeAttribute('arco-theme');
     }
-
 }
 
 window.onTagSearch = useSearchNoteEvent.emit;

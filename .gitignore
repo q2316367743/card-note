@@ -9,3 +9,4 @@ src-mobile/dist
 dev-dist
 /src-mobile/unpackage/cache/
 /src-mobile/unpackage/release/
+dist

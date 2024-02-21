@@ -8,13 +8,15 @@
                     <a-option :value="2">黑夜</a-option>
                 </a-select>
             </a-form-item>
-            <a-form-item label="笔记省略行数"></a-form-item>
+            <a-form-item label="开发者工具">
+                <a-switch v-model="devTool"/>
+            </a-form-item>
         </a-form>
     </div>
 </template>
 <script lang="ts" setup>
 import {ref, watch} from "vue";
-import {useAppStore} from "@/store/AppStore";
+import {useAppStore, devTool} from "@/store/AppStore";
 
 const themeType = ref(useAppStore().getThemeType());
 

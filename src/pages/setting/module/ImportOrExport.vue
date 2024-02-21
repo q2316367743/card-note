@@ -9,12 +9,17 @@
         </a-alert>
         <a-button-group style="margin-top: 7px;">
             <a-space>
-                <a-button type="primary" @click="openImportFromMemos()" :disabled="!isUtools">
+                <a-button type="primary" @click="openImportFromMemos()" :disabled="isWeb">
                     从Memos中导入
                 </a-button>
-                <a-button type="primary" @click="openImportFromCardNote()">
-                    从卡片笔记中导入
-                </a-button>
+                <a-upload title="从卡片笔记中导入" :custom-request="customRequest">
+                    <template #upload-button>
+                        <a-button type="primary">
+                            从卡片笔记中导入
+                        </a-button>
+                    </template>
+                </a-upload>
+
             </a-space>
         </a-button-group>
         <a-alert style="margin-top: 7px;">
@@ -37,9 +42,22 @@
 import {openImportFromMemos} from "@/components/ImportOrExport/ImportFromMemos";
 import {openExportForCardNote} from "@/components/ImportOrExport/ExportForCardNote";
 import {openImportFromCardNote} from "@/components/ImportOrExport/ImportFromCardNote";
+import Constant from "@/global/Constant";
+import {RequestOption} from "@arco-design/web-vue";
 
-const isUtools = window.isUtools;
-console.log(isUtools)
+const isWeb = Constant.platform === 'web';
+
+function customRequest(option: RequestOption) {
+    const file = option.fileItem.file;
+    if (file) {
+        openImportFromCardNote(file);
+    }
+    return {
+        abort() {
+            console.log("取消上传")
+        }
+    }
+}
 </script>
 <style scoped>
 

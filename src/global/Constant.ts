@@ -11,4 +11,7 @@ export default {
     author: '落雨不悔',
     // 仓库
     repo: '',
+    platform: import.meta.env.VITE_PLATFORM as Platform
 }
+
+type Platform = 'utools' | 'web' | 'mobile';

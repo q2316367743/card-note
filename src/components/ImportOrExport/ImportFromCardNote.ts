@@ -9,27 +9,16 @@ import {fullSynchronization} from "@/components/SyncAlgorithm/IdleSync";
 import {useSyncStore} from "@/store/SyncStore";
 import MessageUtil from "@/utils/MessageUtil";
 
-export function openImportFromCardNote() {
+export function openImportFromCardNote(blob: Blob) {
     let loading = MessageBoxUtil.loading("开始导入...");
-    _openImportFromCardNote(loading)
+    _openImportFromCardNote(loading, blob)
         .then(() => MessageUtil.success("导入成功"))
         .catch(e => MessageUtil.error("导入失败", e))
         .finally(() => loading.close());
 
 }
 
-async function _openImportFromCardNote(loading: MessageBoxLoadingReturn) {
-    const file = useFileSystemAccess({
-        dataType: 'Blob',
-        types: [{
-            description: '压缩文件',
-            accept: {
-                "application/zip": ['.zip']
-            }
-        }]
-    });
-    await (file.open() as Promise<void>);
-    const blob = file.data.value;
+async function _openImportFromCardNote(loading: MessageBoxLoadingReturn, blob: Blob) {
     if (!blob) {
         return;
     }
