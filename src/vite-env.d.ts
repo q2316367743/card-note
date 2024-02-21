@@ -12,6 +12,7 @@ declare global {
         },
     }
     interface LAInstance {
+        init(option: any);
         // 事件埋点
         track(event: string, properties?: any): void
     }
