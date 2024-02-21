@@ -2,6 +2,7 @@ import MessageUtil from '@/utils/MessageUtil';
 import {generateUUID} from "@/utils/BrowserUtil";
 import {del, get, getMany, keys, set, createStore, values} from 'idb-keyval';
 import Constant from "@/global/Constant";
+import axios from "axios";
 
 const store = createStore("utools", Constant.id);
 
@@ -240,4 +241,10 @@ export const utools = {
         return !isMacOS() && !isWindows();
     }
 
+}
+export const preload = {
+    axios: axios.create({
+        adapter: 'xhr',
+        timeout: 5000
+    })
 }

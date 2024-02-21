@@ -7,7 +7,7 @@ import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css';
 
-import {utools} from "@/plugin/utools";
+import {utools, preload} from "@/plugin/utools";
 import "@/less/main.less";
 import "@/less/post.less";
 import "@/less/customer.less";
@@ -20,6 +20,7 @@ import {loadScript} from "@/utils/DomUtil";
 // utools挂载
 window.isUtools = !!window.utools;
 window.utools = window.utools || utools;
+window.preload = window.preload || preload;
 
 if (window.utools.isDev()) {
     console.log("开发环境，不加载统计")
