@@ -101,9 +101,6 @@ function renderColor(count: number): string {
     right: 7px;
     bottom: 7px;
     overflow: auto;
-    button {
-        background-color: var(--color-fill-1);
-    }
 }
 
 </style>
