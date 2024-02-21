@@ -8,6 +8,7 @@
                     <a-option :value="2">黑夜</a-option>
                 </a-select>
             </a-form-item>
+            <a-form-item label="笔记省略行数"></a-form-item>
         </a-form>
     </div>
 </template>

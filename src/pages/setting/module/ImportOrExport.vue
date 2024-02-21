@@ -1,6 +1,6 @@
 <template>
     <div>
-        <a-alert type="warning" style="margin-bottom: 7px;">增加装修中...</a-alert>
+        <a-alert type="warning" style="margin-bottom: 7px;">正在装修中...</a-alert>
         <a-alert>
             <template #icon>
                 <icon-import/>

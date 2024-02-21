@@ -1,7 +1,8 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {getItem} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
+import {useWindowSize} from "@vueuse/core";
 
 function renderIsDark(theme: number | null) {
     switch (theme) {
@@ -20,6 +21,8 @@ function renderIsDark(theme: number | null) {
 export const useAppStore = defineStore('app', () => {
     let dark = ref(false);
     let themeType = 0;
+    const size = useWindowSize();
+    const isMobile = computed(() => size.width.value < size.height.value * 0.75);
 
     function init() {
         // 初始化主题
@@ -41,6 +44,6 @@ export const useAppStore = defineStore('app', () => {
         utools.dbStorage.setItem(DbKeyEnum.KEY_THEME, themeType);
     }
 
-    return {dark, init, isDarkColors, getThemeType, saveThemeType}
+    return {dark, isMobile, init, isDarkColors, getThemeType, saveThemeType}
 
 })

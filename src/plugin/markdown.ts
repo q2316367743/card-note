@@ -17,9 +17,9 @@ renderer.text = function (text) {
 };
 renderer.link = (href, title, text) => {
     if (window.isUtools) {
-        return `<a href="${href}" title="${title}" onclick="utools.shellOpenExternal('${href}')">${text}</a>`;
+        return `<a href="${href}" title="${title || ''}" onclick="utools.shellOpenExternal('${href}')">${text}</a>`;
     } else {
-        return `<a href="${href}" title="${title}" target="_blank">${text}</a>`;
+        return `<a href="${href}" title="${title || ''}" target="_blank">${text}</a>`;
     }
 }
 

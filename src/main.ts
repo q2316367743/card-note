@@ -6,11 +6,15 @@ import router from './plugin/router';
 import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css';
+
 import {utools} from "@/plugin/utools";
 import "@/less/main.less";
 import "@/less/post.less";
 import "@/less/customer.less";
+
 import "highlight.js/styles/github.css";
+import { setupCalendar } from 'v-calendar';
+
 import {loadScript} from "@/utils/DomUtil";
 
 // utools挂载
@@ -46,4 +50,5 @@ createApp(App)
     .use(ArcoVueIcon)
     .use(createPinia())
     .use(router)
+    .use(setupCalendar, {})
     .mount('#app');

@@ -8,7 +8,7 @@
                     <a-spin v-else/>
                 </template>
                 <input-box @refresh="refresh()" class="card"/>
-                <div v-if="keywords.length > 0" class="card">过滤器：
+                <div v-if="keywords.length > 0" class="card no-bg">过滤器：
                     <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
                            @close="keywordRemove(keyword)" color="arcoblue">
                         <span v-if="keyword.type === 'TAG'" style="width: 1rem">#</span>
@@ -21,14 +21,19 @@
                 <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
                            @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
             </a-list>
-            <a-back-top target-container=".arco-list" style="bottom: 60px" ref="backTopInstance"/>
+            <a-back-top target-container=".arco-list" :style="{bottom: isMobile ? '100px' : '60px'}" ref="backTopInstance"/>
         </a-layout-content>
         <a-layout-footer class="footer">
             <div class="title">
                 <a-input-search v-model="keyword" size="mini" placeholder="请输入关键字" allow-clear search-button
                                 @search="keyAdd()" @keydown.enter="keyAdd()"/>
             </div>
-            <div class="statistics">在过去的 {{ day }} 天中，共记录 {{ noteLength }} 条笔记</div>
+            <div class="statistics" v-if="isMobile">
+                <span>{{ day }} 天</span>
+                <a-divider direction="vertical"/>
+                <span>{{ noteLength }} 条笔记</span>
+            </div>
+            <div class="statistics" v-if="!isMobile">在过去的 {{ day }} 天中，共记录 {{ noteLength }} 条笔记</div>
         </a-layout-footer>
     </a-layout>
 </template>
@@ -43,6 +48,7 @@ import {openNoteInfo} from "@/pages/note";
 import {useTagStore} from "@/store/TagStore";
 import {useNoteStore, useOpenNoteEvent, useResetNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
 import {BackTopInstance} from "@arco-design/web-vue/es/back-top";
+import {useAppStore} from "@/store/AppStore";
 
 const size = useWindowSize();
 
@@ -60,7 +66,9 @@ const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent
 const bottom = ref(false);
 const backTopInstance = ref<BackTopInstance | null>(null);
 
-const height = computed(() => size.height.value - 39);
+// 是否是手机客户端
+const isMobile = computed(() => useAppStore().isMobile);
+const height = computed(() => size.height.value - 39 - (isMobile.value ? 40 : 0));
 const tags = computed(() => useTagStore().tags);
 const allIds = computed(() => useNoteStore().allIds())
 const noteLength = computed(() => allIds.value.length);

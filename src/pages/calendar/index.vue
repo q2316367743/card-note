@@ -1,32 +1,37 @@
 <template>
     <div class="calendar">
-        <div>
-            <calendar-heatmap :dark-mode="dark" tooltip-unit="条笔记" :values="heatmap" :end-date="new Date()"
-                              no-data-text="没有笔记" @day-click="dayClick" :tooltip-formatter="tooltipFormatter"/>
+        <div class="card">
+            <calendar ref="calendarRef" expanded :is-dark="dark" v-model="now" @dayclick="dayClick" :attributes="heatmap"/>
         </div>
-        <a-timeline style="margin-top: 14px;">
+
+        <a-timeline style="margin: 14px auto 0;max-width: 730px;">
             <a-timeline-item v-for="record of records" :key="record.record.id">
                 <div style="margin-bottom: 7px;">{{ renderLabel(record.record.id) }}</div>
-                <a-card>
+                <div class="card">
                     <note-preview :content="record.record"/>
-                </a-card>
+                </div>
             </a-timeline-item>
         </a-timeline>
         <a-back-top target-container=".calendar"/>
     </div>
 </template>
 <script lang="ts" setup>
-import {computed, ref, toRaw} from "vue";
+import {computed, onMounted, ref, toRaw} from "vue";
+import {toDateString} from "xe-utils";
+import 'v-calendar/style.css';
+import {Calendar} from "v-calendar";
+import NotePreview from "@/components/CardNote/NotePreview.vue";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import {useNoteStore} from "@/store/NoteStore";
-import NotePreview from "@/components/CardNote/NotePreview.vue";
-import {toDateString} from "xe-utils";
-import {CalendarHeatmap} from "vue3-calendar-heatmap";
 import {useAppStore} from "@/store/AppStore";
 
 const now = new Date();
+
+const calendarRef = ref<InstanceType<typeof Calendar> | null>()
 const date = ref(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0));
+const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent>>());
+
 const dark = computed(() => useAppStore().dark);
 const heatmap = computed(() => {
     const dailyRecordMap = new Map<string, number>();
@@ -43,15 +48,24 @@ const heatmap = computed(() => {
 
     const list: any[] = [];
 
+
     dailyRecordMap.forEach((v, k) => {
-        list.push({date: k, count: v});
+        list.push({
+            key: k,
+            dates: new Date(k),
+            count: v,
+            dot: {
+                style: {
+                    backgroundColor: renderColor(v)
+                }
+            },
+        });
     });
 
     return list;
 
-})
+});
 
-const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent>>());
 
 function dayClick(args: any) {
     records.value = [];
@@ -63,10 +77,21 @@ function dayClick(args: any) {
 function renderLabel(id: number) {
     return toDateString(id, "HH:mm:ss");
 }
-function tooltipFormatter(args: any): string {
-    const date =  toDateString(toRaw(args).date, "yyyy/MM/dd");
-    return `${date} 记了 ${args.count} 条笔记`
+
+const COLOR_LIST = ['#9BE9A8', '#40C463', '#30A14E', '#216E39'];
+function renderColor(count: number): string {
+    // 1 4 9 16
+    if (count < 4) {
+        return COLOR_LIST[0];
+    }else if (count < 9) {
+        return COLOR_LIST[1];
+    }else if (count < 16) {
+        return COLOR_LIST[2];
+    }else {
+        return COLOR_LIST[3];
+    }
 }
+
 </script>
 <style>
 .calendar {
@@ -76,11 +101,9 @@ function tooltipFormatter(args: any): string {
     right: 7px;
     bottom: 7px;
     overflow: auto;
+    button {
+        background-color: var(--color-fill-1);
+    }
 }
-.vch__month__label {
-    fill: var(--color-text-1);
-}
-.vch__day__label {
-    fill: var(--color-text-1);
-}
+
 </style>

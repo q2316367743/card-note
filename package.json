@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "^2.54.3",
+    "@popperjs/core": "^2.11.8",
     "@vueuse/core": "^10.7.2",
     "axios": "^1.6.5",
     "highlight.js": "^11.9.0",
@@ -23,11 +24,10 @@
     "marked": "^12.0.0",
     "marked-highlight": "^2.1.1",
     "pinia": "^2.1.7",
-    "tippy.js": "^6.3.7",
+    "v-calendar": "^3.1.2",
     "vite-plugin-pwa": "^0.19.0",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
-    "vue3-calendar-heatmap": "^2.0.5",
     "vue3-styled-components": "^1.2.1",
     "webdav": "^5.3.2",
     "xe-utils": "^3.5.18"
