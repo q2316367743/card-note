@@ -1,7 +1,8 @@
 <template>
     <div class="calendar">
         <div class="card">
-            <calendar ref="calendarRef" expanded :is-dark="dark" v-model="now" @dayclick="dayClick" :attributes="heatmap"/>
+            <calendar ref="calendarRef" expanded :is-dark="dark" v-model="now" @dayclick="dayClick"
+                      :attributes="heatmap"/>
         </div>
 
         <a-timeline style="margin: 14px auto 0;max-width: 730px;">
@@ -16,7 +17,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import {computed, onMounted, ref, toRaw} from "vue";
+import {computed, ref, toRaw} from "vue";
 import {toDateString} from "xe-utils";
 import 'v-calendar/style.css';
 import {Calendar} from "v-calendar";
@@ -79,15 +80,16 @@ function renderLabel(id: number) {
 }
 
 const COLOR_LIST = ['#9BE9A8', '#40C463', '#30A14E', '#216E39'];
+
 function renderColor(count: number): string {
     // 1 4 9 16
     if (count < 4) {
         return COLOR_LIST[0];
-    }else if (count < 9) {
+    } else if (count < 9) {
         return COLOR_LIST[1];
-    }else if (count < 16) {
+    } else if (count < 16) {
         return COLOR_LIST[2];
-    }else {
+    } else {
         return COLOR_LIST[3];
     }
 }
