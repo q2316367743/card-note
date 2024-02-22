@@ -4,12 +4,18 @@
             <calendar ref="calendarRef" expanded :is-dark="dark" v-model="now" @dayclick="dayClick"
                       :attributes="heatmap"/>
         </div>
-
+        <div class="card no-bg" style="margin-top: 14px;" v-if="keywords.length > 0">
+            <span>过滤器：</span>
+            <a-tag v-for="keyword in keywords" :key="keyword" closable color="arcoblue" @close="removeKeyword(keyword)">
+                <span style="width: 1rem">#</span>
+                {{ keyword }}
+            </a-tag>
+        </div>
         <a-timeline style="margin: 14px auto 0;max-width: 730px;">
-            <a-timeline-item v-for="record of records" :key="record.record.id">
-                <div style="margin-bottom: 7px;">{{ renderLabel(record.record.id) }}</div>
+            <a-timeline-item v-for="note of notes" :key="note.record.id">
+                <div style="margin-bottom: 7px;">{{ renderLabel(note.record.id) }}</div>
                 <div class="card">
-                    <note-preview :content="record.record"/>
+                    <note-preview :content="note.record"/>
                 </div>
             </a-timeline-item>
         </a-timeline>
@@ -24,11 +30,12 @@ import {Calendar} from "v-calendar";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
-import {useNoteStore} from "@/store/NoteStore";
+import {useNoteStore, useSearchNoteEvent} from "@/store/NoteStore";
 import {useAppStore} from "@/store/AppStore";
 
 const now = new Date();
 
+const keywords = ref<Array<string>>([]);
 const calendarRef = ref<InstanceType<typeof Calendar> | null>()
 const date = ref(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0, 0));
 const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent>>());
@@ -66,13 +73,20 @@ const heatmap = computed(() => {
     return list;
 
 });
+const notes = computed(() => {
+    if (keywords.value.length === 0) {
+        return records.value;
+    }
 
+    return records.value.filter(record => keywords.value.every(keyword => record.record.content.includes(`#${keyword}`)));
+})
 
 function dayClick(args: any) {
+    keywords.value = [];
     records.value = [];
     try {
         LA.track('show_day');
-    }catch (e) {
+    } catch (e) {
         console.error(e);
     }
     useNoteStore().init().then(() => useNoteStore().oneDay(new Date(toRaw(args).date).getTime())
@@ -100,6 +114,17 @@ function wrap(count: number) {
 function renderColor(count: number): string {
     return `#${wrap(count)}`;
 }
+
+function removeKeyword(tag: string) {
+    keywords.value = keywords.value.filter(keyword => keyword !== tag);
+}
+
+useSearchNoteEvent.reset();
+useSearchNoteEvent.on(tag => {
+    if (keywords.value.indexOf(tag) === -1) {
+        keywords.value.push(tag);
+    }
+});
 
 </script>
 <style>

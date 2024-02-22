@@ -30,12 +30,9 @@ const marked = new Marked({
     highlight(code, lang) {
         let html = code;
         if (lang && hljs.getLanguage(lang)) {
-            // 得到经过highlight.js之后的html代码
             html = hljs.highlight(lang, code, true).value
         }
-        // 添加代码语言
-        // TODO: 此处有bug
-        return `<span class="name">${lang}</span><span class="copy" onclick="utools.copyText('${code}')">复制代码</span>${html}`;
+        return `<span class="name">${lang}</span><span class="copy" onclick="utools.copyText(\`${code}\`)">复制代码</span>${html}`;
     }
 }))
 
