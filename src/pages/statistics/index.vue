@@ -1,7 +1,9 @@
 <template>
     <div class="statistics">
         <div class="card">
-            <div class="label">记录统计</div>
+            <div class="label">
+                <a-month-picker/>
+            </div>
             <div class="content">
                 <a-row>
                     <a-col :span="8" style="text-align: center">
@@ -34,6 +36,7 @@ import {
     renderISpec
 } from "@/pages/statistics/func/date";
 
+// TODO：此处需要按月份处理
 const histogram = ref<HTMLElement | null>(null);
 const vChart = shallowRef<VChart>();
 const max = ref(0);
