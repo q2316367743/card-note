@@ -239,6 +239,11 @@ export const utools = {
     isWindows,
     isLinux(): boolean {
         return !isMacOS() && !isWindows();
+    },
+    copyText(text: string) {
+        navigator.clipboard.writeText(text)
+            .then(() => console.log("复制成功"))
+            .catch(e => console.error("复制失败", e));
     }
 
 }

@@ -21,6 +21,12 @@
                             </template>
                             详情
                         </a-doption>
+                        <a-doption @click="copy(record)">
+                            <template #icon>
+                                <icon-copy/>
+                            </template>
+                            复制
+                        </a-doption>
                         <a-doption @click="update(record)">
                             <template #icon>
                                 <icon-edit/>
@@ -91,6 +97,11 @@ function remove(record: DbRecord<NoteContent>) {
 
 function onUpdate(needUpdateIds: Array<number>) {
     emits('update', needUpdateIds)
+}
+
+function copy(record: DbRecord<NoteContent>) {
+    utools.copyText(record.record.content);
+    MessageUtil.success("已成功复制到剪贴板")
 }
 
 </script>

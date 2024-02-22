@@ -1,4 +1,3 @@
-
 @font-face {
     font-family: JetBrainsMono;
     src: url('@/assets/fonts/JetBrainsMono-Regular.woff2');
@@ -87,27 +86,46 @@
     word-break: break-word;
     border-radius: 2px;
     overflow-x: auto;
-    background-color: var(--color-neutral-2);
     color: #ff502c;
     font-size: 0.87em;
     padding: 0.065em 0.4em;
 }
 
-.juejin pre {
-    font-family: JetBrainsMono, Operator Mono, Consolas, Monaco, Menlo, monospace;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-    line-height: 1.75;
-}
+.juejin {
+    pre {
+        font-family: JetBrainsMono, Operator Mono, Consolas, Monaco, Menlo, monospace;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+        line-height: 1.75;
 
-.juejin pre > code {
-    min-width: 100%;
-    font-size: 12px;
-    word-break: normal;
-    display: block;
-    flex: none;
-    padding: 12px;
+        & > code {
+            font-size: 12px;
+            word-break: normal;
+            display: block;
+            flex: none;
+            padding: 12px;
+        }
+
+        .name {
+            position: absolute;
+            top: 7px;
+            right: 72px;
+            color: var(--color-text-3);
+        }
+        .copy {
+            position: absolute;
+            top: 7px;
+            right: 14px;
+            color: var(--color-text-3);
+            cursor: pointer;
+            user-select: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+    }
 }
 
 .juejin a,
