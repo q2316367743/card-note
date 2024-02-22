@@ -65,6 +65,7 @@ watch(() => route.path, value => {
     }
 });
 
+useAppStore().init();
 
 import("@/store/TagStore").then(res => res.useTagStore().init());
 import("@/store/SyncStore").then(res => res.useSyncStore().init());
