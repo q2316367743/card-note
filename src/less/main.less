@@ -25,6 +25,7 @@
         position: relative;
         height: 100%;
         width: 100%;
+        background-color: #F4F4F5;
 
         &.mobile {
             .home {
@@ -43,4 +44,12 @@
         background-color: var(--color-bg-1);
     }
 
+}
+
+body[arco-theme='dark'] {
+    .main {
+        & > .container {
+            background-color: #121212;
+        }
+    }
 }

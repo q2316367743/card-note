@@ -83,10 +83,9 @@ function renderLabel(id: number) {
     return toDateString(id, "HH:mm:ss");
 }
 
-const COLOR_LIST = ['#9BE9A8', '#40C463', '#30A14E', '#216E39'];
+const COLOR_LIST = ['9BE9A8', '40C463', '30A14E', '216E39'];
 
-function renderColor(count: number): string {
-    // 1 4 9 16
+function wrap(count: number) {
     if (count < 4) {
         return COLOR_LIST[0];
     } else if (count < 9) {
@@ -98,18 +97,11 @@ function renderColor(count: number): string {
     }
 }
 
-</script>
-<style>
-.calendar {
-    position: absolute;
-    top: 7px;
-    left: 7px;
-    right: 7px;
-    bottom: 7px;
-    overflow: auto;
-    :is(button) {
-        background-color: var(--color-fill-1);
-    }
+function renderColor(count: number): string {
+    return `#${wrap(count)}`;
 }
 
+</script>
+<style>
+@import "./index.less";
 </style>

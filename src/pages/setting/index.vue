@@ -36,6 +36,7 @@ const activeKey = ref('1');
         right: 7px;
         bottom: 7px;
         overflow: auto;
+        background-color: var(--color-bg-1);
     }
 }
 </style>

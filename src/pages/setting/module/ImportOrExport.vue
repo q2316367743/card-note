@@ -12,7 +12,7 @@
                 <a-button type="primary" @click="openImportFromMemos()" :disabled="isWeb">
                     从Memos中导入
                 </a-button>
-                <a-upload title="从卡片笔记中导入" :custom-request="customRequest">
+                <a-upload title="从卡片笔记中导入" :custom-request="customRequest" :show-file-list="false">
                     <template #upload-button>
                         <a-button type="primary">
                             从卡片笔记中导入

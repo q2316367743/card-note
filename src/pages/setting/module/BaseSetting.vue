@@ -2,11 +2,11 @@
     <div class="base-setting">
         <a-form :model="{}" layout="vertical">
             <a-form-item label="主题">
-                <a-select v-model="themeType" style="width: 200px;">
-                    <a-option :value="0">跟随系统</a-option>
-                    <a-option :value="1">白天</a-option>
-                    <a-option :value="2">黑夜</a-option>
-                </a-select>
+                <a-radio-group v-model="themeType">
+                    <a-radio :value="0">跟随系统</a-radio>
+                    <a-radio :value="1">白天</a-radio>
+                    <a-radio :value="2">黑夜</a-radio>
+                </a-radio-group>
             </a-form-item>
             <a-form-item label="笔记折叠行数">
                 <a-input-number v-model="ellipseRows" :min="-1" style="width: 150px"/>
