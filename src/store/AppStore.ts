@@ -26,9 +26,10 @@ watch(() => devTool.value, value => value ? eruda.init() : eruda.destroy());
 
 export const useAppStore = defineStore('app', () => {
 
-    let themeType =  ref(0);
+    let themeType = ref(0);
     const dark = ref(renderIsDark(themeType.value));
-    const ellipseRows = ref( 10);
+    const ellipseRows = ref(10);
+    const tagSplitChar = ref("/");
 
     watch(() => themeType.value, value => {
         setItem(DbKeyEnum.KEY_THEME, value);
@@ -43,6 +44,7 @@ export const useAppStore = defineStore('app', () => {
         // 初始化主题
         themeType.value = getItem<number>(DbKeyEnum.KEY_THEME) || 0;
         ellipseRows.value = getItem<number>(DbKeyEnum.KEY_ELLIPSE_ROWS) || 10;
+        tagSplitChar.value = getItem<string>(DbKeyEnum.KEY_TAG_SPLIT_CHAR) || "/";
     }
 
     function isDarkColors() {
@@ -53,15 +55,21 @@ export const useAppStore = defineStore('app', () => {
     function saveThemeType(res: number) {
         themeType.value = res;
     }
+
     function saveEllipseRows(res: number) {
         ellipseRows.value = res;
     }
 
+    function saveTagSplitChar(res: string) {
+        tagSplitChar.value = res;
+    }
 
-    return {dark, isMobile,
-        themeType, ellipseRows,
+
+    return {
+        dark, isMobile,
+        themeType, ellipseRows, tagSplitChar,
         init, isDarkColors,
-        saveThemeType, saveEllipseRows
+        saveThemeType, saveEllipseRows, saveTagSplitChar
     }
 
 })

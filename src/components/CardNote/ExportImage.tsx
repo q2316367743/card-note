@@ -41,7 +41,7 @@ export function createExportImage(note: NoteContent) {
                 </Select>
             </TypographyParagraph>
             <div class="card preview" id={id}>
-                <div class="title">
+                <div class="header">
                     <span class="create-time">{toDateString(note.id)}</span>
                 </div>
                 <NotePreview content={note} class="body" ellipsis={false}/>

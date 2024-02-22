@@ -16,9 +16,9 @@ const router = createRouter({
         path: '/calendar',
         component: () => import('@/pages/calendar/index.vue')
     }, {
-        name: "探索",
-        path: '/explore',
-        component: () => import('@/pages/explore/index.vue')
+        name: "记录统计",
+        path: '/statistics',
+        component: () => import('@/pages/statistics/index.vue')
     }, {
         name: "设置",
         path: '/setting',

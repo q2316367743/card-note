@@ -15,11 +15,11 @@
                     </template>
                     每日回顾
                 </a-menu-item>
-                <a-menu-item key="/explore">
+                <a-menu-item key="/statistics">
                     <template #icon>
-                        <icon-bulb/>
+                        <icon-bar-chart/>
                     </template>
-                    探索
+                    记录统计
                 </a-menu-item>
                 <a-menu-item key="/setting">
                     <template #icon>
@@ -36,7 +36,7 @@
             <a-tabs v-model:active-key="selectedKeys[0]" hide-content position="bottom" style="width: 268px;">
                 <a-tab-pane title="主页" key="/home"/>
                 <a-tab-pane title="每日回顾" key="/calendar"/>
-                <a-tab-pane title="探索" key="/explore"/>
+                <a-tab-pane title="记录统计" key="/statistics"/>
                 <a-tab-pane title="设置" key="/setting"/>
             </a-tabs>
         </a-layout-footer>
