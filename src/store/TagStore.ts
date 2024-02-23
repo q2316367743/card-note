@@ -10,8 +10,13 @@ export const TAG_REGEX = /(?<=#)[^\s。]+/g;
 export const useTagStore = defineStore("tag", () => {
     const tags = ref<Set<string>>(new Set<string>());
     let rev: string | undefined = "";
+    let isInit = false;
 
     async function init() {
+        if (isInit) {
+            return;
+        }
+        isInit = true;
         const res = await listByAsync(DbKeyEnum.LIST_TAG);
         tags.value = new Set(res.list);
         rev = res.rev;
