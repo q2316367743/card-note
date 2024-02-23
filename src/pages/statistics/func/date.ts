@@ -1,19 +1,7 @@
 import {toDateString} from "xe-utils";
 import {ISpec} from "@visactor/vchart";
 import {useAppStore} from "@/store/AppStore";
-
-export function render30Day(): Array<string> {
-    const dateArray = new Array<string>();
-    for (let i = 0; i < 30; i++) {
-        const currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() - i);
-        const year = currentDate.getFullYear();
-        const month = (currentDate.getMonth() + 1 < 10) ? '0' + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1;
-        var day = (currentDate.getDate() < 10) ? '0' + currentDate.getDate() : currentDate.getDate();
-        dateArray.push(year + '-' + month + '-' + day);
-    }
-    return dateArray;
-}
+import {TreeNodeData} from "@arco-design/web-vue";
 
 export interface DayCount {
     date: string,
@@ -71,7 +59,6 @@ export function renderISpec(values: Array<DayCount>): ISpec {
         yField: 'count',
         background: useAppStore().isDarkColors() ? '#202020' : '',
         height: 300,
-        color: '#3C7EFF'
     };
 }
 
@@ -105,37 +92,25 @@ export function getMaxConsecutiveDays(arr: Array<DayCount>) {
     return maxCount;
 }
 
-function logScale(value: number, domain: Array<number>, range: Array<number>) {
-    // 计算域和范围的对数
-    const logDomain = domain.map(x => (x !== 0 ? Math.log10(x) : 0));
-    const logRange = range.map(x => Math.log10(x));
+export function renderTagTree(tags: Array<string>, split: string): Array<TreeNodeData> {
+    const tree = new Array<TreeNodeData>();
 
-    // 计算值在域内的位置，将其映射到范围内
-    const t = (Math.log10(value) - logDomain[0]) / (logDomain[1] - logDomain[0]);
-    const newValue = (logRange[1] - logRange[0]) * t + logRange[0];
+    tags.forEach(tag => {
+        const parts = tag.split(split);
+        let currentNode = tree;
 
-    // 返回映射后的值，还原对数缩放
-    return Math.pow(10, newValue);
-}
+        parts.forEach(part => {
+            let existingNode = currentNode.find(node => node.title === part);
 
-export function renderWordCloud(tags: Array<string>): ISpec {
-    return {
-        type: 'wordCloud',
-        width: 500,
-        nameField: 'challenge_name',
-        valueField: 'sum_count',
-        seriesField: 'challenge_name',
-        wordCloudConfig: {
-            drawOutOfBound: 'clip'
-        },
-        data: {
-            name: 'baseData',
-            values: tags.map(tag => ({
-                challenge_name: tag,
-                sum_count: 0
-            }))
-        },
-        background: useAppStore().isDarkColors() ? '#202020' : '',
-        height: 200,
-    };
+            if (!existingNode) {
+                const newNode = {title: part, children: []};
+                currentNode.push(newNode);
+                currentNode = newNode.children;
+            } else {
+                currentNode = existingNode.children || [];
+            }
+        });
+    });
+
+    return tree;
 }

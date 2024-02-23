@@ -22,19 +22,21 @@
         <div class="card">
             <div class="label">最近一年一共记录 {{ total }} 条 MEMO</div>
             <div class="content">
-                <calendar-heatmap :values="dayCount" :end-date="new Date()" :dark-mode="dark" :locale="locale" :tooltip-formatter no-data-text="没有笔记"/>
+                <calendar-heatmap :values="dayCount" :end-date="new Date()" :dark-mode="dark" :locale="locale"
+                                  :tooltip-formatter="tooltipFormatter" no-data-text="没有笔记"/>
             </div>
         </div>
         <div class="card">
-            <div class="label">一共记录 {{ tags.size }} 个标签</div>
+            <div class="label">一共记录 {{ tagCount }} 个标签</div>
             <div class="content">
-                <div ref="wordCloud" style="margin-top: 16px;"></div>
+                <a-tree block-node :data="treeNodes" :virtual-list-props="{height: 200}" default-expand-all
+                        ref="treeInstance"/>
             </div>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
-import {computed, onMounted, ref, shallowRef, toRaw, watch} from "vue";
+import {computed, nextTick, onMounted, ref, shallowRef, toRaw, watch} from "vue";
 import {VChart} from "@visactor/vchart";
 import {CalendarHeatmap} from "vue3-calendar-heatmap";
 import "vue3-calendar-heatmap/dist/style.css";
@@ -45,10 +47,12 @@ import {
     getDaysInMonth, getMaxConsecutiveDays,
     renderAssignDayCount, renderDayCount,
     renderDayMap,
-    renderISpec, renderWordCloud
+    renderISpec, renderTagTree
 } from "@/pages/statistics/func/date";
 import {useTagStore} from "@/store/TagStore";
 import {toDateString} from "xe-utils";
+import {TreeInstance, TreeNodeData} from "@arco-design/web-vue";
+import {CalendarItem} from "vue3-calendar-heatmap";
 
 const now = new Date();
 const year = now.getFullYear() + '';
@@ -59,17 +63,18 @@ const locale = {
 
 const date = ref<string>(`${now.getFullYear()}-${now.getMonth() < 9 ? '0' : ''}${now.getMonth() + 1}`);
 const histogram = ref<HTMLElement | null>(null);
-const wordCloud = ref<HTMLElement | null>(null);
-const vChart1 = shallowRef<VChart>();
-const vChart2 = shallowRef<VChart>();
+const treeInstance = ref<TreeInstance | null>(null);
+const vChart = shallowRef<VChart>();
 const max = ref(0);
 const count = ref(0);
 const continuous = ref(0);
 const total = ref(0);
-const dayCount = ref(new Array<DayCount>())
+const dayCount = ref(new Array<DayCount>());
+const tagCount = ref(0);
+const treeNodes = ref(new Array<TreeNodeData>());
+
 
 const dark = computed(() => useAppStore().dark);
-const tags = computed<Set<string>>(() => useTagStore().tags);
 
 let ids = new Array<number>();
 let dayMap = new Map<string, number>();
@@ -90,6 +95,11 @@ async function init() {
     ids = useNoteStore().allIds();
     dayMap = renderDayMap(ids);
 
+    const tags = useTagStore().tags;
+
+    treeNodes.value = renderTagTree(Array.from(tags), useAppStore().tagSplitChar);
+    tagCount.value = tags.size;
+
     dayMap.forEach((value, key) => {
         let date = new Date(key);
         let diffTime = Math.abs(now.getTime() - date.getTime());
@@ -102,17 +112,12 @@ async function init() {
 
     dayCount.value = renderDayCount(dayMap);
 
-
-    if (vChart2.value) {
-        await vChart2.value.updateSpec(renderWordCloud(Array.from(tags.value)));
-    } else {
-        vChart2.value = new VChart(renderWordCloud(Array.from(tags.value)), {dom: wordCloud.value});
-    }
-    vChart2.value.renderSync();
+    nextTick(() => treeInstance.value && treeInstance.value.expandAll()).then(() => console.log('展开全部'));
 
 }
 
 async function every() {
+
 
     max.value = 0;
     count.value = 0;
@@ -134,18 +139,21 @@ async function every() {
         }
     }
 
-    if (vChart1.value) {
-        await vChart1.value.updateSpec(renderISpec(dayCounts));
+    if (vChart.value) {
+        await vChart.value.updateSpec(renderISpec(dayCounts));
     } else {
-        vChart1.value = new VChart(renderISpec(dayCounts), {dom: histogram.value});
+        if (!histogram.value) {
+            return;
+        }
+        vChart.value = new VChart(renderISpec(dayCounts), {dom: histogram.value});
     }
-    vChart1.value.renderSync();
+    vChart.value.renderSync();
 
 }
 
-function tooltipFormatter(res: {date: Date, count: number, colorIndex: number}) {
-    res = toRaw(res);
-    return `${toDateString(res.date, "yyyy-MM-dd")} 记了 ${res.count} 条笔记`
+function tooltipFormatter(item: CalendarItem) {
+    item = toRaw(item);
+    return `${toDateString(item.date, "yyyy-MM-dd")} 记了 ${item.count} 条笔记`
 
 }
 </script>
