@@ -4,7 +4,10 @@ import {del, get, getMany, keys, set, createStore, values} from 'idb-keyval';
 import Constant from "@/global/Constant";
 import axios from "axios";
 
-const store = createStore("utools", Constant.id);
+// TODO：此处需要做迁移
+// const store = createStore("utools", Constant.id);
+const dbStore = createStore(Constant.id, "db");
+const attachmentStore = createStore(Constant.id, "attachment");
 
 // 模拟utools声明
 
@@ -66,7 +69,7 @@ export const utools = {
              */
             async put(doc: DbDoc): Promise<DbReturn> {
                 try {
-                    await set(doc._id, doc, store)
+                    await set(doc._id, doc, dbStore)
                     return Promise.resolve({
                         id: doc._id,
                         rev: ''
@@ -84,14 +87,14 @@ export const utools = {
              * 获取文档
              */
             get(id: string): Promise<DbDoc | undefined> {
-                return get(id, store)
+                return get(id, dbStore)
             },
             /**
              * 删除文档
              */
             async remove(id: string): Promise<DbReturn> {
                 try {
-                    await del(id, store);
+                    await del(id, dbStore);
                     return Promise.resolve({
                         id,
                         rev: ''
@@ -111,18 +114,18 @@ export const utools = {
              */
             async allDocs(key?: string | string[]): Promise<DbDoc[]> {
                 if (key && key instanceof Array) {
-                    return getMany(key, store);
+                    return getMany(key, dbStore);
                 } else if (key && typeof key === 'string') {
-                    let itemKeys = await keys(store);
+                    let itemKeys = await keys(dbStore);
                     itemKeys = itemKeys.filter(itemKey => {
                         if (typeof itemKey === 'string') {
                             return itemKey.startsWith(key)
                         }
                         return false;
                     })
-                    return getMany(itemKeys, store);
+                    return getMany(itemKeys, dbStore);
                 }
-                return values(store);
+                return values(dbStore);
             },
 
             /**
@@ -131,16 +134,21 @@ export const utools = {
              * @param attachment 附件 buffer
              * @param type 附件类型，示例：image/png, text/plain
              */
-            postAttachment(docId: string, attachment: Uint8Array, type: string): Promise<DbReturn> {
-                return Promise.reject("Web不支持保存附件")
+            async postAttachment(docId: string, attachment: Uint8Array, type: string): Promise<DbReturn> {
+                await set(docId, attachment, attachmentStore);
+                return Promise.resolve({
+                    id: docId,
+                    rev: ''
+                });
             },
 
             /**
              * 获取附件
              * @param docId 文档ID
              */
-            getAttachment(docId: string): Promise<Uint8Array | null> {
-                return Promise.reject("Web不支持保存附件")
+            async getAttachment(docId: string): Promise<Uint8Array | null> {
+                const res = await get(docId, attachmentStore);
+                return res ? res : null;
             },
 
             /**
@@ -148,7 +156,7 @@ export const utools = {
              * @param docId 文档ID
              */
             getAttachmentType(docId: string): Promise<string | null> {
-                return Promise.reject("Web不支持保存附件")
+                return Promise.resolve(null);
             },
         }
     },
