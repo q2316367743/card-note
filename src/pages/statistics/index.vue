@@ -16,7 +16,6 @@
                         <a-statistic extra="坚持记录天数" :value="continuous"/>
                     </a-col>
                 </a-row>
-                <div ref="histogram" style="margin-top: 16px;"></div>
             </div>
         </div>
         <div class="card">
@@ -26,18 +25,12 @@
                                   :tooltip-formatter="tooltipFormatter" no-data-text="没有笔记"/>
             </div>
         </div>
-        <div class="card">
-            <div class="label">一共记录 {{ tagCount }} 个标签</div>
-            <div class="content">
-                <a-tree block-node :data="treeNodes" :virtual-list-props="{height: 200}" default-expand-all
-                        ref="treeInstance"/>
-            </div>
-        </div>
+        <statistics-explore/>
+        <statistics-tag/>
     </div>
 </template>
 <script lang="ts" setup>
-import {computed, nextTick, onMounted, ref, shallowRef, toRaw, watch} from "vue";
-import {VChart} from "@visactor/vchart";
+import {computed, onMounted, ref, toRaw, watch} from "vue";
 import {CalendarHeatmap} from "vue3-calendar-heatmap";
 import "vue3-calendar-heatmap/dist/style.css";
 import {useAppStore} from "@/store/AppStore";
@@ -47,12 +40,11 @@ import {
     getDaysInMonth, getMaxConsecutiveDays,
     renderAssignDayCount, renderDayCount,
     renderDayMap,
-    renderISpec, renderTagTree
 } from "@/pages/statistics/func/date";
-import {useTagStore} from "@/store/TagStore";
 import {toDateString} from "xe-utils";
-import {TreeInstance, TreeNodeData} from "@arco-design/web-vue";
 import {CalendarItem} from "vue3-calendar-heatmap";
+import StatisticsExplore from "@/pages/statistics/components/StatisticsExplore.vue";
+import StatisticsTag from "@/pages/statistics/components/StatisticsTag.vue";
 
 const now = new Date();
 const year = now.getFullYear() + '';
@@ -62,17 +54,11 @@ const locale = {
 };
 
 const date = ref<string>(`${now.getFullYear()}-${now.getMonth() < 9 ? '0' : ''}${now.getMonth() + 1}`);
-const histogram = ref<HTMLElement | null>(null);
-const treeInstance = ref<TreeInstance | null>(null);
-const vChart = shallowRef<VChart>();
 const max = ref(0);
 const count = ref(0);
 const continuous = ref(0);
 const total = ref(0);
 const dayCount = ref(new Array<DayCount>());
-const tagCount = ref(0);
-const treeNodes = ref(new Array<TreeNodeData>());
-
 
 const dark = computed(() => useAppStore().dark);
 
@@ -91,14 +77,8 @@ async function init() {
     total.value = 0;
 
     await useNoteStore().init();
-    await useTagStore().init();
     ids = useNoteStore().allIds();
     dayMap = renderDayMap(ids);
-
-    const tags = useTagStore().tags;
-
-    treeNodes.value = renderTagTree(Array.from(tags), useAppStore().tagSplitChar);
-    tagCount.value = tags.size;
 
     dayMap.forEach((value, key) => {
         let date = new Date(key);
@@ -111,8 +91,6 @@ async function init() {
     });
 
     dayCount.value = renderDayCount(dayMap);
-
-    nextTick(() => treeInstance.value && treeInstance.value.expandAll()).then(() => console.log('展开全部'));
 
 }
 
@@ -139,15 +117,6 @@ async function every() {
         }
     }
 
-    if (vChart.value) {
-        await vChart.value.updateSpec(renderISpec(dayCounts));
-    } else {
-        if (!histogram.value) {
-            return;
-        }
-        vChart.value = new VChart(renderISpec(dayCounts), {dom: histogram.value});
-    }
-    vChart.value.renderSync();
 
 }
 

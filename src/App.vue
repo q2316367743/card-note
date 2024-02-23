@@ -47,6 +47,7 @@ import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useAppStore} from "@/store/AppStore";
 import {useSearchNoteEvent} from "@/store/NoteStore";
+import MessageUtil from "@/utils/MessageUtil";
 
 
 const route = useRoute();
@@ -88,6 +89,9 @@ function handleTheme() {
 }
 
 window.onTagSearch = useSearchNoteEvent.emit;
+window.openMessage = (content, level) => {
+    MessageUtil[level || 'warning'](content);
+}
 
 </script>
 <style scoped>

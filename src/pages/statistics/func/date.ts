@@ -1,7 +1,7 @@
 import {toDateString} from "xe-utils";
-import {ISpec} from "@visactor/vchart";
-import {useAppStore} from "@/store/AppStore";
 import {TreeNodeData} from "@arco-design/web-vue";
+import {h} from "vue";
+import {IconTag} from "@arco-design/web-vue/es/icon";
 
 export interface DayCount {
     date: string,
@@ -46,21 +46,6 @@ export function renderAssignDayCount(days: Array<string>, dailyRecordMap: Map<st
     return items;
 }
 
-export function renderISpec(values: Array<DayCount>): ISpec {
-    return {
-        type: 'bar',
-        data: [
-            {
-                id: 'barData',
-                values: values
-            }
-        ],
-        xField: 'date',
-        yField: 'count',
-        background: useAppStore().isDarkColors() ? '#202020' : '',
-        height: 300,
-    };
-}
 
 export function getDaysInMonth(year: number, month: number): Array<string> {
     let date = new Date(year, month - 1, 1);
@@ -103,9 +88,13 @@ export function renderTagTree(tags: Array<string>, split: string): Array<TreeNod
             let existingNode = currentNode.find(node => node.title === part);
 
             if (!existingNode) {
-                const newNode = {title: part, children: []};
+                const newNode: TreeNodeData = {
+                    title: part,
+                    children: [],
+                    icon: () => h(IconTag, {})
+                };
                 currentNode.push(newNode);
-                currentNode = newNode.children;
+                currentNode = newNode.children || [];
             } else {
                 currentNode = existingNode.children || [];
             }

@@ -132,7 +132,6 @@ export const useNoteStore = defineStore('note', () => {
     }
 
     function getOne(id: number): Promise<DbRecord<NoteContent> | null> {
-        // TODO：此处需要缓存
         return getFromOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`);
     }
 
