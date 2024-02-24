@@ -126,7 +126,7 @@ export async function saveOneByAsync<T>(key: string, value: T, rev?: string, err
         }
         if (err) {
             err(new Error(res.message));
-        }else {
+        } else {
             return Promise.reject(res.message);
         }
     }
@@ -170,4 +170,35 @@ export function getStrBySession(key: string): string {
 
 export function setStrBySession(key: string, value: string) {
     sessionStorage.setItem(key, value);
+}
+
+// --------------------------------------- 附件 ---------------------------------------
+
+/**
+ * 上传文件
+ * @param docId 文档ID
+ * @param attachment 附件
+ * @return 附件ID
+ */
+export async function postAttachment(docId: string, attachment: Blob | File): Promise<string> {
+    const buffer = await attachment.arrayBuffer();
+    const res = await utools.db.promises.postAttachment(docId, new Uint8Array(buffer), "application/octet-stream");
+    if (res.error) {
+        return Promise.reject(res.message);
+    }
+    return Promise.resolve(docId);
+}
+
+/**
+ *  获取附件
+ * @param docId 附件ID
+ * @return 附件链接
+ */
+export async function getAttachment(docId: string): Promise<string> {
+    const data = await utools.db.promises.getAttachment(docId);
+    if (!data) {
+        return Promise.resolve("./logo.png")
+    }
+    const blob = new Blob([data]);
+    return Promise.resolve(window.URL.createObjectURL(blob));
 }
