@@ -46,7 +46,13 @@ import InputBox from "@/pages/home/module/InputBox.vue";
 import CardNote from "@/components/CardNote/index.vue";
 import {openNoteInfo} from "@/pages/note";
 import {useTagStore} from "@/store/TagStore";
-import {useNoteStore, useOpenNoteEvent, useResetNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
+import {
+    useNoteStore,
+    useOpenNoteEvent,
+    useRefreshNoteEvent,
+    useResetNoteEvent,
+    useSearchNoteEvent
+} from "@/store/NoteStore";
 import {BackTopInstance} from "@arco-design/web-vue/es/back-top";
 import {useAppStore} from "@/store/AppStore";
 
@@ -179,7 +185,9 @@ function keywordRemove(keyword: Keyword) {
 }
 
 useSearchNoteEvent.reset();
-useSearchNoteEvent.on(tagAdd)
+useSearchNoteEvent.on(tagAdd);
+useRefreshNoteEvent.reset();
+useRefreshNoteEvent.on(refresh);
 
 </script>
 <style lang="less">

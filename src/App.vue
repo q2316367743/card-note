@@ -46,7 +46,7 @@
 import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useAppStore} from "@/store/AppStore";
-import {useSearchNoteEvent} from "@/store/NoteStore";
+import {useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/MessageUtil";
 
 
@@ -76,7 +76,13 @@ import("@/store/AiStore").then(res => res.useAiStore().init());
 utools.onPluginEnter(action => {
     handleTheme();
     if (action.code === 'append') {
-        import("@/store/NoteStore").then(res => res.useNoteStore().init().then(() => res.useNoteStore().add(action.payload, [])));
+        import("@/store/NoteStore").then(res =>
+            res.useNoteStore().init().then(() =>
+                res.useNoteStore().add(action.payload, []).then(() => {
+                    useRefreshNoteEvent.emit();
+                    utools.hideMainWindow();
+                    utools.outPlugin();
+                })));
     }
 });
 

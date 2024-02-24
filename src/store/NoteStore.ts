@@ -59,6 +59,7 @@ async function removeRelation(id: number) {
 export const useOpenNoteEvent = useEventBus<number>('open-note');
 export const useResetNoteEvent = useEventBus<void>('reset-note');
 export const useSearchNoteEvent = useEventBus<string>('search-note');
+export const useRefreshNoteEvent = useEventBus<void>('refresh-note');
 
 export const useNoteStore = defineStore('note', () => {
     const indexes = ref(new Array<NoteIndex>());
