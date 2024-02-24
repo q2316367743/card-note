@@ -54,7 +54,7 @@ export function createExportImage(note: NoteContent) {
                         <Avatar imageUrl={user.avatar}/>
                         <span class="nickname">{user.nickname}</span>
                     </div>
-                    <span class="extra">编辑于 卡片笔记</span>
+                    <span>编辑于 卡片笔记</span>
                 </div>}
 
             </div>

@@ -12,9 +12,6 @@
                 <a-input-number v-model="ellipseRows" :min="-1" style="width: 150px"/>
                 <template #help>-1表示不折叠</template>
             </a-form-item>
-            <a-form-item label="标签分隔字符">
-                <a-input v-model="tagSplitChar" style="width: 200px"/>
-            </a-form-item>
             <a-form-item label="开发者工具">
                 <a-switch v-model="devTool"/>
             </a-form-item>
@@ -27,11 +24,9 @@ import {useAppStore, devTool} from "@/store/AppStore";
 
 const themeType = ref(useAppStore().themeType);
 const ellipseRows = ref(useAppStore().ellipseRows);
-const tagSplitChar = ref(useAppStore().tagSplitChar);
 
 watch(() => themeType.value, value => useAppStore().saveThemeType(value));
 watch(() => ellipseRows.value, value => useAppStore().saveEllipseRows(value));
-watch(() => tagSplitChar.value, value => useAppStore().saveTagSplitChar(value));
 
 </script>
 <style scoped>

@@ -33,7 +33,7 @@
             <router-view/>
         </a-layout-content>
         <a-layout-footer v-if="isMobile" class="footer">
-            <a-tabs v-model:active-key="selectedKeys[0]" hide-content position="bottom" style="width: 268px;">
+            <a-tabs v-model:active-key="selectedKeys[0]" hide-content position="bottom" style="width: 300px;">
                 <a-tab-pane title="主页" key="/home"/>
                 <a-tab-pane title="每日回顾" key="/calendar"/>
                 <a-tab-pane title="记录统计" key="/statistics"/>

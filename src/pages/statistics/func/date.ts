@@ -1,7 +1,5 @@
 import {toDateString} from "xe-utils";
 import {TreeNodeData} from "@arco-design/web-vue";
-import {h} from "vue";
-import {IconTag} from "@arco-design/web-vue/es/icon";
 
 export interface DayCount {
     date: string,
@@ -77,29 +75,9 @@ export function getMaxConsecutiveDays(arr: Array<DayCount>) {
     return maxCount;
 }
 
-export function renderTagTree(tags: Array<string>, split: string): Array<TreeNodeData> {
-    const tree = new Array<TreeNodeData>();
-
-    tags.forEach(tag => {
-        const parts = tag.split(split);
-        let currentNode = tree;
-
-        parts.forEach(part => {
-            let existingNode = currentNode.find(node => node.title === part);
-
-            if (!existingNode) {
-                const newNode: TreeNodeData = {
-                    title: part,
-                    children: [],
-                    icon: () => h(IconTag, {})
-                };
-                currentNode.push(newNode);
-                currentNode = newNode.children || [];
-            } else {
-                currentNode = existingNode.children || [];
-            }
-        });
-    });
-
-    return tree;
+export function renderTagTree(tags: Array<string>): Array<TreeNodeData> {
+    return tags.map(e => ({
+        key: e,
+        title: e
+    }));
 }
