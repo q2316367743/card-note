@@ -58,7 +58,11 @@ const BottomLeft = styled.div`
 
 export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateIds: Array<number>) => void) {
 
-    LA.track('note_info');
+    try {
+        LA.track('note_info');
+    } catch (e) {
+        console.error(e);
+    }
 
     const noteContent = ref(record.record);
 

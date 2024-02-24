@@ -1,5 +1,5 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia';
+import {createApp} from 'vue'
+import {createPinia} from 'pinia';
 import App from './App.vue'
 import router from './plugin/router';
 
@@ -14,7 +14,7 @@ import "@/less/post.less";
 import "@/less/customer.less";
 
 import "highlight.js/styles/github.css";
-import { setupCalendar } from 'v-calendar';
+import {setupCalendar} from 'v-calendar';
 
 import {loadScript} from "@/utils/DomUtil";
 import Constant from "@/global/Constant";
@@ -37,23 +37,14 @@ if (window.utools.isDev()) {
             console.log('测试事件', event);
         }
     }
-}else {
+} else {
     // 非开发环境，加载51统计
-    if (window.isUtools) {
-        // utools，本地引用
-        loadScript("./51/js-sdk-pro.min.js", {id: 'LA_COLLECT'}, () => {
-            LA.init({id: "3HYNN6TT7aizMbSW", ck: "3HYNN6TT7aizMbSW", autoTrack: true, hashMode: true});
-            // @ts-ignore
-            window.LA = LA;
-        });
-    }else {
-        // 非utools，线上引用
-        loadScript("https://sdk.51.la/js-sdk-pro.min.js", {id: 'LA_COLLECT'}, () => {
-            LA.init({id: "3HYNN6TT7aizMbSW", ck: "3HYNN6TT7aizMbSW", autoTrack: true, hashMode: true});
-            // @ts-ignore
-            window.LA = LA;
-        });
-    }
+    // utools，本地引用
+    loadScript("./51/js-sdk-pro.min.js", {id: 'LA_COLLECT'}, () => {
+        LA.init({id: "3HYNN6TT7aizMbSW", ck: "3HYNN6TT7aizMbSW", autoTrack: true, hashMode: true});
+        // @ts-ignore
+        window.LA = LA;
+    });
 }
 
 // 额外引入图标库
