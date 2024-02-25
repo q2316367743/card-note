@@ -10,7 +10,7 @@ import {
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {computed, ref} from "vue";
 import {NoteContent, NoteIndex, NoteRelation} from "@/entity/Note";
-import {useTagStore} from "@/store/TagStore";
+import {matchTagFromContent, useTagStore} from "@/store/TagStore";
 import {useSyncEvent} from "@/store/SyncStore";
 import {useEventBus} from "@vueuse/core";
 
@@ -151,13 +151,15 @@ export const useNoteStore = defineStore('note', () => {
             top: false,
             deleted: false
         }
+        const tags = matchTagFromContent(content);
         const noteContent: NoteContent = {
             ...noteIndex,
             content,
-            relationNotes: []
+            relationNotes: [],
+            tags
         }
         // 匹配标签
-        useTagStore().addFromContent(content).then(() => console.debug("标签匹配完成"));
+        useTagStore().add(tags).then(() => console.debug("标签匹配完成"));
 
         // 修改关联数据
         for (let relationNote of relationNotes) {
@@ -235,7 +237,8 @@ export const useNoteStore = defineStore('note', () => {
                 relationId: e
             } as NoteRelation));
             // 匹配标签
-            useTagStore().addFromContent(content).then(() => console.debug("标签匹配完成"));
+            const tags = matchTagFromContent(content);
+            useTagStore().add(tags).then(() => console.debug("标签匹配完成"));
             // 更新数据
             const now = new Date().getTime();
 
@@ -252,7 +255,8 @@ export const useNoteStore = defineStore('note', () => {
                     ...oldAssociated,
                     // 新的关联
                     ...newNoteRelations
-                ]
+                ],
+                tags
             };
 
             // 处理链接问题

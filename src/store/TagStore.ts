@@ -7,6 +7,11 @@ import {useSyncEvent} from "@/store/SyncStore";
 export const SOURCE_TAG_REGEX = /#[^\s。]+/g;
 export const TAG_REGEX = /(?<=#)[^\s。]+/g;
 
+export function matchTagFromContent(content: string): Array<string> {
+    let tags = content.match(TAG_REGEX);
+    return tags || [];
+}
+
 export const useTagStore = defineStore("tag", () => {
     const tags = ref<Set<string>>(new Set<string>());
     let rev: string | undefined = "";

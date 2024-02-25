@@ -35,6 +35,11 @@ export interface NoteContent extends NoteIndex {
      */
     relationNotes: Array<NoteRelation>;
 
+    /**
+     * 标签
+     */
+    tags: Array<string>;
+
 }
 
 export interface NoteRelation {

@@ -19,7 +19,7 @@
                 </div>
             </a-timeline-item>
         </a-timeline>
-        <a-back-top target-container=".calendar"/>
+        <a-back-top target-container=".calendar" :style="{bottom: isMobile ? '80px' : '48px'}"/>
     </div>
 </template>
 <script lang="ts" setup>
@@ -41,6 +41,7 @@ const date = ref(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0
 const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent>>());
 
 const dark = computed(() => useAppStore().dark);
+const isMobile = computed(() => useAppStore().isMobile);
 const heatmap = computed(() => {
     const dailyRecordMap = new Map<string, number>();
 

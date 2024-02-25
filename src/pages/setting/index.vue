@@ -2,7 +2,7 @@
     <div class="setting">
         <a-tabs hide-content v-model:active-key="activeKey">
             <a-tab-pane title="基础设置" key="1"/>
-            <a-tab-pane title="同步设置" key="2" :disabled="isWeb"/>
+            <a-tab-pane title="同步设置" key="2"/>
             <a-tab-pane title="AI设置" key="3" disabled/>
             <a-tab-pane title="导入与导出" key="4"/>
         </a-tabs>
@@ -20,10 +20,8 @@ import BaseSetting from "@/pages/setting/module/BaseSetting.vue";
 import SyncSetting from "@/pages/setting/module/SyncSetting.vue";
 import ImportOrExport from "@/pages/setting/module/ImportOrExport.vue";
 import AiSetting from "@/pages/setting/module/AiSetting.vue";
-import Constant from "@/global/Constant";
 
 const activeKey = ref('1');
-const isWeb = Constant.platform === 'web' || !window.isUtools;
 </script>
 <style scoped lang="less">
 .setting {
