@@ -42,6 +42,13 @@ export interface AiPlaceholder{
 
 }
 
+export function getDefaultAiPlaceholder(): AiPlaceholder {
+    return {
+        label: '',
+        prefix: ''
+    }
+}
+
 export function getDefaultAiSetting(): AiSetting {
     return {
         type: AiTypeEnum.NONE,
