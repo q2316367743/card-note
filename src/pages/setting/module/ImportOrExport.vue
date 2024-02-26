@@ -12,14 +12,6 @@
                 <a-button type="primary" @click="openImportFromMemos()" :disabled="isWeb">
                     从Memos中导入
                 </a-button>
-                <a-upload title="从卡片笔记中导入" :custom-request="customRequest" :show-file-list="false">
-                    <template #upload-button>
-                        <a-button type="primary">
-                            从卡片笔记中导入
-                        </a-button>
-                    </template>
-                </a-upload>
-
             </a-space>
         </a-button-group>
         <a-alert style="margin-top: 7px;">
@@ -30,9 +22,26 @@
         </a-alert>
         <a-button-group style="margin-top: 7px;">
             <a-space>
-                <a-button type="primary" disabled>
-                    导出为Markdown
+                <a-button type="primary" @click="exportAllForMd()">
+                    导出全部为Markdown文件
                 </a-button>
+            </a-space>
+        </a-button-group>
+        <a-alert style="margin-top: 7px;">
+            <template #icon>
+                <icon-export/>
+            </template>
+            备份
+        </a-alert>
+        <a-button-group style="margin-top: 7px;">
+            <a-space>
+                <a-upload title="从卡片笔记中导入" :custom-request="customRequest" :show-file-list="false">
+                    <template #upload-button>
+                        <a-button type="primary">
+                            从卡片笔记中导入
+                        </a-button>
+                    </template>
+                </a-upload>
                 <a-button type="primary" @click="openExportForCardNote()">导出为卡片笔记</a-button>
             </a-space>
         </a-button-group>
@@ -44,6 +53,8 @@ import {openExportForCardNote} from "@/components/ImportOrExport/ExportForCardNo
 import {openImportFromCardNote} from "@/components/ImportOrExport/ImportFromCardNote";
 import Constant from "@/global/Constant";
 import {RequestOption} from "@arco-design/web-vue";
+import {useNoteStore} from "@/store/NoteStore";
+import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
 
 const isWeb = Constant.platform === 'web';
 
@@ -57,6 +68,10 @@ function customRequest(option: RequestOption) {
             console.log("取消上传")
         }
     }
+}
+
+function exportAllForMd() {
+    useNoteStore().getMany(useNoteStore().allIds()).then(exportOneMarkdown);
 }
 </script>
 <style scoped>

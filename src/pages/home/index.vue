@@ -17,6 +17,7 @@
                         </span>
                         <span>{{ keyword.value }}</span>
                     </a-tag>
+                    <a-button type="text" size="mini" style="float: right" @click="exportOneFile()">导出</a-button>
                 </div>
                 <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
                            @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
@@ -54,6 +55,7 @@ import {
 } from "@/store/NoteStore";
 import {BackTopInstance} from "@arco-design/web-vue/es/back-top";
 import {useAppStore} from "@/store/AppStore";
+import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
 
 const size = useWindowSize();
 
@@ -183,6 +185,10 @@ function keywordAdd(keyword: Keyword) {
 
 function keywordRemove(keyword: Keyword) {
     keywords.value = keywords.value.filter(item => item.value !== keyword.value || item.type !== keyword.type);
+}
+
+function exportOneFile() {
+    exportOneMarkdown(records.value);
 }
 
 useSearchNoteEvent.reset();
