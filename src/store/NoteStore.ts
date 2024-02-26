@@ -13,6 +13,7 @@ import {NoteContent, NoteIndex, NoteRelation} from "@/entity/Note";
 import {matchTagFromContent, useTagStore} from "@/store/TagStore";
 import {useSyncEvent} from "@/store/SyncStore";
 import {useEventBus} from "@vueuse/core";
+import {useAiStore} from "@/store/AiStore";
 
 const HOUR = 1000 * 60 * 60;
 
@@ -57,9 +58,8 @@ async function removeRelation(id: number) {
 }
 
 export const useOpenNoteEvent = useEventBus<number>('open-note');
-export const useResetNoteEvent = useEventBus<void>('reset-note');
 export const useSearchNoteEvent = useEventBus<string>('search-note');
-export const useRefreshNoteEvent = useEventBus<void>('refresh-note');
+export const useRefreshNoteEvent = useEventBus<Array<number> | null>('refresh-note');
 
 export const useNoteStore = defineStore('note', () => {
     const indexes = ref(new Array<NoteIndex>());
@@ -143,7 +143,7 @@ export const useNoteStore = defineStore('note', () => {
         return listRecordByAsync<NoteContent>(ids.map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`));
     }
 
-    async function add(content: string, relationNotes: Array<NoteRelation>) {
+    async function add(content: string, relationNotes: Array<NoteRelation>): Promise<number> {
         const now = new Date().getTime();
         const noteIndex: NoteIndex = {
             id: now,
@@ -183,13 +183,18 @@ export const useNoteStore = defineStore('note', () => {
         indexes.value.unshift(noteIndex);
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
 
+        // AI功能
+        useAiStore().ask(noteIndex.id, content).then(() => console.log("AI功能完成"));
+
         // 自动同步事件
         useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
         useSyncEvent.emit({key: `${DbKeyEnum.NOTE_ITEM}/${now}`, type: 'put'});
         relationNotes.forEach(relation => useSyncEvent.emit({
             key: `${DbKeyEnum.NOTE_ITEM}/${relation.relationId}`,
             type: 'put'
-        }))
+        }));
+
+        return noteIndex.id;
     }
 
     async function addBatch(noteContents: Array<NoteContent>) {
@@ -284,7 +289,6 @@ export const useNoteStore = defineStore('note', () => {
 
             await saveOneByAsync<NoteContent>(`${DbKeyEnum.NOTE_ITEM}/${id}`, newNoteContent, record.rev);
 
-
             // 更新数组
             indexes.value[index] = {
                 id: id,
@@ -293,6 +297,9 @@ export const useNoteStore = defineStore('note', () => {
                 deleted: false,
             }
             rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
+
+            // AI功能
+            useAiStore().ask(id, content).then(() => console.log("AI功能完成"));
 
             // 自动同步事件
             useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});

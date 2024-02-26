@@ -4,6 +4,8 @@ import {markedHighlight} from "marked-highlight";
 import hljs from 'highlight.js';
 import {SOURCE_TAG_REGEX} from "@/store/TagStore";
 
+const TEXT_HIGHLIGHTING_REGEX = /==([^=]+)==/g;
+
 const renderer = new Renderer();
 renderer.text = function (text) {
     const tags = text.match(SOURCE_TAG_REGEX);
@@ -12,6 +14,9 @@ renderer.text = function (text) {
             const tagHTML = `<span class="card-tag" onclick="window.onTagSearch('${tag.substring(1)}')">${tag}</span>`;
             text = text.replace(tag, tagHTML);
         });
+    }
+    if (TEXT_HIGHLIGHTING_REGEX.test(text)) {
+        text = text.replaceAll(TEXT_HIGHLIGHTING_REGEX, '<span class="card-highlight">$1</span>');
     }
     return text;
 };

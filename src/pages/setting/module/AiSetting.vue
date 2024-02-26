@@ -5,6 +5,14 @@
                 <a-radio :value="AiTypeEnum.NONE">无</a-radio>
                 <a-radio :value="AiTypeEnum.XUN_FEI">讯飞</a-radio>
             </a-radio-group>
+            <template #help>
+                <span v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
+                    官网：
+                    <a-link @click="openXunFei()">
+                    讯飞星火认知大模型
+                </a-link>
+                </span>
+            </template>
         </a-form-item>
         <a-form-item label="APPID" v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
             <a-input allow-clear v-model="aiSetting.appId"/>
@@ -34,6 +42,8 @@ function save() {
         .then(() => MessageUtil.success("保存成功"))
         .catch(e => MessageUtil.error("保存失败", e));
 }
+
+const openXunFei = () => utools.shellOpenExternal("https://xinghuo.xfyun.cn/sparkapi");
 
 </script>
 <style scoped>

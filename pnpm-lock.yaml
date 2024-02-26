@@ -17,6 +17,9 @@ dependencies:
   axios:
     specifier: ^1.6.5
     version: 1.6.5
+  crypto-js:
+    specifier: ^4.2.0
+    version: 4.2.0
   eruda:
     specifier: ^3.0.1
     version: 3.0.1
@@ -76,6 +79,9 @@ devDependencies:
   '@tauri-apps/cli':
     specifier: ^1.5.10
     version: 1.5.10
+  '@types/crypto-js':
+    specifier: ^4.2.2
+    version: 4.2.2
   '@vitejs/plugin-vue':
     specifier: ^4.6.2
     version: 4.6.2(vite@4.5.2)(vue@3.4.15)
@@ -1746,6 +1752,10 @@ packages:
       '@tauri-apps/cli-win32-x64-msvc': 1.5.10
     dev: true
 
+  /@types/crypto-js@4.2.2:
+    resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==}
+    dev: true
+
   /@types/eslint-scope@3.7.7:
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
     dependencies:
@@ -2468,6 +2478,10 @@ packages:
 
   /crypt@0.0.2:
     resolution: {integrity: sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==}
+    dev: false
+
+  /crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
     dev: false
 
   /crypto-random-string@2.0.0:

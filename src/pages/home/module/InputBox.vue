@@ -9,7 +9,7 @@ import MessageUtil from "@/utils/MessageUtil";
 import TextEditor from "@/components/TextEditor/index.vue";
 import {NoteRelation} from "@/entity/Note";
 
-const emits = defineEmits(['refresh']);
+const emits = defineEmits(['add']);
 
 
 function add(content: string, relationNotes: Array<NoteRelation>) {
@@ -18,14 +18,14 @@ function add(content: string, relationNotes: Array<NoteRelation>) {
         return;
     }
     useNoteStore().add(content, relationNotes)
-        .then(() => {
+        .then(id => {
             try {
                 LA.track('create_note');
             } catch (e) {
                 console.error(e);
             }
             MessageUtil.success("新增成功");
-            emits('refresh');
+            emits('add', id);
         })
         .catch(e => MessageUtil.error("新增失败", e));
 }

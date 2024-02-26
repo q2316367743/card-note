@@ -7,7 +7,7 @@
                     <p v-if="bottom">没有更多的笔记了</p>
                     <a-spin v-else/>
                 </template>
-                <input-box @refresh="refresh()" class="card"/>
+                <input-box @add="onAdd" class="card"/>
                 <div v-if="keywords.length > 0" class="card no-bg">过滤器：
                     <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
                            @close="keywordRemove(keyword)" color="arcoblue">
@@ -50,7 +50,6 @@ import {
     useNoteStore,
     useOpenNoteEvent,
     useRefreshNoteEvent,
-    useResetNoteEvent,
     useSearchNoteEvent
 } from "@/store/NoteStore";
 import {BackTopInstance} from "@arco-design/web-vue/es/back-top";
@@ -134,8 +133,6 @@ useOpenNoteEvent.on(id => {
             }
         })
 });
-useResetNoteEvent.reset();
-useResetNoteEvent.on(refresh)
 
 function remove(index: number, needUpdateIds: Array<number>) {
     records.value.splice(index, 1);
@@ -152,6 +149,10 @@ function onUpdate(needUpdateIds: Array<number>) {
             }
         }
     }
+}
+
+function onAdd(id: number) {
+    useNoteStore().getOne(id).then(content => content && (records.value.unshift(content)))
 }
 
 function tagAdd(tag: string) {
@@ -187,7 +188,13 @@ function keywordRemove(keyword: Keyword) {
 useSearchNoteEvent.reset();
 useSearchNoteEvent.on(tagAdd);
 useRefreshNoteEvent.reset();
-useRefreshNoteEvent.on(refresh);
+useRefreshNoteEvent.on(ids => {
+    if (ids) {
+        onUpdate(ids)
+    }else {
+        refresh();
+    }
+});
 
 </script>
 <style lang="less">

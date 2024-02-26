@@ -9,7 +9,7 @@ import {IconEdit, IconExport, IconMessage} from "@arco-design/web-vue/es/icon";
 import {createExportImage} from "@/components/CardNote/ExportImage";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
 import TextEditor from '@/components/TextEditor/index.vue';
-import {useNoteStore, useResetNoteEvent} from "@/store/NoteStore";
+import {useNoteStore, useRefreshNoteEvent} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {openEditBox} from "@/pages/home/module/EditBox";
 import MessageUtil from "@/utils/MessageUtil";
@@ -121,7 +121,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                             record.rev = res.rev;
                         }
                     });
-                useResetNoteEvent.emit()
+                useRefreshNoteEvent.emit()
             })
             .catch(e => MessageUtil.error("新增失败", e));
     }
