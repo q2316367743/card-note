@@ -38,12 +38,7 @@ export class StoreServiceByWebDav implements StoreService {
     private readonly client : WebDAVClient;
 
     constructor(syncSetting : SyncSetting) {
-        let url = syncSetting.url;
-        if (Constant.platform === 'web') {
-            // TODO: 此处不可用
-            url = `./proxy.php?url=${encodeURIComponent(url)}`;
-        }
-        this.client = createClient(url, {
+        this.client = createClient(syncSetting.url, {
             username: syncSetting.username,
             password: syncSetting.password
         });
