@@ -6,6 +6,7 @@ import {fullSynchronization} from "@/components/SyncAlgorithm/IdleSync";
 import {useSyncStore} from "@/store/SyncStore";
 import MessageBoxUtil from "@/utils/MessageBoxUtil";
 import MessageUtil from "@/utils/MessageUtil";
+import {matchTagFromContent} from "@/store/TagStore";
 
 export function openImportFromMemos() {
     const config = ref({
@@ -97,7 +98,8 @@ async function _importFromMemos(url: string, token: string) {
                     noteId: e.memoId,
                     relationId: e.relatedMemoId,
                     type: e.type
-                }))
+                })),
+                tags: matchTagFromContent(item.content)
             })
         }
 
