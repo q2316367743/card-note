@@ -7,7 +7,7 @@ import {helpMePolishIt} from "@/components/AiService";
 import {useRefreshNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/MessageUtil";
 
-const HELP_ME_POLISH_IT: string = "帮我润色:"
+const HELP_ME_POLISH_IT: string = "帮我润色："
 
 export const useAiStore = defineStore("ai", () => {
     const aiSetting = ref(getDefaultAiSetting());
@@ -17,6 +17,14 @@ export const useAiStore = defineStore("ai", () => {
         aiSetting.value.appId.trim() === '' ||
         aiSetting.value.apiKey.trim() === '' ||
         aiSetting.value.apiSecret.trim() === '');
+
+    const placeholders = computed(() => ([
+        ...aiSetting.value.placeholders,
+        {
+            label: '帮我润色',
+            prefix: '帮我润色：'
+        }
+    ]))
 
     async function init() {
         const res = await getFromOneByAsync<AiSetting>(DbKeyEnum.SETTING_AI);
@@ -44,6 +52,6 @@ export const useAiStore = defineStore("ai", () => {
         }
     }
 
-    return {aiSetting, init, save, ask};
+    return {aiSetting, placeholders, init, save, ask};
 
 });
