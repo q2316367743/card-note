@@ -12,7 +12,6 @@ export async function openExportToZip() {
     console.log(items)
     for (let noteContent of items) {
         zip.file(`/${toDateString(noteContent.record.id)}.md`, noteContent.record.content);
-        console.log(noteContent)
     }
     const blob = await zip.generateAsync({type: "blob"});
     download(blob, "卡片笔记.zip", "application/zip");
