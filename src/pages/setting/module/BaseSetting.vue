@@ -1,5 +1,5 @@
 <template>
-    <div class="base-setting">
+    <a-card class="base-setting">
         <a-form :model="{}" layout="vertical">
             <a-form-item label="主题">
                 <a-radio-group v-model="themeType">
@@ -16,7 +16,7 @@
                 <a-switch v-model="devTool"/>
             </a-form-item>
         </a-form>
-    </div>
+    </a-card>
 </template>
 <script lang="ts" setup>
 import {ref, watch} from "vue";
@@ -31,6 +31,5 @@ watch(() => ellipseRows.value, value => useAppStore().saveEllipseRows(value));
 </script>
 <style scoped>
 .base-setting {
-    padding: 7px;
 }
 </style>

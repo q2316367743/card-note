@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <a-alert type="warning" style="margin-bottom: 7px;">正在装修中...</a-alert>
+    <a-card>
         <a-alert>
             <template #icon>
                 <icon-import/>
@@ -45,7 +44,7 @@
                 <a-button type="primary" @click="openExportForCardNote()">导出为卡片笔记</a-button>
             </a-space>
         </a-button-group>
-    </div>
+    </a-card>
 </template>
 <script lang="ts" setup>
 import {openImportFromMemos} from "@/components/ImportOrExport/ImportFromMemos";

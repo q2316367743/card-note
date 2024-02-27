@@ -1,5 +1,5 @@
 <template>
-    <div class="sync-setting">
+    <a-card class="sync-setting">
         <a-form :model="syncSetting" layout="vertical">
             <a-alert>
                 同步仅支持webdav，如果自己没有服务器，可以使用
@@ -40,7 +40,7 @@
                 </a-space>
             </a-form-item>
         </a-form>
-    </div>
+    </a-card>
 </template>
 <script lang="ts" setup>
 import {ref} from "vue";
@@ -81,6 +81,5 @@ function openJianGuoYun() {
 </script>
 <style scoped>
 .sync-setting {
-    padding: 7px;
 }
 </style>

@@ -10,6 +10,8 @@ enum DbKeyEnum {
 
     KEY_ELLIPSE_ROWS = '/key/ellipse-rows',
 
+    KEY_VERSION = '/key/version',
+
     SETTING_SYNC = '/setting/sync',
 
     SETTING_AI = '/setting/ai'

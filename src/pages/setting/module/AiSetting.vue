@@ -1,4 +1,7 @@
 <template>
+    <a-alert style="margin-bottom: 7px;">使用帮助：
+        <a-link @click="openHelp()">AI功能使用帮助</a-link>
+    </a-alert>
     <a-card title="基础设置">
         <template #extra>
             <a-button type="primary" @click="save()">保存</a-button>
@@ -22,14 +25,14 @@
                 <a-input allow-clear v-model="aiSetting.appId"/>
             </a-form-item>
             <a-form-item label="APISecret" v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
-                <a-input allow-clear v-model="aiSetting.apiSecret"/>
+                <a-input-password allow-clear v-model="aiSetting.apiSecret"/>
             </a-form-item>
             <a-form-item label="APIKey" v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
-                <a-input allow-clear v-model="aiSetting.apiKey"/>
+                <a-input-password allow-clear v-model="aiSetting.apiKey"/>
             </a-form-item>
         </a-form>
     </a-card>
-    <a-card title="功能设置" style="margin-top: 7px;">
+    <a-card title="功能设置" style="margin-top: 7px;" v-if="!disabled">
         <template #extra>
             <a-button type="text" @click="placeholderAdd()">
                 <template #icon>
@@ -72,6 +75,7 @@ import {Modal, Form, FormItem, Input} from "@arco-design/web-vue";
 const aiSetting = ref(clone(useAiStore().aiSetting, true));
 
 const placeholders = computed(() => useAiStore().placeholders);
+const disabled = computed(() => useAiStore().disabled);
 
 function save(msg: boolean = true) {
     useAiStore().save(aiSetting.value)
@@ -79,6 +83,7 @@ function save(msg: boolean = true) {
         .catch(e => MessageUtil.error("保存失败", e));
 }
 
+const openHelp = () => utools.shellOpenExternal("https://blog.esion.xyz/index.php/2024/02/27/卡片笔记-ai功能/");
 const openXunFei = () => utools.shellOpenExternal("https://xinghuo.xfyun.cn/sparkapi");
 
 function buildForm(placeholder: Ref<AiPlaceholder>) {
