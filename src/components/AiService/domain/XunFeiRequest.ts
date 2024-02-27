@@ -1,4 +1,3 @@
-import {generateUUID} from "@/utils/BrowserUtil";
 import Constant from "@/global/Constant";
 
 /**
@@ -85,7 +84,7 @@ interface Header {
     uid: string;
 }
 
-export function buildXunFeiRequest(appId: string, content: string): XunFeiRequest {
+export function buildXunFeiRequest(appId: string, questions: Array<string>): XunFeiRequest {
     return {
         "header": {
             "app_id": appId,
@@ -100,9 +99,7 @@ export function buildXunFeiRequest(appId: string, content: string): XunFeiReques
         },
         "payload": {
             "message": {
-                "text": [
-                    {"role": "user", "content": content},
-                ]
+                "text": questions.map(e => ({"role": "user", "content": e}))
             }
         }
     }

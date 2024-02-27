@@ -1,4 +1,5 @@
 import {toRaw} from "vue";
+import {clone} from "xe-utils";
 
 // 对象
 
@@ -122,7 +123,9 @@ export async function saveOneByAsync<T>(key: string, value: T, rev?: string, err
         if (res.message === "Document update conflict") {
             // 查询后更新
             const res = await utools.db.promises.get(key);
-            return await saveOneByAsync(key, value, res ? res._rev : undefined);
+            return saveOneByAsync(key, value, res ? res._rev : undefined);
+        } else if (res.message === 'DataCloneError: Failed to execute \'put\' on \'IDBObjectStore\': #<Object> could not be cloned.') {
+            return saveOneByAsync(key, clone(value, true), rev, err);
         }
         if (err) {
             err(new Error(res.message));

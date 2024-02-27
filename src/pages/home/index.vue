@@ -17,12 +17,23 @@
                         </span>
                         <span>{{ keyword.value }}</span>
                     </a-tag>
-                    <a-button type="text" size="mini" style="float: right" @click="exportOneFile()">导出</a-button>
+                    <a-dropdown type="text" size="mini" position="br">
+                        <a-button type="text" style="float: right">
+                            <template #icon>
+                                <icon-more-vertical/>
+                            </template>
+                        </a-button>
+                        <template #content>
+                            <a-doption @click="exportOneFile()">导出</a-doption>
+                            <a-doption :disabled="disabledAi" @click="askMultiNoteToAiWarp()">询问AI</a-doption>
+                        </template>
+                    </a-dropdown>
                 </div>
                 <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
                            @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
             </a-list>
-            <a-back-top target-container=".arco-list" :style="{bottom: isMobile ? '100px' : '60px'}" ref="backTopInstance"/>
+            <a-back-top target-container=".arco-list" :style="{bottom: isMobile ? '100px' : '60px'}"
+                        ref="backTopInstance"/>
         </a-layout-content>
         <a-layout-footer class="footer">
             <div class="title">
@@ -56,6 +67,8 @@ import {
 import {BackTopInstance} from "@arco-design/web-vue/es/back-top";
 import {useAppStore} from "@/store/AppStore";
 import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
+import {useAiStore} from "@/store/AiStore";
+import {askMultiNoteToAi} from "@/pages/home/module/AskMultiNoteToAi";
 
 const size = useWindowSize();
 
@@ -81,6 +94,7 @@ const allIds = computed(() => useNoteStore().allIds())
 const noteLength = computed(() => allIds.value.length);
 const minDay = computed(() => Math.min(...allIds.value, new Date().getTime()));
 const day = computed(() => Math.floor(((new Date().getTime()) - minDay.value) / (24 * 60 * 60 * 1000)));
+const disabledAi = computed(() => useAiStore().disabled);
 
 watch(() => keywords.value, value => value.length === 0 ? refresh() : search(), {deep: true});
 
@@ -105,10 +119,15 @@ function fetchData() {
 }
 
 function refresh() {
-    offset = 0;
-    records.value = new Array<DbRecord<NoteContent>>();
-    bottom.value = false;
-    onPage();
+    if (keywords.value.length === 0) {
+        keyword.value = '';
+        offset = 0;
+        records.value = new Array<DbRecord<NoteContent>>();
+        bottom.value = false;
+        onPage();
+    }else {
+        keywords.value = [];
+    }
 }
 
 function search() {
@@ -191,13 +210,17 @@ function exportOneFile() {
     exportOneMarkdown(records.value);
 }
 
+function askMultiNoteToAiWarp() {
+    askMultiNoteToAi(records.value);
+}
+
 useSearchNoteEvent.reset();
 useSearchNoteEvent.on(tagAdd);
 useRefreshNoteEvent.reset();
 useRefreshNoteEvent.on(ids => {
     if (ids) {
         onUpdate(ids)
-    }else {
+    } else {
         refresh();
     }
 });

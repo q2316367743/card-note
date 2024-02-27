@@ -38,20 +38,23 @@
             </a-button>
         </template>
         <a-list :bordered="false">
-            <a-list-item v-for="placeholder in aiSetting.placeholders" :key="placeholder.label">>
+            <a-list-item v-for="(placeholder, index) in placeholders" :key="placeholder.label">
                 <a-list-item-meta :title="placeholder.label" :description="placeholder.prefix"/>
                 <template #actions>
-                    <a-button-group type="text">
-                        <a-button>
+                    <a-button-group type="text" :disabled="index === 0">
+                        <a-button @click="placeholderEdit(placeholder, index)">
                             <template #icon>
                                 <icon-edit/>
                             </template>
                         </a-button>
-                        <a-button status="danger">
-                            <template #icon>
-                                <icon-delete/>
-                            </template>
-                        </a-button>
+                        <a-popconfirm @ok="placeholderRemove(index)" ok-text="删除" content="是否删除此功能"
+                                      :ok-button-props="{status:'danger'}">
+                            <a-button status="danger">
+                                <template #icon>
+                                    <icon-delete/>
+                                </template>
+                            </a-button>
+                        </a-popconfirm>
                     </a-button-group>
                 </template>
             </a-list-item>
@@ -59,14 +62,16 @@
     </a-card>
 </template>
 <script lang="tsx" setup>
-import {ref} from "vue";
+import {computed, Ref, ref} from "vue";
 import {clone} from "xe-utils";
-import {AiTypeEnum, getDefaultAiPlaceholder} from "@/entity/AiSetting";
+import {AiPlaceholder, AiTypeEnum, getDefaultAiPlaceholder} from "@/entity/AiSetting";
 import MessageUtil from "@/utils/MessageUtil";
 import {useAiStore} from "@/store/AiStore";
 import {Modal, Form, FormItem, Input} from "@arco-design/web-vue";
 
 const aiSetting = ref(clone(useAiStore().aiSetting, true));
+
+const placeholders = computed(() => useAiStore().placeholders);
 
 function save(msg: boolean = true) {
     useAiStore().save(aiSetting.value)
@@ -76,20 +81,59 @@ function save(msg: boolean = true) {
 
 const openXunFei = () => utools.shellOpenExternal("https://xinghuo.xfyun.cn/sparkapi");
 
+function buildForm(placeholder: Ref<AiPlaceholder>) {
+    return () => <Form model={placeholder.value} layout={`vertical`}>
+        <FormItem label="标签">
+            <Input v-model={placeholder.value.label}/>
+        </FormItem>
+        <FormItem label="前缀">
+            <Input v-model={placeholder.value.prefix}/>
+        </FormItem>
+    </Form>;
+}
+
 function placeholderAdd() {
     const placeholder = ref(getDefaultAiPlaceholder());
     Modal.open({
         title: "新增占位符",
         okText: '新增',
-        content: () => <Form model={placeholder.value} layout={`vertical`}>
-            <FormItem label="标签">
-                <Input v-model={placeholder.value.label}/>
-            </FormItem>
-            <FormItem label="前缀">
-                <Input v-model={placeholder.value.prefix}/>
-            </FormItem>
-        </Form>
+        content: buildForm(placeholder),
+        onBeforeOk: async () => {
+            try {
+                await useAiStore().addPlaceholder(placeholder.value);
+                MessageUtil.success("新增成功");
+                return true;
+            } catch (e) {
+                MessageUtil.error("新增失败", e);
+                return false;
+            }
+        }
     })
+}
+
+function placeholderEdit(res: AiPlaceholder, index: number) {
+    const placeholder = ref(clone(res, true));
+    Modal.open({
+        title: "修改占位符",
+        okText: '修改',
+        content: buildForm(placeholder),
+        onBeforeOk: async () => {
+            try {
+                await useAiStore().updatePlaceholder(index, placeholder.value);
+                MessageUtil.success("修改成功");
+                return true;
+            } catch (e) {
+                MessageUtil.error("修改失败", e);
+                return false;
+            }
+        }
+    })
+}
+
+function placeholderRemove(index: number) {
+    useAiStore().removePlaceholder(index)
+        .then(() => MessageUtil.success("删除成功"))
+        .catch(e => MessageUtil.error("删除失败", e));
 }
 
 </script>

@@ -22,6 +22,18 @@
                             </template>
                         </a-button>
                     </Tooltip>
+                    <Dropdown>
+                        <a-button :disabled="disabledAi">
+                            <template #icon>
+                                <IconApps :size="16"/>
+                            </template>
+                        </a-button>
+                        <template #content>
+                            <Doption v-for="placeholder in placeholders" @click="addPlaceholder(placeholder.prefix)">
+                                {{ placeholder.label }}
+                            </Doption>
+                        </template>
+                    </Dropdown>
                     <Tooltip content="待办">
                         <a-button @click="addCheckbox()">
                             <template #icon>
@@ -78,15 +90,18 @@ import {
     Tag as ATag,
     Modal as AModal,
     InputGroup as AInputGroup,
-    Input as AInput
+    Input as AInput,
+    Dropdown,
+    Doption
 } from "@arco-design/web-vue";
-import {IconLink, IconCheckSquare, IconCode, IconCheck, IconNav} from "@arco-design/web-vue/es/icon";
+import {IconLink, IconCheckSquare, IconCode, IconCheck, IconNav, IconApps} from "@arco-design/web-vue/es/icon";
 import {getCursorPosition} from "@/utils/DomUtil";
 import {useTagStore} from "@/store/TagStore";
 import {NoteContent, NoteRelation} from "@/entity/Note";
 import {renderContent} from "@/utils/BrowserUtil";
 import {isNumber} from "xe-utils";
 import {useNoteStore} from "@/store/NoteStore";
+import {useAiStore} from "@/store/AiStore";
 
 const props = defineProps({
     content: String,
@@ -121,6 +136,8 @@ const relationTempNotes = ref<Array<NoteContent>>([]);
 const loading = ref(false);
 
 const tags = computed(() => Array.from(useTagStore().tags));
+const placeholders = computed(() => useAiStore().placeholders);
+const disabledAi = computed(() => useAiStore().disabled);
 
 function addCheckbox() {
     if (!textareaRef.value) {
@@ -237,6 +254,17 @@ function add() {
     } as NoteRelation)));
     content.value = "";
     relationNotes.value = [];
+}
+
+function addPlaceholder(prefix: string) {
+    // 先判断是否存在其他的前缀
+    for (let placeholder of placeholders.value) {
+        if (content.value.startsWith(placeholder.prefix)) {
+            content.value = content.value.substring(placeholder.prefix.length);
+            break;
+        }
+    }
+    content.value = prefix + content.value;
 }
 
 

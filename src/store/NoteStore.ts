@@ -143,7 +143,7 @@ export const useNoteStore = defineStore('note', () => {
         return listRecordByAsync<NoteContent>(ids.map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`));
     }
 
-    async function add(content: string, relationNotes: Array<NoteRelation>): Promise<number> {
+    async function add(content: string, relationNotes: Array<NoteRelation>, ai: boolean = true): Promise<number> {
         const now = new Date().getTime();
         const noteIndex: NoteIndex = {
             id: now,
@@ -183,8 +183,10 @@ export const useNoteStore = defineStore('note', () => {
         indexes.value.unshift(noteIndex);
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
 
-        // AI功能
-        useAiStore().ask(noteIndex.id, content).then(() => console.log("AI功能完成"));
+        if (ai) {
+            // AI功能
+            useAiStore().ask(noteIndex.id, content);
+        }
 
         // 自动同步事件
         useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
@@ -299,7 +301,7 @@ export const useNoteStore = defineStore('note', () => {
             rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
 
             // AI功能
-            useAiStore().ask(id, content).then(() => console.log("AI功能完成"));
+            useAiStore().ask(id, content);
 
             // 自动同步事件
             useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});

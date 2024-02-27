@@ -6,20 +6,20 @@ import {XunFeiResponse} from "@/components/AiService/domain/XunFeiResponse";
 /**
  * 向讯飞AI发送请求
  *
- * @param question 问题
+ * @param questions 问题
  * @param setting 设置
  */
-export function askToXunFei(question: string, setting: AiSetting): Promise<string> {
+export function askToXunFei(questions: Array<string>, setting: AiSetting): Promise<string> {
     const url = buildUrl(setting.apiKey, setting.apiSecret);
     return new Promise<string>((resolve, reject) => {
         const socket = new WebSocket(url);
 
         const lines = new Array<Array<string>>()
 
-        socket.onopen = function (event) {
+        socket.onopen = function () {
             console.log('WebSocket 连接已建立，开始发送请求。');
             // 发送请求
-            socket.send(JSON.stringify(buildXunFeiRequest(setting.appId, question)));
+            socket.send(JSON.stringify(buildXunFeiRequest(setting.appId, questions)));
         };
 
         socket.onmessage = function (event: MessageEvent<string>) {
@@ -42,3 +42,5 @@ export function askToXunFei(question: string, setting: AiSetting): Promise<strin
         }
     })
 }
+
+

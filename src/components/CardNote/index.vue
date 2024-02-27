@@ -11,7 +11,7 @@
                 <a-dropdown position="br">
                     <a-button type="text">
                         <template #icon>
-                            <icon-more-vertical/>
+                            <icon-more/>
                         </template>
                     </a-button>
                     <template #content>
