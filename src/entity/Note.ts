@@ -59,7 +59,9 @@ export interface NoteRelation {
      * COMMENT：评论
      * REFERENCE：引用
      */
-    type: 'COMMENT' | 'REFERENCE'
+    type: NoteRelationType;
 
 }
+
+export type NoteRelationType = 'COMMENT' | 'REFERENCE';
 

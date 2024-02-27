@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Mention v-model="content" :data="options" type="textarea" :placeholder="ai?'输入@向AI助手提问，例如：@AI助手 总结一下' : '任何想法...'"
+        <Mention v-model="content" :data="options" type="textarea" :placeholder="placeholder"
                  :prefix="['#', '@']" allow-clear
                  :auto-size="{minRows: 2, maxRows: 8}" ref="textareaRef" split=" " @search="onSearch"/>
         <a-typography-paragraph v-if="relationNotes.length > 0">
@@ -144,6 +144,13 @@ const loading = ref(false);
 const options = ref<Array<string>>([]);
 const placeholders = computed(() => useAiStore().placeholders);
 const disabledAi = computed(() => useAiStore().disabled);
+
+const placeholder = computed(() => {
+    if (props.ai && !disabledAi.value) {
+        return '输入@向AI助手提问，例如：@AI助手 总结一下';
+    }
+    return '任何想法...';
+})
 
 function addCheckbox() {
     if (!textareaRef.value) {

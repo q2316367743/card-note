@@ -75,7 +75,7 @@ export async function saveListByAsync<T>(key: string, records: Array<T>, rev?: s
 export async function listRecordByAsync<T>(key?: string | string[]): Promise<Array<DbRecord<T>>> {
     // @ts-ignore
     const items = await utools.db.promises.allDocs(key);
-    return items.map(item => ({
+    return items.filter(e => !!e).map(item => ({
         record: item.value,
         rev: item._rev
     }));
