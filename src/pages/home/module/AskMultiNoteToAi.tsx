@@ -15,7 +15,7 @@ export function askMultiNoteToAi(records: Array<DbRecord<NoteContent>>) {
         draggable: true,
         okText:"询问",
         content: () => <Textarea v-model={question.value} autoSize={{minRows: 2, maxRows: 8}}
-                                 placeholder="请输入你的问题，例如：帮我总结一下"/>,
+                                 placeholder="请输入你的问题，例如：帮我将上面的内容总结一下"/>,
         onOk() {
             useAiStore().askMulti(question.value, records);
         }
