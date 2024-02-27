@@ -24,6 +24,9 @@
                 <a-button type="primary" @click="exportAllForMd()">
                     导出全部为Markdown文件
                 </a-button>
+                <a-button type="primary" @click="openExportToZip()">
+                    导出全部为zip文件
+                </a-button>
             </a-space>
         </a-button-group>
         <a-alert style="margin-top: 7px;">
@@ -54,6 +57,7 @@ import Constant from "@/global/Constant";
 import {RequestOption} from "@arco-design/web-vue";
 import {useNoteStore} from "@/store/NoteStore";
 import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
+import {openExportToZip} from "@/components/ImportOrExport/ExportToZip";
 
 const isWeb = Constant.platform === 'web';
 
