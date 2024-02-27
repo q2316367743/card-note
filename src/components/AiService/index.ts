@@ -3,6 +3,7 @@ import {askToXunFei} from "@/components/AiService/ask/AskToXunFei";
 import {useNoteStore} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
+import {AI_ASSISTANT} from "@/store/AiStore";
 
 async function ask(question: string, setting: AiSetting) {
     return askMulti([question], setting);
@@ -40,4 +41,19 @@ export async function askMultiToAi(question: string, records: Array<DbRecord<Not
         relationId: e.record.id,
         type: 'REFERENCE'
     })), false);
+}
+
+/**
+ * 向AI助手提问评论
+ * @param source 源卡片内容
+ * @param current 当前卡片内容
+ * @param setting AI设置
+ */
+export async function askCommentToAi(source: string, current: DbRecord<NoteContent>, setting: AiSetting) {
+    // 去除@AI助手的内容
+    const question = current.record.content.replaceAll(AI_ASSISTANT, "");
+    const res = await askMulti([source, question], setting);
+    const newContent = current.record.content + "\n\n==回答：==\n" + res;
+    // 更新卡片
+    await useNoteStore().update(current, newContent, current.record.relationNotes);
 }

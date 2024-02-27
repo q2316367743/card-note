@@ -1,5 +1,5 @@
 import styled from 'vue3-styled-components';
-import {computed, createApp, ref, watch} from "vue";
+import {computed, createApp, nextTick, ref, watch} from "vue";
 import {toDateString} from "xe-utils";
 import {Avatar, Button, ButtonGroup, Card, Empty, List, ListItem, PageHeader} from "@arco-design/web-vue";
 import {useAppStore} from "@/store/AppStore";
@@ -13,6 +13,9 @@ import {useNoteStore, useRefreshNoteEvent} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {openEditBox} from "@/pages/home/module/EditBox";
 import MessageUtil from "@/utils/MessageUtil";
+import {useAiStore} from "@/store/AiStore";
+import html2canvas from "html2canvas";
+import {downloadByUrl} from "@/utils/BrowserUtil";
 
 const NoteInfo = styled.div`
     position: fixed;
@@ -65,8 +68,9 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
     }
 
     const noteContent = ref(record.record);
-
     const commentNotes = ref<Array<NoteContent>>(new Array<NoteContent>());
+    const sharing = ref(false);
+    const shareElement = ref<any>();
 
     const divElement = document.createElement("div");
     const user = utools.getUser();
@@ -110,7 +114,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             }
         ];
         useNoteStore().add(content, relationNotes)
-            .then(() => {
+            .then(content => {
                 MessageUtil.success("新增成功");
                 // 更新自身数据
                 useNoteStore().getOne(noteContent.value.id)
@@ -121,7 +125,23 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                             record.rev = res.rev;
                         }
                     });
-                useRefreshNoteEvent.emit()
+                useRefreshNoteEvent.emit();
+                useAiStore().askByComment(noteContent.value.content, {record: content})
+                    .then(() => {
+                        // 更新这个评论
+                        for (let i = 0; i < commentNotes.value.length; i++) {
+                            let commentNote = commentNotes.value[i];
+                            if (commentNote.id === content.id) {
+                                // 重新获取
+                                useNoteStore().getOne(commentNote.id)
+                                    .then(res => {
+                                        if (res) {
+                                            commentNotes.value[i] = res.record;
+                                        }
+                                    })
+                            }
+                        }
+                    })
             })
             .catch(e => MessageUtil.error("新增失败", e));
     }
@@ -138,13 +158,36 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             .then(items => commentNotes.value = items.map(item => item.record));
     }, {immediate: true})
 
+    function share() {
+        // html2canvas()
+        sharing.value = true;
+        nextTick(() => {
+            if (!shareElement.value) {
+                return;
+            }
+            html2canvas(shareElement.value.$el as HTMLElement, {
+                backgroundColor: useAppStore().isDarkColors() ? '#2A2A2B' : '#ffffff',
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                downloadByUrl(canvas.toDataURL(), "分享详情.png");
+                sharing.value = false;
+            })
+        })
+    }
 
     const app = createApp({
         render: () => <NoteInfo>
-            <PageHeader title="卡片笔记" subtitle={toDateString(noteContent.value.id)} onBack={close}/>
+            <PageHeader title="卡片笔记" subtitle={toDateString(noteContent.value.id)} onBack={close}>
+                {{
+                    extra: () => <Button type={'text'} onClick={share}>
+                        分享
+                    </Button>
+                }}
+            </PageHeader>
             <Container>
-                <Content>
-                    <Card class="card no-padding">
+                <Content ref={shareElement}>
+                    <Card class="card no-padding" style={{margin: '0'}}>
                         <NotePreview content={noteContent.value} ellipsis={false}/>
                     </Card>
                     <Card style="margin-top: 7px;">
@@ -190,7 +233,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                                 empty: () => <Empty>暂无评论</Empty>
                             }}
                         </List>
-                        <TextEditor noteId={noteContent.value.id} onSave={onSave}/>
+                        {sharing.value ? <></> : <TextEditor noteId={noteContent.value.id} onSave={onSave} ai/>}
                     </Card>
                 </Content>
             </Container>

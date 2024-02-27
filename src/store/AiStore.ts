@@ -3,10 +3,12 @@ import {computed, ref, toRaw} from "vue";
 import {AiPlaceholder, AiSetting, AiTypeEnum, getDefaultAiSetting} from "@/entity/AiSetting";
 import {DbRecord, getFromOneByAsync, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
-import {askMultiToAi, askToAi} from "@/components/AiService";
+import {askCommentToAi, askMultiToAi, askToAi} from "@/components/AiService";
 import {useRefreshNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/MessageUtil";
 import {NoteContent} from "@/entity/Note";
+
+export const AI_ASSISTANT: string = "@AI助手";
 
 export const useAiStore = defineStore("ai", () => {
     const aiSetting = ref(getDefaultAiSetting());
@@ -69,6 +71,21 @@ export const useAiStore = defineStore("ai", () => {
 
     }
 
+    async function askByComment(source: string, current: DbRecord<NoteContent>) {
+        if (disabled.value) {
+            return;
+        }
+        if (current.record.content.indexOf(AI_ASSISTANT) == -1) {
+            return;
+        }
+        MessageUtil.info("正在询问AI...");
+        await askCommentToAi(source, current, aiSetting.value);
+        MessageUtil.success(`AI处理完成`);
+        // 此处是更新
+        useRefreshNoteEvent.emit([current.record.id]);
+
+    }
+
     async function addPlaceholder(placeholder: AiPlaceholder) {
         if (placeholders.value.some(e => e.prefix === placeholder.prefix)) {
             return Promise.reject("存在重复的占位符");
@@ -95,9 +112,11 @@ export const useAiStore = defineStore("ai", () => {
         return save(aiSetting.value);
     }
 
-    return {aiSetting, placeholders, disabled,
+    return {
+        aiSetting, placeholders, disabled,
         init, save,
-        ask, askMulti,
-        addPlaceholder, updatePlaceholder, removePlaceholder};
+        ask, askMulti, askByComment,
+        addPlaceholder, updatePlaceholder, removePlaceholder
+    };
 
 });

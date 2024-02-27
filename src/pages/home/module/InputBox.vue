@@ -18,14 +18,14 @@ function add(content: string, relationNotes: Array<NoteRelation>) {
         return;
     }
     useNoteStore().add(content, relationNotes)
-        .then(id => {
+        .then(content => {
             try {
                 LA.track('create_note');
             } catch (e) {
                 console.error(e);
             }
             MessageUtil.success("新增成功");
-            emits('add', id);
+            emits('add', content.id);
         })
         .catch(e => MessageUtil.error("新增失败", e));
 }

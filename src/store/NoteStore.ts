@@ -143,7 +143,7 @@ export const useNoteStore = defineStore('note', () => {
         return listRecordByAsync<NoteContent>(ids.map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`));
     }
 
-    async function add(content: string, relationNotes: Array<NoteRelation>, ai: boolean = true): Promise<number> {
+    async function add(content: string, relationNotes: Array<NoteRelation>, ai: boolean = true): Promise<NoteContent> {
         const now = new Date().getTime();
         const noteIndex: NoteIndex = {
             id: now,
@@ -196,7 +196,7 @@ export const useNoteStore = defineStore('note', () => {
             type: 'put'
         }));
 
-        return noteIndex.id;
+        return noteContent;
     }
 
     async function addBatch(noteContents: Array<NoteContent>) {

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Mention v-model="content" :data="tags" type="textarea" placeholder="任何想法..." prefix="#" allow-clear
-                 :auto-size="{minRows: 2, maxRows: 8}" ref="textareaRef" split=" "/>
+        <Mention v-model="content" :data="options" type="textarea" placeholder="任何想法..." :prefix="['#', '@']" allow-clear
+                 :auto-size="{minRows: 2, maxRows: 8}" ref="textareaRef" split=" " @search="onSearch"/>
         <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="(relationNote, index) in relationNotes" style="margin-top: 4px;" :key="relationNote.id">
                 <a-tag color="arcoblue" bordered closable @close="removeRelationNote(index)">
@@ -114,6 +114,11 @@ const props = defineProps({
         type: Number,
         required: false,
         default: 0
+    },
+    ai: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 });
 
@@ -135,7 +140,7 @@ const relationId = ref("");
 const relationTempNotes = ref<Array<NoteContent>>([]);
 const loading = ref(false);
 
-const tags = computed(() => Array.from(useTagStore().tags));
+const options = ref<Array<string>>([]);
 const placeholders = computed(() => useAiStore().placeholders);
 const disabledAi = computed(() => useAiStore().disabled);
 
@@ -265,6 +270,26 @@ function addPlaceholder(prefix: string) {
         }
     }
     content.value = prefix + content.value;
+}
+
+const tags = computed(() => Array.from(useTagStore().tags));
+
+function onSearch(value: string, prefix: string) {
+    if (prefix === '#') {
+        options.value = tags.value;
+    }else if (prefix === '@') {
+        if (useAiStore().disabled) {
+            options.value = [];
+        }else {
+            if (props.ai) {
+                options.value = ['AI助手'];
+            }else {
+                options.value = [];
+            }
+        }
+    }else {
+        options.value = [];
+    }
 }
 
 
