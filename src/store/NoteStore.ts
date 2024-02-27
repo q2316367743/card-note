@@ -36,7 +36,7 @@ async function removeAssociated(relationId: number) {
 
     if (relationNoteContent) {
 
-        relationNoteContent.record.relationNotes = relationNoteContent.record.relationNotes.filter(e => e.relationId === relationId);
+        relationNoteContent.record.relationNotes = relationNoteContent.record.relationNotes.filter(e => e.relationId !== relationId);
         // 此处需要修改旧的
         await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${relationNoteContent.record.id}`, relationNoteContent.record, relationNoteContent.rev);
 

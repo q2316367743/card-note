@@ -25,7 +25,7 @@ function add(content: string, relationNotes: Array<NoteRelation>) {
                 console.error(e);
             }
             MessageUtil.success("新增成功");
-            emits('add', content.id);
+            emits('add', content.id, content.relationNotes.map(e => e.relationId));
         })
         .catch(e => MessageUtil.error("新增失败", e));
 }

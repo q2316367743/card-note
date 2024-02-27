@@ -172,8 +172,11 @@ function onUpdate(needUpdateIds: Array<number>) {
     }
 }
 
-function onAdd(id: number) {
-    useNoteStore().getOne(id).then(content => content && (records.value.unshift(content)))
+function onAdd(id: number, ids: Array<number>) {
+    useNoteStore().getOne(id).then(content => {
+        content && (records.value.unshift(content));
+        onUpdate(ids);
+    });
 }
 
 function tagAdd(tag: string) {

@@ -1,6 +1,7 @@
 <template>
     <div>
-        <Mention v-model="content" :data="options" type="textarea" placeholder="任何想法..." :prefix="['#', '@']" allow-clear
+        <Mention v-model="content" :data="options" type="textarea" :placeholder="ai?'输入@向AI助手提问，例如：@AI助手 总结一下' : '任何想法...'"
+                 :prefix="['#', '@']" allow-clear
                  :auto-size="{minRows: 2, maxRows: 8}" ref="textareaRef" split=" " @search="onSearch"/>
         <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="(relationNote, index) in relationNotes" style="margin-top: 4px;" :key="relationNote.id">
@@ -277,17 +278,17 @@ const tags = computed(() => Array.from(useTagStore().tags));
 function onSearch(value: string, prefix: string) {
     if (prefix === '#') {
         options.value = tags.value;
-    }else if (prefix === '@') {
+    } else if (prefix === '@') {
         if (useAiStore().disabled) {
             options.value = [];
-        }else {
+        } else {
             if (props.ai) {
                 options.value = ['AI助手'];
-            }else {
+            } else {
                 options.value = [];
             }
         }
-    }else {
+    } else {
         options.value = [];
     }
 }
