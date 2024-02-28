@@ -54,6 +54,19 @@
                 <a-button type="primary" @click="openExportForCardNote()">导出为卡片笔记</a-button>
             </a-space>
         </a-button-group>
+        <a-alert style="margin-top: 7px;">
+            <template #icon>
+                <icon-more/>
+            </template>
+            更多
+        </a-alert>
+        <a-button-group style="margin-top: 7px;">
+            <a-space>
+                <a-tooltip content="如果出现导入数据重复的问题，请先删除重复数据，再清除缓存，之后再重新导入即可">
+                    <a-button type="primary" @click="openClearCache()">清理缓存</a-button>
+                </a-tooltip>
+            </a-space>
+        </a-button-group>
     </a-card>
 </template>
 <script lang="ts" setup>
@@ -66,6 +79,7 @@ import {useNoteStore} from "@/store/NoteStore";
 import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
 import {openExportToZip} from "@/components/ImportOrExport/ExportToZip";
 import {openImportFromKb} from "@/components/ImportOrExport/ImportFromKb";
+import {openClearCache} from "@/components/ImportOrExport/ClearCache";
 
 const isWeb = Constant.platform === 'web';
 

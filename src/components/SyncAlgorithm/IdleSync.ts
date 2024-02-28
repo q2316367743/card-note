@@ -121,9 +121,9 @@ async function fullSynchronizationByNote(client: StoreService) {
                 // 本地有的，但是远程没有的，需要新增到远程
                 let content = await getFromOneByAsync(key);
                 content && await client.set(key, JSON.stringify(content.record));
+                // 新增到本地索引中
+                newNoteIndexes.push(localNoteIndex);
             }
-            // 新增到本地索引中
-            newNoteIndexes.push(localNoteIndex);
         } else if (originNoteIndex) {
             // 本地没有，但是远程有的，需要新增到本地
             const key = `${DbKeyEnum.NOTE_ITEM}/${originNoteIndex.id}`;
@@ -132,9 +132,9 @@ async function fullSynchronizationByNote(client: StoreService) {
                 const originContentStr = await client.get(key);
                 const content = JSON.parse(originContentStr);
                 await saveOneByAsync(key, content);
+                // 新增到本地索引中
+                newNoteIndexes.push(originNoteIndex);
             }
-            // 新增到本地索引中
-            newNoteIndexes.push(originNoteIndex);
         } else {
             // 本地远程都没有
         }
