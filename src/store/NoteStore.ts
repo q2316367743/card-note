@@ -197,7 +197,7 @@ export const useNoteStore = defineStore('note', () => {
             // 先增加数据
             await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${noteContent.id}`, noteContent);
             // 在增加数组
-            indexes.value.unshift({
+            indexes.value.push({
                 id: noteContent.id,
                 updateTime: noteContent.updateTime,
                 top: noteContent.top,

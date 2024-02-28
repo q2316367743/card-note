@@ -11,6 +11,13 @@
                 <a-button type="primary" @click="openImportFromMemos()" :disabled="isWeb">
                     从Memos中导入
                 </a-button>
+                <a-upload title="从知识库中导入" :custom-request="importFromKb" :show-file-list="false">
+                    <template #upload-button>
+                        <a-button type="primary">
+                            从知识库中导入
+                        </a-button>
+                    </template>
+                </a-upload>
             </a-space>
         </a-button-group>
         <a-alert style="margin-top: 7px;">
@@ -37,7 +44,7 @@
         </a-alert>
         <a-button-group style="margin-top: 7px;">
             <a-space>
-                <a-upload title="从卡片笔记中导入" :custom-request="customRequest" :show-file-list="false">
+                <a-upload title="从卡片笔记中导入" :custom-request="importFromCardNote" :show-file-list="false">
                     <template #upload-button>
                         <a-button type="primary">
                             从卡片笔记中导入
@@ -58,13 +65,26 @@ import {RequestOption} from "@arco-design/web-vue";
 import {useNoteStore} from "@/store/NoteStore";
 import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
 import {openExportToZip} from "@/components/ImportOrExport/ExportToZip";
+import {openImportFromKb} from "@/components/ImportOrExport/ImportFromKb";
 
 const isWeb = Constant.platform === 'web';
 
-function customRequest(option: RequestOption) {
+function importFromCardNote(option: RequestOption) {
     const file = option.fileItem.file;
     if (file) {
         openImportFromCardNote(file);
+    }
+    return {
+        abort() {
+            console.log("取消上传")
+        }
+    }
+}
+
+function importFromKb(option: RequestOption) {
+    const file = option.fileItem.file;
+    if (file) {
+        openImportFromKb(file);
     }
     return {
         abort() {
