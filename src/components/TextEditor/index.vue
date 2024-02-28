@@ -278,6 +278,15 @@ function addPlaceholder(prefix: string) {
         }
     }
     content.value = prefix + content.value;
+    nextTick(() => {
+        if (!textareaRef.value) {
+            return;
+        }
+        const textarea = textareaRef.value.inputRef.$refs.textareaRef as HTMLTextAreaElement;
+        textarea.focus();
+        const start = content.value.length
+        textarea.setSelectionRange(start, start);
+    })
 }
 
 const tags = computed(() => Array.from(useTagStore().tags));
