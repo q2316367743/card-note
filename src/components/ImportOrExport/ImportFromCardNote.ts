@@ -1,4 +1,3 @@
-import {useFileSystemAccess} from "@vueuse/core";
 import JSZip from "jszip";
 import {listByAsync, removeOneByAsync, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
 import {NoteIndex} from "@/entity/Note";
