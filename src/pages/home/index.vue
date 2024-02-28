@@ -30,6 +30,7 @@
                     </a-dropdown>
                 </div>
                 <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
+                           :ellipsis="keywords.length === 0"
                            @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
             </a-list>
             <a-back-top target-container=".arco-list" :style="{bottom: isMobile ? '100px' : '60px'}"
@@ -125,7 +126,7 @@ function refresh() {
         records.value = new Array<DbRecord<NoteContent>>();
         bottom.value = false;
         onPage();
-    }else {
+    } else {
         keywords.value = [];
     }
 }

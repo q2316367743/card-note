@@ -49,7 +49,7 @@
                 </a-dropdown>
             </div>
         </div>
-        <note-preview :content="record.record"/>
+        <note-preview :content="record.record" :ellipsis="ellipsis"/>
     </div>
 </template>
 <script lang="ts" setup>
@@ -67,6 +67,10 @@ import {openNoteInfo} from "@/pages/note";
 
 defineProps({
     record: Object as PropType<DbRecord<NoteContent>>,
+    ellipsis: {
+        type: Boolean,
+        default: true,
+    }
 });
 
 const emits = defineEmits(['update', 'remove']);
