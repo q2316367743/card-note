@@ -51,7 +51,7 @@
     </a-layout>
 </template>
 <script lang="ts" setup>
-import {computed, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useWindowSize} from "@vueuse/core";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
@@ -228,6 +228,29 @@ useRefreshNoteEvent.on(ids => {
         refresh();
     }
 });
+
+
+watch(() => keyword.value, val => {
+    if (val !== subValue) {
+        utools.setSubInputValue(val);
+    }
+});
+
+let subValue = '';
+
+onMounted(() => {
+    utools.setSubInput(action => {
+        // @ts-ignore
+        const text = action.text;
+        console.log(text)
+        subValue = text;
+        keyword.value = text;
+    }, '请输入关键字', false);
+});
+
+onBeforeUnmount(() => {
+    utools.removeSubInput();
+})
 
 </script>
 <style lang="less">

@@ -220,6 +220,7 @@ export const utools = {
     setSubInputValue() {
         console.warn("web环境不支持子输入框事件");
     },
+    removeSubInput() {},
     fetchUserPayments(): Promise<any[]> {
         return Promise.resolve([]);
     },
