@@ -3,7 +3,7 @@
         <a-typography-paragraph :ellipsis="ellipsis">
             <div v-html="preview" ></div>
         </a-typography-paragraph>
-        <a-typography-paragraph v-if="relationNotes.length > 0">
+        <a-typography-paragraph v-if="relationNotes.length > 0 && props.relation">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
                 <a-tag color="arcoblue" bordered @click="open(relationNote.record.id)" >
                     <template #icon>
@@ -13,7 +13,7 @@
                 </a-tag>
             </div>
         </a-typography-paragraph>
-        <a-typography-paragraph v-if="associatedNotes.length > 0">
+        <a-typography-paragraph v-if="associatedNotes.length > 0 && props.relation">
             <div v-for="associatedNote in associatedNotes" style="margin-bottom: 4px;" :key="associatedNote.record.id">
                 <a-tag color="green" bordered @click="open(associatedNote.record.id)">
                     <template #icon>
@@ -23,7 +23,7 @@
                 </a-tag>
             </div>
         </a-typography-paragraph>
-        <a-typography-paragraph v-if="commentNotes.length > 0">
+        <a-typography-paragraph v-if="commentNotes.length > 0 && props.relation">
             <div v-for="commentNote in commentNotes" style="margin-bottom: 4px;" :key="commentNote.record.id">
                 <a-tag color="gold" bordered @click="open(commentNote.record.id)">
                     <template #icon>
@@ -56,6 +56,10 @@ const props = defineProps({
     // 屏蔽的评论
     commentId: Number,
     ellipsis: {
+        type: Boolean,
+        default: true,
+    },
+    relation: {
         type: Boolean,
         default: true,
     }

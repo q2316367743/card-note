@@ -8,6 +8,13 @@
                 <span class="id"> · #{{ record.record.id }}</span>
             </div>
             <div class="extra">
+                <a-tooltip content="关系图" v-if="record.record.relationNotes.length > 0">
+                    <a-button title="关系图" type="text" @click="openNoteRelation(record)">
+                        <template #icon>
+                            <icon-relation/>
+                        </template>
+                    </a-button>
+                </a-tooltip>
                 <a-dropdown position="br">
                     <a-button type="text">
                         <template #icon>
@@ -64,6 +71,7 @@ import {useNoteStore} from "@/store/NoteStore";
 import MessageBoxUtil from "@/utils/MessageBoxUtil";
 import {toDateString} from "xe-utils";
 import {openNoteInfo} from "@/pages/note";
+import {openNoteRelation} from "@/pages/note/relation";
 
 defineProps({
     record: Object as PropType<DbRecord<NoteContent>>,
