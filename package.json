@@ -7,11 +7,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite -c config/vite.utools.ts --mode=utools",
-    "build": "vue-tsc && vite build",
     "build:utools": "vue-tsc && vite build -c config/vite.utools.ts --mode=utools",
     "build:web": "vue-tsc && vite build -c config/vite.web.ts --mode=web",
-    "build:mobile": "vue-tsc && vite build -c config/vite.mobile.ts --mode=mobile",
-    "build:tauri": "vue-tsc && vite build -c config/vite.tauri.ts --mode=tauri",
+    "build:chrome": "vue-tsc && vite build -c config/vite.chrome.ts --mode=chrome",
     "preview": "vite preview",
     "tauri:build": "tauri build",
     "tauri:dev": "tauri dev"

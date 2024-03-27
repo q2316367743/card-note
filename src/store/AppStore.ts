@@ -38,7 +38,7 @@ export const useAppStore = defineStore('app', () => {
     watch(() => ellipseRows.value, value => setItem(DbKeyEnum.KEY_ELLIPSE_ROWS, value))
 
     const size = useWindowSize();
-    const isMobile = computed(() => Constant.platform === 'mobile' || size.width.value < size.height.value * 0.75);
+    const isMobile = computed(() => size.width.value < size.height.value * 0.75);
 
     async function init() {
         // 初始化主题

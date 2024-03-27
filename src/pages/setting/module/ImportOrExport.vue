@@ -81,7 +81,7 @@ import {openExportToZip} from "@/components/ImportOrExport/ExportToZip";
 import {openImportFromKb} from "@/components/ImportOrExport/ImportFromKb";
 import {openClearCache} from "@/components/ImportOrExport/ClearCache";
 
-const isWeb = Constant.platform === 'web';
+const isWeb = !window.isUtools;
 
 function importFromCardNote(option: RequestOption) {
     const file = option.fileItem.file;

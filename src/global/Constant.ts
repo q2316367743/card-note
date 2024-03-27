@@ -15,4 +15,4 @@ export default {
     platform: import.meta.env.VITE_PLATFORM as Platform
 }
 
-type Platform = 'utools' | 'web' | 'mobile' | 'tauri';
+type Platform = 'utools' | 'web' | 'chrome';

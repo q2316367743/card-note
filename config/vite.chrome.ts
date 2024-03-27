@@ -24,7 +24,7 @@ export default defineConfig({
     ],
     base: "./",
     build: {
-        outDir: "dist"
+        outDir: "src-chrome/dist"
     },
     envDir: 'env'
 });

@@ -114,7 +114,7 @@ export default defineConfig({
     ],
     base: "./",
     build: {
-        outDir: "dist-web"
+        outDir: "dist"
     },
     envDir: 'env'
 });

@@ -4,10 +4,8 @@
 node_modules
 src-utools/dist
 src-utools/node_modules
-src-mobile/dist
 *.iml
 dev-dist
-/src-mobile/unpackage/cache/
-/src-mobile/unpackage/release/
 dist
-/dist-web/
+
+src-chrome/dist
