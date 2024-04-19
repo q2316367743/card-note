@@ -14,7 +14,9 @@ enum DbKeyEnum {
 
     SETTING_SYNC = '/setting/sync',
 
-    SETTING_AI = '/setting/ai'
+    SETTING_AI = '/setting/ai',
+
+    KEY_CHAT_MODELS = '/key/chat/models',
 
 }
 

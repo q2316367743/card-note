@@ -1,28 +1,15 @@
 export interface AiSetting {
 
-    /**
-     * AI的类型
-     */
-    type: AiTypeEnum;
+    url: string;
 
-    appId: string;
-
-    apiSecret: string;
-
-    apiKey: string;
+    token: string;
 
     /**
      * 占位符
      */
     placeholders: Array<AiPlaceholder>;
 
-}
-
-export enum AiTypeEnum {
-
-    NONE = 0,
-
-    XUN_FEI = 1
+    model: string
 
 }
 
@@ -51,10 +38,9 @@ export function getDefaultAiPlaceholder(): AiPlaceholder {
 
 export function getDefaultAiSetting(): AiSetting {
     return {
-        type: AiTypeEnum.NONE,
-        apiKey: '',
-        apiSecret: '',
-        appId: '',
-        placeholders: []
+        url: 'https://api.openai.com',
+        token: '',
+        placeholders: [],
+        model: 'gpt-3.5-turbo'
     }
 }

@@ -1,34 +1,32 @@
 <template>
-    <a-alert style="margin-bottom: 7px;">使用帮助：
-        <a-link @click="openHelp()">AI功能使用帮助</a-link>
-    </a-alert>
     <a-card title="基础设置">
         <template #extra>
             <a-button type="primary" @click="save()">保存</a-button>
         </template>
+        <a-alert style="margin-bottom: 4px;">
+            <span>推荐使用</span>
+            <a-link @click="toApi()">V3 API</a-link>
+            <span>，无需科学上网，即可使用。</span>
+        </a-alert>
         <a-form :model="aiSetting" layout="vertical">
-            <a-form-item label="AI类型">
-                <a-radio-group v-model="aiSetting.type" placeholder="请选择AI类型">
-                    <a-radio :value="AiTypeEnum.NONE">无</a-radio>
-                    <a-radio :value="AiTypeEnum.XUN_FEI">讯飞</a-radio>
-                </a-radio-group>
+            <a-form-item label="链接">
+                <a-input allow-clear v-model="aiSetting.url" placeholder="https://api.openai.com"/>
                 <template #help>
-                <span v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
-                    官网：
-                    <a-link @click="openXunFei()">
-                    讯飞星火认知大模型
-                </a-link>
-                </span>
+                    openai或兼容openai api的地址
                 </template>
             </a-form-item>
-            <a-form-item label="APPID" v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
-                <a-input allow-clear v-model="aiSetting.appId"/>
+            <a-form-item label="token" >
+                <a-input-password allow-clear v-model="aiSetting.token"/>
             </a-form-item>
-            <a-form-item label="APISecret" v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
-                <a-input-password allow-clear v-model="aiSetting.apiSecret"/>
-            </a-form-item>
-            <a-form-item label="APIKey" v-if="aiSetting.type === AiTypeEnum.XUN_FEI">
-                <a-input-password allow-clear v-model="aiSetting.apiKey"/>
+            <a-form-item label="模型">
+                <a-input-group>
+                    <a-select v-model="aiSetting.model" style="width: 250px;" allow-clear allow-search :loading="loading">
+                        <a-option v-for="model in models" :value="model">{{ model }}</a-option>
+                    </a-select>
+                    <a-button type="text" :disabled="aiSetting.url === '' || aiSetting.token === ''"
+                              @click="getAllModules()" :loading="loading">获取全部模型
+                    </a-button>
+                </a-input-group>
             </a-form-item>
         </a-form>
     </a-card>
@@ -67,15 +65,23 @@
 <script lang="tsx" setup>
 import {computed, Ref, ref} from "vue";
 import {clone} from "xe-utils";
-import {AiPlaceholder, AiTypeEnum, getDefaultAiPlaceholder} from "@/entity/AiSetting";
+import {AiPlaceholder, getDefaultAiPlaceholder} from "@/entity/AiSetting";
 import MessageUtil from "@/utils/MessageUtil";
 import {useAiStore} from "@/store/AiStore";
 import {Modal, Form, FormItem, Input} from "@arco-design/web-vue";
+import {getItemByDefault, setItem} from "@/utils/utools/DbStorageUtil";
+import DbKeyEnum from "@/enumeration/DbKeyEnum";
 
 const aiSetting = ref(clone(useAiStore().aiSetting, true));
 
 const placeholders = computed(() => useAiStore().placeholders);
 const disabled = computed(() => useAiStore().disabled);
+const models = ref(getItemByDefault(DbKeyEnum.KEY_CHAT_MODELS, [
+    "gpt-3.5-turbo", "gpt-3.5-turbo-0125", "gpt-3.5-turbo-1106", "gpt-3.5-turbo-0613",
+    "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613", "gpt-4-turbo-preview", "gpt-4-0125-preview",
+    "gpt-4-1106-preview", "gpt-4-vision-preview", "gpt-4", "gpt-4-0613", "gpt-4-32k"]));
+const loading = ref(false);
+
 
 function save(msg: boolean = true) {
     useAiStore().save(aiSetting.value)
@@ -83,8 +89,33 @@ function save(msg: boolean = true) {
         .catch(e => MessageUtil.error("保存失败", e));
 }
 
-const openHelp = () => utools.shellOpenExternal("https://blog.esion.xyz/index.php/2024/02/27/卡片笔记-ai功能/");
-const openXunFei = () => utools.shellOpenExternal("https://xinghuo.xfyun.cn/sparkapi");
+const toApi = () => utools.shellOpenExternal("https://api.v3.cm/register?aff=6A4f");
+
+
+function getAllModules() {
+    useAiStore().save(aiSetting.value).then(async () => {
+        const {openAi} = useAiStore();
+        if (openAi) {
+            loading.value = true;
+            try {
+                const res = await openAi.models.list();
+                const items = new Array<string>();
+                items.push(...res.data.map(e => e.id));
+                while (res.hasNextPage()) {
+                    await res.getNextPage();
+                    items.push(...res.data.map(e => e.id));
+                }
+                models.value = items;
+                setItem(DbKeyEnum.KEY_CHAT_MODELS, models.value);
+                MessageUtil.success("获取成功");
+            } catch (e) {
+                MessageUtil.error("获取失败", e);
+            } finally {
+                loading.value = false;
+            }
+        }
+    })
+}
 
 function buildForm(placeholder: Ref<AiPlaceholder>) {
     return () => <Form model={placeholder.value} layout={`vertical`}>
