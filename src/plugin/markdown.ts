@@ -40,7 +40,7 @@ const marked = new Marked({
                 ignoreIllegals: true
             }).value
         }
-        return `<span class="name">${lang}</span><span class="copy" onclick="utools.copyText(\`${code}\`);window.openMessage('已成功复制到剪切板', 'success')">复制代码</span>${html}`;
+        return `<span class="name">${lang}</span><span class="copy" onclick="window.copyText(\`${encodeURIComponent(code)}\`);window.openMessage('已成功复制到剪切板', 'success')">复制代码</span>${html}`;
     }
 }))
 

@@ -99,6 +99,10 @@ window.openMessage = (content, level) => {
     MessageUtil[level || 'warning'](content);
 }
 
+window.copyText = (content: string) => {
+    utools.copyText(decodeURIComponent(content));
+}
+
 </script>
 <style scoped>
 </style>
