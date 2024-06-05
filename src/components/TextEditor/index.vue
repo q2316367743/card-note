@@ -23,8 +23,8 @@
                             </template>
                         </a-button>
                     </Tooltip>
-                    <Dropdown>
-                        <a-button v-if="!disabledAi">
+                    <Dropdown v-if="!disabledAi">
+                        <a-button>
                             <template #icon>
                                 <IconApps :size="16"/>
                             </template>

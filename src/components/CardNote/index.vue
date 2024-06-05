@@ -2,11 +2,14 @@
     <a-row :gutter="16" v-if="record" :key="record.record.id" class="card-note">
         <a-col flex="40px">
             <div class="avatar">
-                <a-avatar v-if="user" :image-url="user.avatar">
-                    <icon-edit/>
+                <a-avatar v-if="record.record.role === 'robot'" :image-url="IconChatgpt">
+                    <icon-robot/>
+                </a-avatar>
+                <a-avatar v-else-if="user" :image-url="user.avatar">
+                    <icon-user/>
                 </a-avatar>
                 <a-avatar v-else>
-                    <icon-edit/>
+                    <icon-user/>
                 </a-avatar>
             </div>
         </a-col>
@@ -15,8 +18,9 @@
                 <note-preview :content="record.record" :ellipsis="ellipsis"/>
                 <div class="footer">
                     <div class="title">
-                        <span class="create-time" @click="openNoteInfo(record, onUpdate)">{{ prettyDate(record.record.id) }}</span>
-                        <span class="id"> · #{{ record.record.id }}</span>
+                        <span class="create-time"
+                              @click="openNoteInfo(record, onUpdate)">{{ prettyDate(record.record.id) }}</span>
+                        <span class="id">&nbsp;· #{{ record.record.id }}</span>
                     </div>
                     <div class="extra">
                         <a-tooltip content="关系图" v-if="record.record.relationNotes.length > 0">
@@ -84,6 +88,7 @@ import MessageBoxUtil from "@/utils/MessageBoxUtil";
 import {toDateString} from "xe-utils";
 import {openNoteInfo} from "@/pages/note";
 import {openNoteRelation} from "@/pages/note/relation";
+import IconChatgpt from '@/assets/images/icon-chatgpt.png';
 
 defineProps({
     record: Object as PropType<DbRecord<NoteContent>>,
@@ -96,6 +101,7 @@ defineProps({
 const emits = defineEmits(['update', 'remove']);
 
 const user = utools.getUser();
+
 
 function prettyDate(date: Date | string | number) {
     return toDateString(date);
@@ -134,6 +140,7 @@ function copy(record: DbRecord<NoteContent>) {
 <style scoped lang="less">
 .card-note {
     flex-wrap: nowrap;
+
     .avatar {
         padding-top: 16px;
         padding-left: 8px;

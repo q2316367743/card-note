@@ -1,3 +1,5 @@
+export type NoteRole = 'user' | 'robot';
+
 /**
  * 一篇笔记
  */
@@ -19,6 +21,12 @@ export interface NoteIndex {
      * 是否被删除
      */
     deleted: boolean;
+
+    /**
+     * 笔记角色
+     * @default user
+     */
+    role?: NoteRole;
 
 }
 

@@ -30,10 +30,11 @@ const NoteInfo = styled.div`
 const Container = styled.div`
     position: absolute;
     top: 63px;
-    left: 7px;
-    right: 7px;
-    bottom: 7px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     overflow: auto;
+    padding: 7px;
 `;
 
 const Content = styled.div`
@@ -45,7 +46,7 @@ const Bottom = styled.div`
     display: flex;
     justify-content: space-between;
     line-height: 32px;
-    font-size: 14px;
+    font-size: 1rem;
 `;
 
 const BottomLeft = styled.div`
@@ -190,7 +191,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                     <Card class="card no-padding" style={{margin: '0'}}>
                         <NotePreview content={noteContent.value} ellipsis={false}/>
                     </Card>
-                    <Card style="margin-top: 7px;">
+                    <Card style="margin: 7px 0 0;" class={'card'}>
                         <Bottom>
                             <BottomLeft>
                                 <span style={{color: 'var(--color-neutral-8)'}}>#{noteContent.value.id}</span>
@@ -221,7 +222,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                             </ButtonGroup>
                         </Bottom>
                     </Card>
-                    <Card style="margin-top: 7px;">
+                    <Card style="margin: 7px 0 0;"  class={'card'}>
                         {commentNotes.value.length > 0 && <div style={{marginBottom: '14px'}}>
                             <IconMessage/> 评论 ({commentNotes.value.length})
                         </div>}

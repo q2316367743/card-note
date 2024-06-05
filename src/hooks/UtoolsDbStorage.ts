@@ -1,15 +1,23 @@
-import {ref, Ref, shallowRef, toRaw, toValue, watch} from "vue";
+import {ref, Ref, shallowRef, toRaw, watch} from "vue";
+import MessageUtil from "@/utils/MessageUtil";
 
 export interface UseUtoolsDbOptions {
     flush?: 'pre' | 'post' | 'sync';
     deep?: boolean;
-    writeDefaults?: boolean;
     shallow?: boolean;
 
     onError?(e: any): void;
 }
 
-export const dbStorage = {
+interface DbStorageLike {
+    setItem(key: string, value: any): void
+
+    getItem(key: string): any
+
+    removeItem(key: string): void
+}
+
+export const wenDbStorage: DbStorageLike = {
     /**
      * 键值对存储，如果键名存在，则更新其对应的值
      * @param key 键名(同时为文档ID)
@@ -28,7 +36,11 @@ export const dbStorage = {
         if (!value) {
             return null;
         }
-        return JSON.parse(value).value;
+        const val = JSON.parse(value).value;
+        if (typeof val === 'undefined') {
+            return null;
+        }
+        return val;
     },
     /**
      * 删除键值对(删除文档)
@@ -37,6 +49,10 @@ export const dbStorage = {
         localStorage.removeItem(key);
     },
 }
+
+/**
+ * 同步对象存储
+ */
 
 /**
  * 异步对象存储
@@ -49,46 +65,24 @@ export function useUtoolsDbStorage<T extends (string | number | boolean | object
     const {
         flush = 'pre',
         deep = true,
-        writeDefaults = true,
         shallow,
         onError = (e) => {
-            console.error(e)
+            MessageUtil.error('数据保存失败', e)
         },
     } = options
 
-    const rawInit: T = toValue(initialValue)
-
-    const data = (shallow ? shallowRef : ref)(initialValue) as Ref<T>
-
-
-    function read(event?: StorageEvent) {
-        if (event && event.key !== key)
-            return
-
-        try {
-            const rawValue = event ? event.newValue : utools.dbStorage.getItem(key)
-            if (rawValue == null) {
-                data.value = rawInit
-                if (writeDefaults && rawInit !== null)
-                    utools.dbStorage.setItem(key, toRaw(rawInit))
-            } else {
-                data.value = rawValue;
-            }
-        } catch (e) {
-            onError(e)
-        }
-    }
-
-    read()
+    const sourceValue = utools.dbStorage.getItem(key);
+    const data = (shallow ? shallowRef : ref)((typeof sourceValue === 'undefined' || sourceValue === null) ? initialValue : sourceValue) as Ref<T>;
+    const dbStorage: DbStorageLike = window.utools ? window.utools.dbStorage : wenDbStorage;
 
     watch(
         data,
-        async () => {
+        (val) => {
             try {
                 if (data.value == null)
-                    utools.dbStorage.removeItem(key)
+                    dbStorage.removeItem(key)
                 else
-                    utools.dbStorage.setItem(key, toRaw(data.value))
+                    dbStorage.setItem(key, toRaw(data.value))
             } catch (e) {
                 onError(e)
             }
@@ -101,3 +95,4 @@ export function useUtoolsDbStorage<T extends (string | number | boolean | object
 
     return data as Ref<T>
 }
+

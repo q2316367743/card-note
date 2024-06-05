@@ -9,7 +9,7 @@ import {
 } from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {computed, ref} from "vue";
-import {NoteContent, NoteIndex, NoteRelation} from "@/entity/Note";
+import {NoteContent, NoteIndex, NoteRelation, NoteRole} from "@/entity/Note";
 import {matchTagFromContent, useTagStore} from "@/store/TagStore";
 import {useSyncEvent} from "@/store/SyncStore";
 import {useEventBus} from "@vueuse/core";
@@ -134,13 +134,14 @@ export const useNoteStore = defineStore('note', () => {
         return listRecordByAsync<NoteContent>(ids.map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`));
     }
 
-    async function add(content: string, relationNotes: Array<NoteRelation>, ai: boolean = true): Promise<NoteContent> {
+    async function add(content: string, relationNotes: Array<NoteRelation>, ai: boolean = true, role: NoteRole = 'user'): Promise<NoteContent> {
         const now = new Date().getTime();
         const noteIndex: NoteIndex = {
             id: now,
             updateTime: now,
             top: false,
-            deleted: false
+            deleted: false,
+            role
         }
         const tags = matchTagFromContent(content);
         const noteContent: NoteContent = {
@@ -247,6 +248,7 @@ export const useNoteStore = defineStore('note', () => {
                 top: false,
                 deleted: false,
                 content,
+                role: record.record.role,
                 relationNotes: [
                     // 评论不动
                     ...oldComments,

@@ -25,6 +25,7 @@ export async function askToAi(noteId: number) {
     const result = await ask(question);
     const newContent = "==原卡片内容：==\n\n" + content.trim() + "\n\n\n\n==处理后内容：==\n\n" + result;
     noteContent.record.content = newContent;
+    noteContent.record.role = 'robot';
     await useNoteStore().update(noteContent, newContent, noteContent.record.relationNotes);
 }
 
@@ -34,7 +35,7 @@ export async function askMultiToAi(question: string, records: Array<DbRecord<Not
         noteId: 0,
         relationId: e.record.id,
         type: 'REFERENCE'
-    })), false);
+    })), false, 'robot');
 }
 
 /**
@@ -48,5 +49,6 @@ export async function askCommentToAi(source: string, current: DbRecord<NoteConte
     const res = await askMulti([source, question]);
     const newContent = current.record.content + "\n\n==回答：==\n" + res;
     // 更新卡片
+    current.record.role = 'robot';
     await useNoteStore().update(current, newContent, current.record.relationNotes);
 }

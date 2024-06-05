@@ -10,6 +10,10 @@ enum DbKeyEnum {
 
     KEY_ELLIPSE_ROWS = '/key/ellipse-rows',
 
+    KEY_FONT_SIZE = '/key/font-size',
+
+    KEY_FONT_FAMILY = '/key/font-family',
+
     KEY_VERSION = '/key/version',
 
     SETTING_SYNC = '/setting/sync',

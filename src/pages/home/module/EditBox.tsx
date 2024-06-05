@@ -7,6 +7,8 @@ import {useNoteStore} from "@/store/NoteStore";
 export function openEditBox(record: DbRecord<NoteContent>): Promise<Array<number>> {
     return new Promise<Array<number>>((resolve, reject) => {
         function update(content: string, relationNotes: Array<NoteRelation>) {
+            // 此处更新后变为用户
+            record.record.role = 'user';
             useNoteStore().update(record, content, relationNotes)
                 .then(resolve).catch(reject).finally(modalReturn.close)
         }

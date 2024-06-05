@@ -49,7 +49,7 @@ import {
 } from "@arco-design/web-vue";
 import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
 import {renderContent} from "@/utils/BrowserUtil";
-import {ellipseRows} from "@/store/AppStore";
+import {ellipseRows, fontFamily, fontSize} from "@/store/AppStore";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>,
@@ -79,7 +79,16 @@ const ellipsis = computed(() => {
         }
     }
     return false;
-})
+});
+const fontSizeWrap = computed(() => fontSize.value + 'px');
+const defaultFontFamily = '苹方, 微软雅黑, serif';
+const fontFamilyWrap = computed(() => {
+    const res = fontFamily.value.trim();
+    if (res) {
+        return fontFamily.value + ',' + defaultFontFamily;
+    }
+    return defaultFontFamily;
+});
 
 watch(() => props.content,
     value => {
@@ -118,6 +127,8 @@ function open(id: number) {
 </script>
 <style lang="less">
 .note-preview {
+    font-size: v-bind(fontSizeWrap);
+    font-family: v-bind(fontFamilyWrap);
     .arco-tag {
         cursor: pointer;
     }

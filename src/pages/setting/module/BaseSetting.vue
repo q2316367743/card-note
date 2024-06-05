@@ -12,6 +12,18 @@
                 <a-input-number v-model="ellipseRows" :min="-1" style="width: 150px"/>
                 <template #help>-1表示不折叠</template>
             </a-form-item>
+            <a-form-item label="字体大小">
+                <a-input-number v-model="fontSize" :min="8" style="width: 150px">
+                    <template #suffix>px</template>
+                </a-input-number>
+            </a-form-item>
+            <a-form-item label="字体">
+                <a-input v-model="fontFamily" allow-clear placeholder="例如：'霞鹜文楷 GB'"/>
+                <template #help>
+                    <span>更多信息请参考：</span>
+                    <a-link @click="openFontFamily()">font-family</a-link>
+                </template>
+            </a-form-item>
             <a-form-item label="开发者工具">
                 <a-switch v-model="devTool"/>
             </a-form-item>
@@ -20,11 +32,15 @@
 </template>
 <script lang="ts" setup>
 import {ref, watch} from "vue";
-import {useAppStore, devTool, ellipseRows} from "@/store/AppStore";
+import {useAppStore, devTool, ellipseRows, fontSize, fontFamily} from "@/store/AppStore";
 
 const themeType = ref(useAppStore().themeType);
 
 watch(() => themeType.value, value => useAppStore().saveThemeType(value));
+
+function openFontFamily() {
+    utools.shellOpenExternal("https://developer.mozilla.org/zh-CN/docs/web/css/font-family")
+}
 
 </script>
 <style scoped>
