@@ -7,9 +7,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite -c config/vite.utools.ts --mode=utools",
+    "dev:tt": "vite -c config/vite.tt.ts --mode=tt",
     "build:utools": "vue-tsc && vite build -c config/vite.utools.ts --mode=utools",
     "build:web": "vue-tsc && vite build -c config/vite.web.ts --mode=web",
     "build:chrome": "vue-tsc && vite build -c config/vite.chrome.ts --mode=chrome",
+    "build:tt": "vue-tsc && vite build -c config/vite.tt.ts --mode=tt",
     "preview": "vite preview"
   },
   "dependencies": {

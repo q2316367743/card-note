@@ -71,7 +71,6 @@ export function useSubInput(initialValue: string = '', placeholder?: string, isF
                 }
             }, placeholder, isFocus);
             // 如果注册成功
-            console.log("注册结果", res);
             if (res) {
                 // 设置初始值
                 if (initialValue) {

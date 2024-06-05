@@ -1,61 +1,23 @@
 {
 	"name": "卡片笔记",
-	"package": "xtz.esion.card-note",
+	"summary": "卡片笔记是一款专注于个人记录的插件。随时随地记录日常、整理生活、收藏惊喜和感动。",
 	"author": "落雨不悔",
-	"site": "https://blog.esion.xyz",
-	"summary": "卡片笔记是一种用于记录和存储信息的文本文件，它可以帮助人们记录重要的想法、日志、备忘录或其他内容。",
-	"type": "web",
-	"file_assign": [],
-	"url": "https://blog.esion.xyz/apps/card-note",
-	"preload": "",
-	"logo": "local|D:\\Documents\\workspace\\card-note\\src-ts\\logo.png?t=1708783770516",
-	"theme_color": "#f1f1f1",
-	"window": {
-		"defaultType": "frameWindow",
-		"frameWindow": {
-			"enable": true,
-			"width": 1000,
-			"height": 800,
-			"controllers": {
-				"goBack": true,
-				"goForward": true,
-				"refresh": true,
-				"home": true
-			},
-			"canResize": true
+	"version": "1.4.0",
+	"logo": "/logo.png",
+	"package": "xyz.esion.card-note",
+	"uid": 758,
+	"community": 460433,
+	"theme_color": "#00E6A0",
+	"modules": {
+		"main": {
+			"entry": "http://localhost:5173/index.html",
+			"width": "800px",
+			"height": "600px"
 		},
-		"window": {
-			"enable": false,
-			"width": 400,
-			"minWidth": 300,
-			"maxWidth": 600,
-			"canResize": true,
-			"height": 400,
-			"minHeight": 300,
-			"maxHeight": 600,
-			"top": false,
-			"blurAction": "none"
-		},
-		"attach": {
-			"enable": false,
-			"width": 320,
-			"minWidth": 320,
-			"maxWidth": 320,
-			"canResize": true
-		}
-	},
-	"auth": {
-		"base": {
-			"webSecure": true
-		},
-		"api": {
-			"cloudArchiving": true,
-			"widget": true,
-			"deskWidget": true
-		},
-		"ability": {}
-	},
-	"open_source": true,
-	"csv_url": "https://gitee.com/qiaoshengda/card-note",
-	"os_summary": "Apache-2.0"
+		"card": [{
+			"entry": "http://localhost:5173/input.html",
+			"size": "4x4",
+			"preview": "/logo.png"
+		}]
+	}
 }

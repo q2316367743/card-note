@@ -71,9 +71,9 @@ export function useUtoolsDbStorage<T extends (string | number | boolean | object
         },
     } = options
 
-    const sourceValue = utools.dbStorage.getItem(key);
-    const data = (shallow ? shallowRef : ref)((typeof sourceValue === 'undefined' || sourceValue === null) ? initialValue : sourceValue) as Ref<T>;
     const dbStorage: DbStorageLike = window.utools ? window.utools.dbStorage : wenDbStorage;
+    const sourceValue = dbStorage.getItem(key);
+    const data = (shallow ? shallowRef : ref)((typeof sourceValue === 'undefined' || sourceValue === null) ? initialValue : sourceValue) as Ref<T>;
 
     watch(
         data,
