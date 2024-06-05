@@ -38,8 +38,6 @@
         </a-layout-content>
         <a-layout-footer class="footer">
             <div class="title">
-                <a-input-search v-model="keyword" size="mini" placeholder="请输入关键字" allow-clear search-button
-                                @search="keyAdd()" @keydown.enter="keyAdd()"/>
             </div>
             <div class="statistics" v-if="isMobile">
                 <span>{{ day }} 天</span>
@@ -70,6 +68,7 @@ import {useAppStore} from "@/store/AppStore";
 import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
 import {useAiStore} from "@/store/AiStore";
 import {askMultiNoteToAi} from "@/pages/home/module/AskMultiNoteToAi";
+import {useSubInput} from "@/hooks/SubInput";
 
 const size = useWindowSize();
 
@@ -80,6 +79,8 @@ interface Keyword {
 
 let offset = 0;
 const limit = 10;
+
+const {onSearch, setSubInput} = useSubInput('', '请输入关键字、标签，回车搜索', false);
 
 const keyword = ref('');
 const keywords = ref<Array<Keyword>>([]);
@@ -97,7 +98,7 @@ const minDay = computed(() => Math.min(...allIds.value, new Date().getTime()));
 const day = computed(() => Math.floor(((new Date().getTime()) - minDay.value) / (24 * 60 * 60 * 1000)));
 const disabledAi = computed(() => useAiStore().disabled);
 
-watch(() => keywords.value, value => value.length === 0 ? refresh() : search(), {deep: true});
+watch(keywords, value => value.length === 0 ? refresh() : search(), {deep: true});
 
 const onPage = () => useNoteStore().init().then(() => useNoteStore().page(offset, limit).then(items => {
     items.forEach(item => records.value.push(item));
@@ -106,7 +107,7 @@ const onPage = () => useNoteStore().init().then(() => useNoteStore().page(offset
     }
 }));
 
-const onSearch = () => useNoteStore()
+const _onSearch = () => useNoteStore()
     .search(keywords.value.map(e => e.type === 'TAG' ? `#${e.value}` : e.value))
     .then(items => records.value = items)
     .then(() => backTopInstance.value && backTopInstance.value.scrollToTop());
@@ -135,7 +136,7 @@ function search() {
     offset = 0;
     records.value = new Array<DbRecord<NoteContent>>();
     bottom.value = true;
-    onSearch();
+    _onSearch();
 }
 
 
@@ -229,27 +230,10 @@ useRefreshNoteEvent.on(ids => {
     }
 });
 
-
-watch(() => keyword.value, val => {
-    if (val !== subValue) {
-        utools.setSubInputValue(val);
-    }
-});
-
-let subValue = '';
-
-onMounted(() => {
-    utools.setSubInput(action => {
-        // @ts-ignore
-        const text = action.text;
-        console.log(text)
-        subValue = text;
-        keyword.value = text;
-    }, '请输入关键字', false);
-});
-
-onBeforeUnmount(() => {
-    utools.removeSubInput();
+onSearch(res => {
+    keyword.value = res;
+    keyAdd();
+    setSubInput('');
 })
 
 </script>

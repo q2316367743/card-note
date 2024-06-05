@@ -20,13 +20,11 @@
 </template>
 <script lang="ts" setup>
 import {ref, watch} from "vue";
-import {useAppStore, devTool} from "@/store/AppStore";
+import {useAppStore, devTool, ellipseRows} from "@/store/AppStore";
 
 const themeType = ref(useAppStore().themeType);
-const ellipseRows = ref(useAppStore().ellipseRows);
 
 watch(() => themeType.value, value => useAppStore().saveThemeType(value));
-watch(() => ellipseRows.value, value => useAppStore().saveEllipseRows(value));
 
 </script>
 <style scoped>

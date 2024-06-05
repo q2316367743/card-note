@@ -7,6 +7,7 @@ import Constant from "@/global/Constant";
 import eruda from "eruda";
 import {openFirstUse} from "@/components/updater/FirstUse";
 import {openVersionUpdate} from "@/components/updater/VersionUpdate";
+import {useUtoolsDbStorage} from "@/hooks/UtoolsDbStorage";
 
 function renderIsDark(theme: number | null) {
     switch (theme) {
@@ -25,17 +26,17 @@ function renderIsDark(theme: number | null) {
 export const devTool = ref(false);
 watch(() => devTool.value, value => value ? eruda.init() : eruda.destroy());
 
+export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS,10);
+
 
 export const useAppStore = defineStore('app', () => {
     const themeType = ref(0);
     const dark = ref(renderIsDark(themeType.value));
-    const ellipseRows = ref(10);
 
     watch(() => themeType.value, value => {
         setItem(DbKeyEnum.KEY_THEME, value);
         dark.value = renderIsDark(value);
     })
-    watch(() => ellipseRows.value, value => setItem(DbKeyEnum.KEY_ELLIPSE_ROWS, value))
 
     const size = useWindowSize();
     const isMobile = computed(() => size.width.value < size.height.value * 0.75);
@@ -43,7 +44,6 @@ export const useAppStore = defineStore('app', () => {
     async function init() {
         // 初始化主题
         themeType.value = getItem<number>(DbKeyEnum.KEY_THEME) || 0;
-        ellipseRows.value = getItem<number>(DbKeyEnum.KEY_ELLIPSE_ROWS) || 10;
 
         const oldVersion = getItem<number>(DbKeyEnum.KEY_VERSION) || 0;
         try {
@@ -71,16 +71,13 @@ export const useAppStore = defineStore('app', () => {
         themeType.value = res;
     }
 
-    function saveEllipseRows(res: number) {
-        ellipseRows.value = res;
-    }
 
 
     return {
         dark, isMobile,
-        themeType, ellipseRows,
+        themeType,
         init, isDarkColors,
-        saveThemeType, saveEllipseRows
+        saveThemeType
     }
 
 })

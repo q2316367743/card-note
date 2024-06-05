@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="label">灵光一现</div>
-        <div class="extra">
+        <div class="action">
             <a-tooltip content="再来一篇">
                 <a-button type="text" @click="init()">
                     <template #icon>

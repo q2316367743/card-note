@@ -1,11 +1,11 @@
 <template>
     <a-typography class="note-preview juejin">
         <a-typography-paragraph :ellipsis="ellipsis">
-            <div v-html="preview" ></div>
+            <div v-html="preview"></div>
         </a-typography-paragraph>
         <a-typography-paragraph v-if="relationNotes.length > 0 && props.relation">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
-                <a-tag color="arcoblue" bordered @click="open(relationNote.record.id)" >
+                <a-tag color="arcoblue" bordered @click="open(relationNote.record.id)">
                     <template #icon>
                         <icon-link/>
                     </template>
@@ -49,7 +49,7 @@ import {
 } from "@arco-design/web-vue";
 import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
 import {renderContent} from "@/utils/BrowserUtil";
-import {useAppStore} from "@/store/AppStore";
+import {ellipseRows} from "@/store/AppStore";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>,
@@ -72,10 +72,9 @@ const commentNotes = ref<Array<DbRecord<NoteContent>>>([]);
 
 const ellipsis = computed(() => {
     if (props.ellipsis) {
-        const ellipseRows = useAppStore().ellipseRows
-        if (ellipseRows > -1) {
-            return {rows: ellipseRows, expandable: true};
-        }else {
+        if (ellipseRows.value > -1) {
+            return {rows: ellipseRows.value, expandable: true};
+        } else {
             return false;
         }
     }
@@ -121,6 +120,12 @@ function open(id: number) {
 .note-preview {
     .arco-tag {
         cursor: pointer;
+    }
+
+    .arco-typography {
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 }
 </style>

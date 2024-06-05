@@ -1,63 +1,75 @@
 <template>
-    <div v-if="record" class="card" :key="record.record.id">
-        <div class="header">
-            <div class="title">
-                <span class="create-time" @click="openNoteInfo(record, onUpdate)">{{
-                        prettyDate(record.record.id)
-                    }}</span>
-                <span class="id"> · #{{ record.record.id }}</span>
+    <a-row :gutter="16" v-if="record" :key="record.record.id" class="card-note">
+        <a-col flex="40px">
+            <div class="avatar">
+                <a-avatar v-if="user" :image-url="user.avatar">
+                    <icon-edit/>
+                </a-avatar>
+                <a-avatar v-else>
+                    <icon-edit/>
+                </a-avatar>
             </div>
-            <div class="extra">
-                <a-tooltip content="关系图" v-if="record.record.relationNotes.length > 0">
-                    <a-button title="关系图" type="text" @click="openNoteRelation(record)">
-                        <template #icon>
-                            <icon-relation/>
-                        </template>
-                    </a-button>
-                </a-tooltip>
-                <a-dropdown position="br">
-                    <a-button type="text">
-                        <template #icon>
-                            <icon-more/>
-                        </template>
-                    </a-button>
-                    <template #content>
-                        <a-doption @click="openNoteInfo(record, onUpdate)">
-                            <template #icon>
-                                <icon-info/>
+        </a-col>
+        <a-col flex="auto">
+            <div class="card">
+                <note-preview :content="record.record" :ellipsis="ellipsis"/>
+                <div class="footer">
+                    <div class="title">
+                        <span class="create-time" @click="openNoteInfo(record, onUpdate)">{{ prettyDate(record.record.id) }}</span>
+                        <span class="id"> · #{{ record.record.id }}</span>
+                    </div>
+                    <div class="extra">
+                        <a-tooltip content="关系图" v-if="record.record.relationNotes.length > 0">
+                            <a-button title="关系图" type="text" @click="openNoteRelation(record)" size="mini">
+                                <template #icon>
+                                    <icon-relation/>
+                                </template>
+                            </a-button>
+                        </a-tooltip>
+                        <a-dropdown position="br">
+                            <a-button type="text" size="mini">
+                                <template #icon>
+                                    <icon-more/>
+                                </template>
+                            </a-button>
+                            <template #content>
+                                <a-doption @click="openNoteInfo(record, onUpdate)">
+                                    <template #icon>
+                                        <icon-info/>
+                                    </template>
+                                    详情
+                                </a-doption>
+                                <a-doption @click="copy(record)">
+                                    <template #icon>
+                                        <icon-copy/>
+                                    </template>
+                                    复制
+                                </a-doption>
+                                <a-doption @click="update(record)">
+                                    <template #icon>
+                                        <icon-edit/>
+                                    </template>
+                                    编辑
+                                </a-doption>
+                                <a-doption @click="createExportImage(record.record)">
+                                    <template #icon>
+                                        <icon-shake/>
+                                    </template>
+                                    分享
+                                </a-doption>
+                                <a-doption @click="remove(record)">
+                                    <template #icon>
+                                        <icon-delete/>
+                                    </template>
+                                    删除
+                                </a-doption>
                             </template>
-                            详情
-                        </a-doption>
-                        <a-doption @click="copy(record)">
-                            <template #icon>
-                                <icon-copy/>
-                            </template>
-                            复制
-                        </a-doption>
-                        <a-doption @click="update(record)">
-                            <template #icon>
-                                <icon-edit/>
-                            </template>
-                            编辑
-                        </a-doption>
-                        <a-doption @click="createExportImage(record.record)">
-                            <template #icon>
-                                <icon-shake/>
-                            </template>
-                            分享
-                        </a-doption>
-                        <a-doption @click="remove(record)">
-                            <template #icon>
-                                <icon-delete/>
-                            </template>
-                            删除
-                        </a-doption>
-                    </template>
-                </a-dropdown>
+                        </a-dropdown>
+                    </div>
+                </div>
             </div>
-        </div>
-        <note-preview :content="record.record" :ellipsis="ellipsis"/>
-    </div>
+        </a-col>
+    </a-row>
 </template>
 <script lang="ts" setup>
 import {createExportImage} from "@/components/CardNote/ExportImage";
@@ -82,6 +94,8 @@ defineProps({
 });
 
 const emits = defineEmits(['update', 'remove']);
+
+const user = utools.getUser();
 
 function prettyDate(date: Date | string | number) {
     return toDateString(date);
@@ -117,5 +131,16 @@ function copy(record: DbRecord<NoteContent>) {
 }
 
 </script>
-<style>
+<style scoped lang="less">
+.card-note {
+    flex-wrap: nowrap;
+    .avatar {
+        padding-top: 16px;
+        padding-left: 8px;
+    }
+
+    .create-time {
+        font-size: 0.8rem;
+    }
+}
 </style>

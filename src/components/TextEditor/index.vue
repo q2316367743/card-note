@@ -24,7 +24,7 @@
                         </a-button>
                     </Tooltip>
                     <Dropdown>
-                        <a-button :disabled="disabledAi">
+                        <a-button v-if="!disabledAi">
                             <template #icon>
                                 <IconApps :size="16"/>
                             </template>
