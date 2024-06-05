@@ -209,6 +209,7 @@ export const utools = {
     onPluginEnter(callback: (action: { code: string, type: string, payload: any }) => void): void {
         document.addEventListener('load', () => callback({code: 'application', type: '', payload: {}}));
     },
+    onPluginDetach(){},
     showOpenDialog(options: ShowOpenDialogOption): (string[]) | (undefined) {
         MessageUtil.warning("web环境不支持打开文件操作，请使用utools版本");
         return [];

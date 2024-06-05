@@ -29,6 +29,8 @@ watch(() => devTool.value, value => value ? eruda.init() : eruda.destroy());
 export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS,10);
 export const fontSize = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_SIZE, 14);
 export const fontFamily = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_FAMILY, '')
+// 是否分离
+export const detach = ref(window.utools ? window.utools.getWindowType() !== 'main' : true);
 
 export const useAppStore = defineStore('app', () => {
     const themeType = ref(0);

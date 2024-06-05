@@ -1,6 +1,6 @@
 <template>
-    <a-row :gutter="16" v-if="record" :key="record.record.id" class="card-note">
-        <a-col flex="40px">
+    <a-row :gutter="8" v-if="record" :key="record.record.id" class="card-note">
+        <a-col flex="48px">
             <div class="avatar">
                 <a-avatar v-if="record.record.role === 'robot'" :image-url="IconChatgpt">
                     <icon-robot/>
@@ -143,7 +143,7 @@ function copy(record: DbRecord<NoteContent>) {
 
     .avatar {
         padding-top: 16px;
-        padding-left: 8px;
+        padding-left: 16px;
     }
 
     .create-time {

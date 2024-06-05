@@ -291,7 +291,7 @@ function addPlaceholder(prefix: string) {
 
 const tags = computed(() => Array.from(useTagStore().tags));
 
-function onSearch(value: string, prefix: string) {
+function onSearch(_value: string, prefix: string) {
     if (prefix === '#') {
         options.value = tags.value;
     } else if (prefix === '@') {
@@ -308,7 +308,6 @@ function onSearch(value: string, prefix: string) {
         options.value = [];
     }
 }
-
 
 </script>
 <style scoped>

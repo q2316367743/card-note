@@ -4,7 +4,7 @@
             <a-list @reach-bottom="fetchData()" :scrollbar="false" :bordered="false"
                     :max-height="height" :split="false">
                 <template #scroll-loading>
-                    <p v-if="bottom">没有更多的笔记了</p>
+                    <p v-if="bottom">人家也是有底线的[○･｀Д´･ ○]</p>
                     <a-spin v-else/>
                 </template>
                 <input-box @add="onAdd" class="card"/>
@@ -49,14 +49,13 @@
     </a-layout>
 </template>
 <script lang="ts" setup>
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {useWindowSize} from "@vueuse/core";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import InputBox from "@/pages/home/module/InputBox.vue";
 import CardNote from "@/components/CardNote/index.vue";
 import {openNoteInfo} from "@/pages/note";
-import {useTagStore} from "@/store/TagStore";
 import {
     useNoteStore,
     useOpenNoteEvent,
@@ -90,8 +89,7 @@ const backTopInstance = ref<BackTopInstance | null>(null);
 
 // 是否是手机客户端
 const isMobile = computed(() => useAppStore().isMobile);
-const height = computed(() => size.height.value - 39 - (isMobile.value ? 40 : 0));
-const tags = computed(() => useTagStore().tags);
+const height = computed(() => size.height.value - 33 - (isMobile.value ? 40 : 0));
 const allIds = computed(() => useNoteStore().allIds())
 const noteLength = computed(() => allIds.value.length);
 const minDay = computed(() => Math.min(...allIds.value, new Date().getTime()));

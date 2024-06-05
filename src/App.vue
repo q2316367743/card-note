@@ -29,7 +29,7 @@
                 </a-menu-item>
             </a-menu>
         </a-layout-sider>
-        <a-layout-content :class="isMobile ? 'container mobile' : 'container'">
+        <a-layout-content :class="{container: true, mobile: isMobile, detach: detach}">
             <router-view/>
         </a-layout-content>
         <a-layout-footer v-if="isMobile" class="footer">
@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
-import {useAppStore} from "@/store/AppStore";
+import {detach, useAppStore} from "@/store/AppStore";
 import {useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/MessageUtil";
 
@@ -85,6 +85,10 @@ utools.onPluginEnter(action => {
                 })));
     }
 });
+utools.onPluginDetach(() => {
+    console.log('分离窗口')
+    detach.value = true;
+})
 
 function handleTheme() {
     if (useAppStore().isDarkColors()) {
