@@ -5,6 +5,7 @@ import Constant from "@/global/Constant";
 import axios from "axios";
 
 const store = createStore("utools", Constant.id);
+const attachment = createStore("utools", Constant.id);
 
 // 模拟utools声明
 

@@ -35,7 +35,7 @@ export async function askMultiToAi(question: string, records: Array<DbRecord<Not
         noteId: 0,
         relationId: e.record.id,
         type: 'REFERENCE'
-    })), false, 'robot');
+    })), 'robot');
 }
 
 /**

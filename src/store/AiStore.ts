@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
-import {computed, ref, shallowRef, toRaw} from "vue";
-import {AiPlaceholder, AiSetting, getDefaultAiSetting} from "@/entity/AiSetting";
+import {computed, ref, shallowRef} from "vue";
+import {AiSetting, getDefaultAiSetting} from "@/entity/AiSetting";
 import {DbRecord, getFromOneByAsync, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {askCommentToAi, askMultiToAi, askToAi} from "@/components/AiService";
@@ -20,16 +20,6 @@ export const useAiStore = defineStore("ai", () => {
     const disabled = computed(() =>
         aiSetting.value.url.trim() === '' ||
         aiSetting.value.token.trim() === '');
-
-    const placeholders = computed(() => ([
-        {
-            label: '帮我润色',
-            prefix: '帮我润色：'
-        },
-        ...(aiSetting.value.placeholders || [])
-    ]))
-
-
 
     function buildOpenAi() {
         openAi.value = null;
@@ -62,16 +52,13 @@ export const useAiStore = defineStore("ai", () => {
         if (disabled.value) {
             return;
         }
-        for (let placeholder of placeholders.value) {
 
-            if (content.startsWith(placeholder.prefix)) {
-                MessageUtil.info("正在询问AI...");
-                askToAi(id).then(() => {
-                    MessageUtil.success(`笔记【${id}】AI处理完成`)
-                    useRefreshNoteEvent.emit([id]);
-                });
-                return;
-            }
+        if (content.startsWith(AI_ASSISTANT)) {
+            MessageUtil.info("正在询问AI...");
+            askToAi(id).then(() => {
+                MessageUtil.success(`笔记【${id}】AI处理完成`)
+                useRefreshNoteEvent.emit([id]);
+            });
         }
     }
 
@@ -105,40 +92,10 @@ export const useAiStore = defineStore("ai", () => {
     }
 
 
-
-
-
-    async function addPlaceholder(placeholder: AiPlaceholder) {
-        if (placeholders.value.some(e => e.prefix === placeholder.prefix)) {
-            return Promise.reject("存在重复的占位符");
-        }
-        placeholder = toRaw(placeholder);
-        aiSetting.value.placeholders ? aiSetting.value.placeholders.push(placeholder) : aiSetting.value.placeholders = [placeholder];
-        return save(aiSetting.value);
-    }
-
-    async function updatePlaceholder(index: number, placeholder: AiPlaceholder) {
-        const newIndex = placeholders.value.findIndex(e => e.prefix === placeholder.prefix);
-        if (newIndex !== index && newIndex !== -1) {
-            return Promise.reject("存在重复的占位符");
-        }
-        placeholder = toRaw(placeholder);
-        index -= 1;
-        aiSetting.value.placeholders[index] = placeholder;
-        return save(aiSetting.value);
-    }
-
-    async function removePlaceholder(index: number) {
-        index -= 1;
-        aiSetting.value.placeholders.splice(index, 1);
-        return save(aiSetting.value);
-    }
-
     return {
-        aiSetting, placeholders, disabled,openAi,model,
+        aiSetting, disabled, openAi, model,
         init, save,
         ask, askMulti, askByComment,
-        addPlaceholder, updatePlaceholder, removePlaceholder
     };
 
 });

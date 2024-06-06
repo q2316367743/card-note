@@ -7,17 +7,17 @@
 import {useNoteStore} from "@/store/NoteStore";
 import MessageUtil from "@/utils/MessageUtil";
 import TextEditor from "@/components/TextEditor/index.vue";
-import {NoteRelation} from "@/entity/Note";
+import {NoteAdd} from "@/entity/Note";
 
 const emits = defineEmits(['add']);
 
 
-function add(content: string, relationNotes: Array<NoteRelation>) {
-    if (!content) {
+function add(note: NoteAdd) {
+    if (!note.content) {
         MessageUtil.warning("请输入内容");
         return;
     }
-    useNoteStore().add(content, relationNotes)
+    useNoteStore().add(note.content, note.relationNotes, note.role)
         .then(content => {
             try {
                 LA.track('create_note');

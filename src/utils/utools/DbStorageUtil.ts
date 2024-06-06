@@ -1,5 +1,6 @@
 import {toRaw} from "vue";
 import {clone} from "xe-utils";
+import {visitorAvatar} from "@/store/RoleStore";
 
 // 对象
 
@@ -144,7 +145,9 @@ export async function saveOneByAsync<T>(key: string, value: T, rev?: string, err
 export async function removeOneByAsync(key: string, ignoreError: boolean = false): Promise<void> {
     const res = await utools.db.promises.remove(key);
     if (res.error) {
-        if (!ignoreError) {
+        if (ignoreError) {
+            console.error(res);
+        }else {
             return Promise.reject(res.message);
         }
     }
@@ -197,11 +200,26 @@ export async function postAttachment(docId: string, attachment: Blob | File): Pr
  * @param docId 附件ID
  * @return 附件链接
  */
-export async function getAttachment(docId: string): Promise<string> {
+export async function getAttachmentAsync(docId: string): Promise<string> {
     const data = await utools.db.promises.getAttachment(docId);
     if (!data) {
         return Promise.resolve("./logo.png")
     }
     const blob = new Blob([data]);
     return Promise.resolve(window.URL.createObjectURL(blob));
+}
+
+
+/**
+ *  获取附件
+ * @param docId 附件ID
+ * @return 附件链接
+ */
+export function getAttachmentSync(docId: string): string {
+    const data = utools.db.getAttachment(docId);
+    if (!data) {
+        return visitorAvatar;
+    }
+    const blob = new Blob([data]);
+    return window.URL.createObjectURL(blob);
 }

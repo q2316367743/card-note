@@ -26,7 +26,7 @@ export interface NoteIndex {
      * 笔记角色
      * @default user
      */
-    role?: NoteRole;
+    role?: NoteRole | string;
 
 }
 
@@ -73,3 +73,23 @@ export interface NoteRelation {
 
 export type NoteRelationType = 'COMMENT' | 'REFERENCE';
 
+// 笔记新增
+export interface NoteAdd {
+
+    /**
+     * 笔记角色
+     * @default user
+     */
+    role?: NoteRole;
+
+    /**
+     * 内容
+     */
+    content: string;
+
+    /**
+     * 关联笔记
+     */
+    relationNotes: Array<NoteRelation>;
+
+}

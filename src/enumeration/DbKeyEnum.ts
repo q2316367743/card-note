@@ -16,11 +16,16 @@ enum DbKeyEnum {
 
     KEY_VERSION = '/key/version',
 
+
     SETTING_SYNC = '/setting/sync',
 
     SETTING_AI = '/setting/ai',
 
     KEY_CHAT_MODELS = '/key/chat/models',
+
+    SETTING_ROLE_CUSTOMER = '/setting/role/customer',
+
+    SETTING_ROLE_MYSELF = '/setting/role/myself',
 
 }
 

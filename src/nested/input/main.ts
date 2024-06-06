@@ -6,9 +6,7 @@ import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-design/web-vue/dist/arco.css';
 
-import "@/less/main.less";
-import "@/less/post.less";
-import "@/less/customer.less";
+import "@/assets/less/index.less";
 import "highlight.js/styles/github.css";
 
 // 额外引入图标库

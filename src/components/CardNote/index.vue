@@ -2,15 +2,7 @@
     <a-row :gutter="8" v-if="record" :key="record.record.id" class="card-note">
         <a-col flex="48px">
             <div class="avatar">
-                <a-avatar v-if="record.record.role === 'robot'" :image-url="IconChatgpt">
-                    <icon-robot/>
-                </a-avatar>
-                <a-avatar v-else-if="user" :image-url="user.avatar">
-                    <icon-user/>
-                </a-avatar>
-                <a-avatar v-else>
-                    <icon-user/>
-                </a-avatar>
+                <role-avatar :icon="record.record.role" />
             </div>
         </a-col>
         <a-col flex="auto">
@@ -88,7 +80,7 @@ import MessageBoxUtil from "@/utils/MessageBoxUtil";
 import {toDateString} from "xe-utils";
 import {openNoteInfo} from "@/pages/note";
 import {openNoteRelation} from "@/pages/note/relation";
-import IconChatgpt from '@/assets/images/icon-chatgpt.png';
+import RoleAvatar from "@/components/RoleAvatar/index.vue";
 
 defineProps({
     record: Object as PropType<DbRecord<NoteContent>>,
@@ -99,8 +91,6 @@ defineProps({
 });
 
 const emits = defineEmits(['update', 'remove']);
-
-const user = utools.getUser();
 
 
 function prettyDate(date: Date | string | number) {

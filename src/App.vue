@@ -71,6 +71,7 @@ useAppStore().init();
 import("@/store/TagStore").then(res => res.useTagStore().init());
 import("@/store/SyncStore").then(res => res.useSyncStore().init());
 import("@/store/AiStore").then(res => res.useAiStore().init());
+import("@/store/RoleStore").then(res => res.useRoleStore().init());
 
 
 utools.onPluginEnter(action => {

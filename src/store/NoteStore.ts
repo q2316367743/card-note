@@ -134,7 +134,8 @@ export const useNoteStore = defineStore('note', () => {
         return listRecordByAsync<NoteContent>(ids.map(id => `${DbKeyEnum.NOTE_ITEM}/${id}`));
     }
 
-    async function add(content: string, relationNotes: Array<NoteRelation>, ai: boolean = true, role: NoteRole = 'user'): Promise<NoteContent> {
+    async function add(content: string, relationNotes: Array<NoteRelation>, role: NoteRole = 'user'): Promise<NoteContent> {
+        console.log(content, relationNotes, role)
         const now = new Date().getTime();
         const noteIndex: NoteIndex = {
             id: now,
@@ -174,11 +175,6 @@ export const useNoteStore = defineStore('note', () => {
         // 最后增加索引
         indexes.value.unshift(noteIndex);
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
-
-        if (ai) {
-            // AI功能
-            useAiStore().ask(noteIndex.id, content);
-        }
 
         // 自动同步事件
         useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});
