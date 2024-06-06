@@ -8,11 +8,7 @@ export interface Role {
     id: number;
 
     /**
-     * 角色图标
-     * 链接图标：http://
-     * 链接图标：https://
-     * 文件图标：file://
-     * 附件图标：attachment://
+     * 角色图标，只有两种：链接|附件
      */
     avatar: string;
 

@@ -1,17 +1,19 @@
 <template>
-    <div>
-        <a-avatar v-if="robot" :image-url="IconChatgpt">
+    <div class="role-avatar" @click="onClick">
+        <!-- 机器人 -->
+        <a-avatar v-if="robot" :image-url="IconChatgpt" title="AI">
             <icon-robot/>
         </a-avatar>
-        <a-avatar v-else :image-url="url" :size>
+        <!-- 用户、自己 -->
+        <a-avatar v-else :image-url="url" :size :title="role ? role.name : ''">
             <icon-user/>
         </a-avatar>
     </div>
 </template>
 <script lang="ts">
-import {useRoleAvatarCache} from "@/store/RoleStore";
+import {useRoleAvatarCache} from "@/components/RoleAvatar/store";
 import {defineComponent, ref, watch} from "vue";
-import {ROBOT, USER} from "@/entity/Role";
+import {ROBOT, Role, USER} from "@/entity/Role";
 import IconChatgpt from '@/assets/images/icon-chatgpt.png';
 
 const {getAvatar} = useRoleAvatarCache();
@@ -27,20 +29,30 @@ export default defineComponent({
     },
     setup(props) {
         const url = ref('');
+        const role = ref<Role>()
         const robot = props.icon === ROBOT;
 
         watch(() => props.icon, value => {
             if (robot) {
                 return
             }
-            getAvatar(value).then(res => url.value = res);
-        }, {immediate: true})
+            getAvatar(value).then(res => {
+                url.value = res.avatar;
+                role.value = res;
+            });
+        }, {immediate: true});
 
-        return {url, robot, IconChatgpt};
+        function onClick() {
+            console.log('点击角色，进行角色筛选')
+        }
+
+        return {url, robot, role, IconChatgpt, onClick};
     }
 })
 
 </script>
 <style scoped>
-
+.role-avatar {
+    cursor: pointer;
+}
 </style>

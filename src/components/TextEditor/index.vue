@@ -47,7 +47,7 @@
             <a-space>
                 <a-select v-model="role" :options="roleOptions">
                     <template #label="{ data }">
-                        <role-avatar :icon="data.avatar" :size="18"/>
+                        <role-avatar :icon="data.value === 'user' ? 'user' : data.avatar" :size="18"/>
                         <span style="margin-left: 4px">{{ data.label }}</span>
                     </template>
                 </a-select>
