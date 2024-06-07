@@ -13,7 +13,6 @@ import {utools, preload} from "@/plugin/utools";
 
 import '@arco-design/web-vue/dist/arco.css';
 import "@/assets/less/index.less";
-import "highlight.js/styles/github.css";
 
 // utools挂载
 window.isUtools = !!window.utools;

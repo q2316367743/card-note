@@ -28,7 +28,17 @@ watch(() => devTool.value, value => value ? eruda.init() : eruda.destroy());
 
 export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS,10);
 export const fontSize = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_SIZE, 14);
-export const fontFamily = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_FAMILY, '')
+export const fontFamily = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_FAMILY, "'JetBrains Mono', '霞鹜文楷 GB'");
+
+export const fontSizeWrap = computed(() => fontSize.value + 'px');
+const defaultFontFamily = '苹方, 微软雅黑, serif';
+export const fontFamilyWrap = computed(() => {
+    const res = fontFamily.value.trim();
+    if (res) {
+        return fontFamily.value + ',' + defaultFontFamily;
+    }
+    return defaultFontFamily;
+});
 // 是否分离
 export const detach = ref(window.utools ? window.utools.getWindowType() !== 'main' : true);
 

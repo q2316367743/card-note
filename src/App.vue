@@ -2,7 +2,8 @@
     <a-layout class="main">
         <link type="text/css" rel="stylesheet" :href="href"/>
         <a-layout-sider collapsed style="z-index: 50" v-if="!isMobile">
-            <a-menu style="width: 200px;height: 100%;" breakpoint="xl" v-model:selected-keys="selectedKeys">
+            <a-menu breakpoint="xl" v-model:selected-keys="selectedKeys" class="main-side" collapsed
+                    :collapsed-width="48">
                 <a-menu-item key="/home">
                     <template #icon>
                         <icon-home/>
@@ -29,7 +30,7 @@
                 </a-menu-item>
             </a-menu>
         </a-layout-sider>
-        <a-layout-content :class="{container: true, mobile: isMobile, detach: detach}">
+        <a-layout-content :class="{container: true, mobile: isMobile, detach: detach, 'bg-color': true}">
             <router-view/>
         </a-layout-content>
         <a-layout-footer v-if="isMobile" class="footer">

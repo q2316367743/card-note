@@ -1,10 +1,20 @@
 import styled from 'vue3-styled-components';
 import {computed, createApp, nextTick, ref, watch} from "vue";
 import {toDateString} from "xe-utils";
-import {Avatar, Button, ButtonGroup, Card, Empty, List, ListItem, PageHeader} from "@arco-design/web-vue";
+import ArcoVue, {
+    Avatar,
+    Button,
+    ButtonGroup,
+    Card,
+    Empty,
+    List,
+    ListItem,
+    PageHeader,
+    Tooltip
+} from "@arco-design/web-vue";
 import {useAppStore} from "@/store/AppStore";
 import {NoteContent, NoteRelation} from "@/entity/Note";
-import {IconEdit, IconExport, IconMessage} from "@arco-design/web-vue/es/icon";
+import ArcoVueIcon, {IconEdit, IconExport, IconMessage, IconPlus} from "@arco-design/web-vue/es/icon";
 
 import {createExportImage} from "@/components/CardNote/ExportImage";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
@@ -16,6 +26,7 @@ import MessageUtil from "@/utils/MessageUtil";
 import {useAiStore} from "@/store/AiStore";
 import html2canvas from "html2canvas";
 import {downloadByUrl} from "@/utils/BrowserUtil";
+import {openCommentBox} from "@/pages/home/module/CommentBox";
 
 const NoteInfo = styled.div`
     position: fixed;
@@ -23,7 +34,6 @@ const NoteInfo = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--color-bg-1);
     color: var(--color-text-1);
 `;
 
@@ -70,7 +80,6 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
 
     const noteContent = ref(record.record);
     const commentNotes = ref<Array<NoteContent>>(new Array<NoteContent>());
-    const sharing = ref(false);
     const shareElement = ref<any>();
 
     const divElement = document.createElement("div");
@@ -101,52 +110,6 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             }).catch(e => MessageUtil.error("更新失败", e))
     }
 
-    function onSave(content: string, relationNotes: Array<NoteRelation>) {
-        if (!content) {
-            MessageUtil.warning("请输入内容");
-            return;
-        }
-        relationNotes = [
-            ...relationNotes,
-            {
-                noteId: 0,
-                relationId: noteContent.value.id,
-                type: 'COMMENT'
-            }
-        ];
-        useNoteStore().add(content, relationNotes)
-            .then(content => {
-                MessageUtil.success("新增成功");
-                // 更新自身数据
-                useNoteStore().getOne(noteContent.value.id)
-                    .then(res => {
-                        if (res) {
-                            noteContent.value = res.record;
-                            record.record = res.record;
-                            record.rev = res.rev;
-                        }
-                    });
-                useRefreshNoteEvent.emit();
-                useAiStore().askByComment(noteContent.value.content, {record: content})
-                    .then(() => {
-                        // 更新这个评论
-                        for (let i = 0; i < commentNotes.value.length; i++) {
-                            let commentNote = commentNotes.value[i];
-                            if (commentNote.id === content.id) {
-                                // 重新获取
-                                useNoteStore().getOne(commentNote.id)
-                                    .then(res => {
-                                        if (res) {
-                                            commentNotes.value[i] = res.record;
-                                        }
-                                    })
-                            }
-                        }
-                    })
-            })
-            .catch(e => MessageUtil.error("新增失败", e));
-    }
-
 
     // 处理评论
     const commentIds = computed(() => noteContent.value.relationNotes
@@ -161,7 +124,6 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
 
     function share() {
         // html2canvas()
-        sharing.value = true;
         nextTick(() => {
             if (!shareElement.value) {
                 return;
@@ -172,18 +134,15 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                 allowTaint: true
             }).then(canvas => {
                 downloadByUrl(canvas.toDataURL(), "分享详情.png");
-                sharing.value = false;
             })
         })
     }
 
     const app = createApp({
-        render: () => <NoteInfo>
+        render: () => <NoteInfo class={'bg-color'}>
             <PageHeader title="卡片笔记" subtitle={toDateString(noteContent.value.id)} onBack={close}>
                 {{
-                    extra: () => <Button type={'text'} onClick={share}>
-                        分享
-                    </Button>
+                    extra: () => <Button type={'text'} onClick={share}>分享</Button>
                 }}
             </PageHeader>
             <Container>
@@ -209,20 +168,27 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                                 {user && <span style={{marginLeft: '4px'}}>{user.nickname}</span>}
                             </BottomLeft>
                             <ButtonGroup type={"text"}>
-                                <Button onClick={() => onUpdate(record)}>
-                                    {{
+                                <Tooltip content={'新增评论'}>
+                                    <Button onClick={() => openCommentBox(record, () => {
+                                        // TODO：更新自身数据
+                                    }).then(update)}>{{
+                                        icon: () => <IconPlus/>
+                                    }}</Button>
+                                </Tooltip>
+                                <Tooltip content={'编辑笔记'}>
+                                    <Button onClick={() => onUpdate(record)}>{{
                                         icon: () => <IconEdit/>
-                                    }}
-                                </Button>
-                                <Button onClick={() => createExportImage(noteContent.value)}>
-                                    {{
+                                    }}</Button>
+                                </Tooltip>
+                                <Tooltip content={'分享'}>
+                                    <Button onClick={() => createExportImage(noteContent.value)}>{{
                                         icon: () => <IconExport/>
-                                    }}
-                                </Button>
+                                    }}</Button>
+                                </Tooltip>
                             </ButtonGroup>
                         </Bottom>
                     </Card>
-                    <Card style="margin: 7px 0 0;"  class={'card'}>
+                    <Card style="margin: 7px 0 0;" class={'card'}>
                         {commentNotes.value.length > 0 && <div style={{marginBottom: '14px'}}>
                             <IconMessage/> 评论 ({commentNotes.value.length})
                         </div>}
@@ -234,7 +200,6 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
                                 empty: () => <Empty>暂无评论</Empty>
                             }}
                         </List>
-                        {sharing.value ? <></> : <TextEditor noteId={noteContent.value.id} onSave={onSave} ai/>}
                     </Card>
                 </Content>
             </Container>
@@ -243,6 +208,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             theme: useAppStore().dark ? 'dark' : 'light'
         }
     });
+    app.use(ArcoVue).use(ArcoVueIcon);
     app.mount(divElement);
 
     document.body.append(divElement);
