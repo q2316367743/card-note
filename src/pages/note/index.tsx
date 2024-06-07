@@ -1,18 +1,18 @@
 import styled from 'vue3-styled-components';
-import {computed, createApp, nextTick, ref, watch} from "vue";
+import {App, computed, createApp, nextTick, ref, watch} from "vue";
 import {toDateString} from "xe-utils";
 import ArcoVue, {
     Avatar,
     Button,
     ButtonGroup,
-    Card,
+    Card, Drawer,
     Empty,
     List,
     ListItem,
     PageHeader,
     Tooltip
 } from "@arco-design/web-vue";
-import {useAppStore} from "@/store/AppStore";
+import {detach, useAppStore} from "@/store/AppStore";
 import {NoteContent, NoteRelation} from "@/entity/Note";
 import ArcoVueIcon, {IconEdit, IconExport, IconMessage, IconPlus} from "@arco-design/web-vue/es/icon";
 
@@ -82,14 +82,16 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
     const commentNotes = ref<Array<NoteContent>>(new Array<NoteContent>());
     const shareElement = ref<any>();
 
-    const divElement = document.createElement("div");
+    let app: App | null = null
+    const el = ref<HTMLDivElement>();
+
     const user = utools.getUser();
 
     function close() {
         // 组件取消挂载
-        app.unmount();
+        app && app.unmount();
         // 销毁元素
-        divElement.remove();
+        modalReturn.close();
     }
 
     function onUpdate(record: DbRecord<NoteContent>) {
@@ -138,79 +140,91 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
         })
     }
 
-    const app = createApp({
-        render: () => <NoteInfo class={'bg-color'}>
-            <PageHeader title="卡片笔记" subtitle={toDateString(noteContent.value.id)} onBack={close}>
-                {{
-                    extra: () => <Button type={'text'} onClick={share}>分享</Button>
-                }}
-            </PageHeader>
-            <Container>
-                <Content ref={shareElement}>
-                    <Card class="card no-padding" style={{margin: '0'}}>
-                        <NotePreview content={noteContent.value} ellipsis={false}/>
-                    </Card>
-                    <Card style="margin: 7px 0 0;" class={'card'}>
-                        <Bottom>
-                            <BottomLeft>
-                                <span style={{color: 'var(--color-neutral-8)'}}>#{noteContent.value.id}</span>
-                                <div style={{marginTop: '4px'}}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                         height="24" viewBox="0 0 24 24"
-                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                         stroke-linejoin="round" class="w-4 h-auto text-gray-400 dark:text-zinc-400">
-                                        <circle cx="12.1" cy="12.1" r="1"></circle>
-                                    </svg>
-                                </div>
-                                {user && <div>
-                                    <Avatar imageUrl={user.avatar} size={20}/>
-                                </div>}
-                                {user && <span style={{marginLeft: '4px'}}>{user.nickname}</span>}
-                            </BottomLeft>
-                            <ButtonGroup type={"text"}>
-                                <Tooltip content={'新增评论'}>
-                                    <Button onClick={() => openCommentBox(record, () => {
-                                        // TODO：更新自身数据
-                                    }).then(update)}>{{
-                                        icon: () => <IconPlus/>
-                                    }}</Button>
-                                </Tooltip>
-                                <Tooltip content={'编辑笔记'}>
-                                    <Button onClick={() => onUpdate(record)}>{{
-                                        icon: () => <IconEdit/>
-                                    }}</Button>
-                                </Tooltip>
-                                <Tooltip content={'分享'}>
-                                    <Button onClick={() => createExportImage(noteContent.value)}>{{
-                                        icon: () => <IconExport/>
-                                    }}</Button>
-                                </Tooltip>
-                            </ButtonGroup>
-                        </Bottom>
-                    </Card>
-                    <Card style="margin: 7px 0 0;" class={'card'}>
-                        {commentNotes.value.length > 0 && <div style={{marginBottom: '14px'}}>
-                            <IconMessage/> 评论 ({commentNotes.value.length})
-                        </div>}
-                        <List style="margin: 7px 0;">
-                            {{
-                                default: () => commentNotes.value.map(note => <ListItem>
-                                    <NotePreview content={note} commentId={noteContent.value.id}/>
-                                </ListItem>),
-                                empty: () => <Empty>暂无评论</Empty>
-                            }}
-                        </List>
-                    </Card>
-                </Content>
-            </Container>
-        </NoteInfo>,
-        provide: {
-            theme: useAppStore().dark ? 'dark' : 'light'
-        }
-    });
-    app.use(ArcoVue).use(ArcoVueIcon);
-    app.mount(divElement);
+    const render = () => <NoteInfo class={{'bg-color': true, 'detach': detach.value}}>
+        <PageHeader title="卡片笔记" subtitle={toDateString(noteContent.value.id)} onBack={close}>
+            {{
+                extra: () => <Button type={'text'} onClick={share}>分享</Button>
+            }}
+        </PageHeader>
+        <Container>
+            <Content ref={shareElement}>
+                <Card class="card no-padding" style={{margin: '0'}}>
+                    <NotePreview content={noteContent.value} ellipsis={false}/>
+                </Card>
+                <Card style="margin: 7px 0 0;" class={'card'}>
+                    <Bottom>
+                        <BottomLeft>
+                            <span style={{color: 'var(--color-neutral-8)'}}>#{noteContent.value.id}</span>
+                            <div style={{marginTop: '4px'}}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                     height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" class="w-4 h-auto text-gray-400 dark:text-zinc-400">
+                                    <circle cx="12.1" cy="12.1" r="1"></circle>
+                                </svg>
+                            </div>
+                            {user && <div>
+                                <Avatar imageUrl={user.avatar} size={20}/>
+                            </div>}
+                            {user && <span style={{marginLeft: '4px'}}>{user.nickname}</span>}
+                        </BottomLeft>
+                        <ButtonGroup type={"text"}>
+                            <Tooltip content={'新增评论'}>
+                                <Button onClick={() => openCommentBox(record, () => {
+                                    // TODO：更新自身数据
+                                }).then(update)}>{{
+                                    icon: () => <IconPlus/>
+                                }}</Button>
+                            </Tooltip>
+                            <Tooltip content={'编辑笔记'}>
+                                <Button onClick={() => onUpdate(record)}>{{
+                                    icon: () => <IconEdit/>
+                                }}</Button>
+                            </Tooltip>
+                            <Tooltip content={'分享'}>
+                                <Button onClick={() => createExportImage(noteContent.value)}>{{
+                                    icon: () => <IconExport/>
+                                }}</Button>
+                            </Tooltip>
+                        </ButtonGroup>
+                    </Bottom>
+                </Card>
+                <Card style="margin: 7px 0 0;" class={'card'}>
+                    {commentNotes.value.length > 0 && <div style={{marginBottom: '14px'}}>
+                        <IconMessage/> 评论 ({commentNotes.value.length})
+                    </div>}
+                    <List style="margin: 7px 0;">
+                        {{
+                            default: () => commentNotes.value.map(note => <ListItem>
+                                <NotePreview content={note} commentId={noteContent.value.id}/>
+                            </ListItem>),
+                            empty: () => <Empty>暂无评论</Empty>
+                        }}
+                    </List>
+                </Card>
+            </Content>
+        </Container>
+    </NoteInfo>;
 
-    document.body.append(divElement);
+    watch(el, value => {
+        if (value && !app) {
+            app = createApp({render});
+            app.use(ArcoVue).use(ArcoVueIcon);
+            app.mount(value);
+        }else {
+
+        }
+    })
+
+    const modalReturn = Drawer.open({
+        footer: false,
+        header: false,
+        mask: false,
+        width: '100vw',
+        content: () => <div ref={el}/>,
+        onBeforeClose() {
+            app && app.unmount();
+        },
+    });
 
 }
