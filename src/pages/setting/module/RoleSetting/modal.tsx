@@ -25,7 +25,7 @@ function buildForm(data: Ref<Role>, avatar: Ref<string>, customerUpload: (option
     </Form>;
 }
 
-export function showAddModal() {
+export function showAddRoleModal() {
     const data = ref<Role>(buildDefaultRole());
     const avatar = ref(data.value.avatar);
     const fileWrap = shallowRef<File>()

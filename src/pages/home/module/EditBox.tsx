@@ -7,10 +7,11 @@ import {createApp, ref, watch, App} from "vue";
 import ArcoVueIcon from "@arco-design/web-vue/es/icon";
 
 export function openEditBox(record: DbRecord<NoteContent>): Promise<Array<number>> {
+    const sourceRole = record.record.role;
     return new Promise<Array<number>>((resolve, reject) => {
         function update(content: string, relationNotes: Array<NoteRelation>) {
-            // 此处更新后变为用户
-            record.record.role = 'user';
+            // 更新不能修改角色
+            record.record.role = sourceRole;
             useNoteStore().update(record, content, relationNotes)
                 .then(resolve).catch(reject).finally(modalReturn.close)
         }
@@ -24,7 +25,7 @@ export function openEditBox(record: DbRecord<NoteContent>): Promise<Array<number
                 app = createApp({
                     render() {
                         return <TextEditor content={record.record.content} relationNotes={record.record.relationNotes}
-                                           noteId={record.record.id} onSave={update}/>
+                                           noteId={record.record.id} onSave={update} allowRole={false}/>
                     }
                 });
                 app.use(ArcoVue).use(ArcoVueIcon);

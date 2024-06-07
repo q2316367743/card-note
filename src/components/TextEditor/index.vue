@@ -45,10 +45,15 @@
                 </a-space>
             </a-button-group>
             <a-space>
-                <a-select v-model="role" :options="roleOptions">
+                <a-select v-model="role" :options="roleOptions" v-if="allowRole">
                     <template #label="{ data }">
                         <role-avatar :icon="data.value === 'user' ? 'user' : data.avatar" :size="18"/>
                         <span style="margin-left: 4px">{{ data.label }}</span>
+                    </template>
+                    <template #footer>
+                        <div style="width: 100%;text-align: center;padding: 6px 0">
+                            <a-button type="primary" @click="showAddRoleModal()">新增</a-button>
+                        </div>
                     </template>
                 </a-select>
                 <a-button type="primary" @click="add()">保存</a-button>
@@ -88,6 +93,7 @@ import {useNoteStore} from "@/store/NoteStore";
 import {useAiStore} from "@/store/AiStore";
 import {useRoleStore} from "@/store/RoleStore";
 import RoleAvatar from "@/components/RoleAvatar/index.vue";
+import {showAddRoleModal} from "@/pages/setting/module/RoleSetting/modal";
 
 const props = defineProps({
     content: String,
@@ -101,6 +107,10 @@ const props = defineProps({
         required: false,
         default: 0
     },
+    allowRole: {
+        type: Boolean,
+        default: true
+    }
 });
 
 const emits = defineEmits(['save']);

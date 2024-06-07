@@ -20,7 +20,7 @@
         </a-card>
         <a-card title="更多角色" class="general-card">
             <template #extra>
-                <a-button type="primary" @click="showAddModal()">新增角色</a-button>
+                <a-button type="primary" @click="showAddRoleModal()">新增角色</a-button>
             </template>
             <a-list :bordered="false">
                 <a-list-item v-for="role in roles" :key="role.id">
@@ -44,7 +44,7 @@
 <script lang="ts" setup>
 import {myself, useRoleStore} from "@/store/RoleStore";
 import RoleAvatar from "@/components/RoleAvatar/index.vue";
-import {showAddModal} from "@/pages/setting/module/RoleSetting/modal";
+import {showAddRoleModal} from "@/pages/setting/module/RoleSetting/modal";
 
 const {roles} = useRoleStore();
 

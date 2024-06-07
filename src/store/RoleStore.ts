@@ -6,6 +6,7 @@ import {computed, ref} from "vue";
 import {SelectOptionData} from "@arco-design/web-vue/es/select/interface";
 import {listByAsync, saveListByAsync} from "@/utils/utools/DbStorageUtil";
 import {map} from "@/utils/ArrayUtil";
+import {useSyncEvent} from "@/store/SyncStore";
 
 export const defaultAvatar = `${location.protocol}//${location.host}/logo.png`;
 export const visitorAvatar = `${location.protocol}//${location.host}/visitor.png`;
@@ -49,6 +50,9 @@ export const useRoleStore = defineStore('role', () => {
     async function add(res: Role) {
         roles.value.push(res);
         await sync();
+
+        // 自动同步事件
+        useSyncEvent.emit({key: DbKeyEnum.SETTING_ROLE_CUSTOMER, type: 'put'});
     }
 
     return {

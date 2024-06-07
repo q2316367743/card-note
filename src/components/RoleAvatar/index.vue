@@ -1,13 +1,17 @@
 <template>
     <div class="role-avatar" @click="onClick">
         <!-- 机器人 -->
-        <a-avatar v-if="robot" :image-url="IconChatgpt" title="AI">
-            <icon-robot/>
-        </a-avatar>
+        <a-tooltip v-if="robot" content="AI助手">
+            <a-avatar :image-url="IconChatgpt" title="AI助手">
+                <icon-robot/>
+            </a-avatar>
+        </a-tooltip>
         <!-- 用户、自己 -->
-        <a-avatar v-else :image-url="url" :size :title="role ? role.name : ''">
-            <icon-user/>
-        </a-avatar>
+        <a-tooltip v-else :content="role ? role.name : ''">
+            <a-avatar :image-url="url" :size :title="role ? role.name : ''">
+                <icon-user/>
+            </a-avatar>
+        </a-tooltip>
     </div>
 </template>
 <script lang="ts">
