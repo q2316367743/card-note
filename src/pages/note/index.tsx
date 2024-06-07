@@ -1,5 +1,5 @@
 import styled from 'vue3-styled-components';
-import {App, computed, createApp, nextTick, ref, watch} from "vue";
+import {App, computed, createApp, ref, watch} from "vue";
 import {toDateString} from "xe-utils";
 import ArcoVue, {
     Avatar,
@@ -13,17 +13,15 @@ import ArcoVue, {
     Tooltip
 } from "@arco-design/web-vue";
 import {detach, useAppStore} from "@/store/AppStore";
-import {NoteContent, NoteRelation} from "@/entity/Note";
+import {NoteContent} from "@/entity/Note";
 import ArcoVueIcon, {IconEdit, IconExport, IconMessage, IconPlus} from "@arco-design/web-vue/es/icon";
 
 import {createExportImage} from "@/components/CardNote/ExportImage";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
-import TextEditor from '@/components/TextEditor/index.vue';
-import {useNoteStore, useRefreshNoteEvent} from "@/store/NoteStore";
+import {useNoteStore} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {openEditBox} from "@/pages/home/module/EditBox";
 import MessageUtil from "@/utils/MessageUtil";
-import {useAiStore} from "@/store/AiStore";
 import html2canvas from "html2canvas";
 import {downloadByUrl} from "@/utils/BrowserUtil";
 import {openCommentBox} from "@/pages/home/module/CommentBox";
@@ -126,17 +124,15 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
 
     function share() {
         // html2canvas()
-        nextTick(() => {
-            if (!shareElement.value) {
-                return;
-            }
-            html2canvas(shareElement.value.$el as HTMLElement, {
-                backgroundColor: useAppStore().isDarkColors() ? '#2A2A2B' : '#ffffff',
-                useCORS: true,
-                allowTaint: true
-            }).then(canvas => {
-                downloadByUrl(canvas.toDataURL(), "分享详情.png");
-            })
+        if (!shareElement.value) {
+            return;
+        }
+        html2canvas(shareElement.value.$el as HTMLElement, {
+            backgroundColor: useAppStore().isDarkColors() ? '#2A2A2B' : '#ffffff',
+            useCORS: true,
+            allowTaint: true
+        }).then(canvas => {
+            downloadByUrl(canvas.toDataURL(), "分享详情.png");
         })
     }
 
@@ -211,7 +207,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
             app = createApp({render});
             app.use(ArcoVue).use(ArcoVueIcon);
             app.mount(value);
-        }else {
+        } else {
 
         }
     })
