@@ -51,7 +51,7 @@ export function useSubInput(initialValue: string = '', placeholder?: string, isF
 
     // 键盘按下的事件监听
     function handleKeyDown(e: KeyboardEvent) {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && subInput.value) {
             onSearchHook.trigger(subInput.value);
             e.preventDefault();
             e.stopPropagation();

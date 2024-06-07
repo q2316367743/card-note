@@ -1,8 +1,6 @@
 <template>
     <div>
-        <a-mention v-model="content" :data="options" type="textarea" placeholder="任何想法..."
-                   :prefix="['#', '@']" allow-clear :auto-size="{minRows: 2, maxRows: 8}" ref="textareaRef" split=" "
-                   @search="onSearch"/>
+        <markdown-editor style="min-height: 50px;max-height: 200px;" v-model="content" ref="editor"/>
         <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="(relationNote, index) in relationNotes" style="margin-top: 4px;" :key="relationNote.id">
                 <a-tag color="arcoblue" bordered closable @close="removeRelationNote(index)">
@@ -82,18 +80,16 @@
     </div>
 </template>
 <script lang="ts" setup>
-import {computed, nextTick, ref} from "vue";
+import {computed, ref} from "vue";
 
-import {getCursorPosition} from "@/utils/DomUtil";
-import {useTagStore} from "@/store/TagStore";
 import {NoteContent, NoteRelation} from "@/entity/Note";
 import {renderContent} from "@/utils/BrowserUtil";
 import {isNumber} from "xe-utils";
 import {useNoteStore} from "@/store/NoteStore";
-import {useAiStore} from "@/store/AiStore";
 import {useRoleStore} from "@/store/RoleStore";
 import RoleAvatar from "@/components/RoleAvatar/index.vue";
 import {showAddRoleModal} from "@/pages/setting/module/RoleSetting/modal";
+import MarkdownEditor from "@/components/TextEditor/MarkdownEditor.vue";
 
 const props = defineProps({
     content: String,
@@ -117,6 +113,7 @@ const emits = defineEmits(['save']);
 
 const content = ref(props.content || '');
 const relationNotes = ref<Array<NoteContent>>([]);
+const editor = ref();
 
 if (props.relationNotes) {
     useNoteStore().getMany(props.relationNotes
@@ -125,85 +122,24 @@ if (props.relationNotes) {
         .then(items => relationNotes.value = items.map(item => item.record));
 }
 
-const textareaRef = ref()
 const visible = ref(false);
 const relationId = ref("");
 const relationTempNotes = ref<Array<NoteContent>>([]);
 const loading = ref(false);
 const role = ref('user');
-const options = ref<Array<string>>([]);
 
 const roleOptions = computed(() => useRoleStore().roleOptions);
 
 function addCheckbox() {
-    if (!textareaRef.value) {
-        return;
-    }
-    const textarea = textareaRef.value.inputRef.$refs.textareaRef as HTMLTextAreaElement;
-    const cursorPosition = getCursorPosition(textarea);
-    const lines = content.value.split("\n");
-    lines[Math.max(cursorPosition - 1, 0)] = `- [ ] ${lines[Math.max(cursorPosition - 1, 0)]}`;
-    content.value = lines.join("\n");
-    nextTick(() => {
-        textarea.focus();
-        const start = lines.slice(0, cursorPosition).join("\n").length
-        textarea.setSelectionRange(start, start);
-    })
+    editor.value && editor.value.addCheckbox();
 }
 
 function addCode() {
-    if (!textareaRef.value) {
-        return;
-    }
-    const textarea = textareaRef.value.inputRef.$refs.textareaRef as HTMLTextAreaElement;
-
-    if (!content.value) {
-        content.value = '```\n\n```';
-        nextTick(() => {
-            textarea.focus();
-            textarea.setSelectionRange(4, 4);
-        });
-        return;
-    }
-
-    const cursorPosition = getCursorPosition(textarea);
-    const lines = content.value.split("\n");
-    lines[Math.max(cursorPosition - 1, 0)] += "\n```\n\n```";
-    content.value = lines.join("\n");
-    nextTick(() => {
-        textarea.focus();
-        const start = lines.slice(0, cursorPosition).join("\n").length - 4
-        textarea.setSelectionRange(start, start);
-    })
+    editor.value && editor.value.addCode();
 }
 
-const TABLE_TEMPLATE = '|  |  |\n|---|---|\n|  |  |';
-
 function addTable() {
-
-    if (!textareaRef.value) {
-        return;
-    }
-    const textarea = textareaRef.value.inputRef.$refs.textareaRef as HTMLTextAreaElement;
-
-    if (!content.value) {
-        content.value = TABLE_TEMPLATE;
-        nextTick(() => {
-            textarea.focus();
-            textarea.setSelectionRange(2, 2);
-        });
-        return;
-    }
-
-    const cursorPosition = getCursorPosition(textarea);
-    const lines = content.value.split("\n");
-    lines[Math.max(cursorPosition - 1, 0)] += ('\n' + TABLE_TEMPLATE);
-    content.value = lines.join("\n");
-    nextTick(() => {
-        textarea.focus();
-        const start = lines.slice(0, cursorPosition).join("\n").length - 23
-        textarea.setSelectionRange(start, start);
-    })
+    editor.value && editor.value.addTable();
 }
 
 function openAddRelation() {
@@ -256,21 +192,7 @@ function add() {
     relationNotes.value = [];
 }
 
-const tags = computed(() => Array.from(useTagStore().tags));
 
-function onSearch(_value: string, prefix: string) {
-    if (prefix === '#') {
-        options.value = tags.value;
-    } else if (prefix === '@') {
-        if (useAiStore().disabled) {
-            options.value = [];
-        } else {
-            options.value = ['AI助手 '];
-        }
-    } else {
-        options.value = [];
-    }
-}
 
 </script>
 <style scoped>
