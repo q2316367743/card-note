@@ -26,7 +26,7 @@ function renderIsDark(theme: number | null) {
 export const devTool = ref(false);
 watch(() => devTool.value, value => value ? eruda.init() : eruda.destroy());
 
-export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS,10);
+export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS,3);
 export const fontSize = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_SIZE, 14);
 export const fontFamily = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_FAMILY, "'JetBrains Mono', '霞鹜文楷 GB'");
 
