@@ -5,7 +5,7 @@ import {DbRecord, getFromOneByAsync, saveOneByAsync} from "@/utils/utools/DbStor
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {askCommentToAi, askMultiToAi, askToAi} from "@/components/AiService";
 import {useRefreshNoteEvent} from "@/store/NoteStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {NoteContent} from "@/entity/Note";
 import OpenAI from "openai";
 

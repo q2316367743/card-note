@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card card-container">
         <div class="label">全部标签</div>
         <div class="action">
             <a-button type="text" @click="openAdd()">
@@ -29,8 +29,8 @@
 import {computed} from "vue";
 import {useTagStore} from "@/store/TagStore";
 import {renderTagTree} from "@/pages/statistics/func/date";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageBoxUtil from "@/utils/modal/MessageBoxUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {TreeNodeData} from "@arco-design/web-vue";
 
 const nodes = computed(() => renderTagTree(Array.from(useTagStore().tags)));

@@ -1,5 +1,5 @@
 import { Message } from '@arco-design/web-vue';
-import Optional from "@/utils/Optional";
+import Optional from "@/utils/lang/Optional";
 
 function render(message: string, e?: any) {
     if (typeof e === 'string') {

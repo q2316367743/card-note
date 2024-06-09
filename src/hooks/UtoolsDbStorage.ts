@@ -1,5 +1,5 @@
 import {ref, Ref, shallowRef, toRaw, watch} from "vue";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 
 export interface UseUtoolsDbOptions {
     flush?: 'pre' | 'post' | 'sync';

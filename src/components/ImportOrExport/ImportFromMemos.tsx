@@ -4,8 +4,8 @@ import {Form, FormItem, Input, Modal} from "@arco-design/web-vue";
 import {ref} from "vue";
 import {fullSynchronization} from "@/components/SyncAlgorithm/IdleSync";
 import {useSyncStore} from "@/store/SyncStore";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageBoxUtil from "@/utils/modal/MessageBoxUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {matchTagFromContent} from "@/store/TagStore";
 
 export function openImportFromMemos() {

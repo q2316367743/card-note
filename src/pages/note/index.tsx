@@ -21,9 +21,9 @@ import NotePreview from "@/components/CardNote/NotePreview.vue";
 import {useNoteStore} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {openEditBox} from "@/pages/home/module/EditBox";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import html2canvas from "html2canvas";
-import {downloadByUrl} from "@/utils/BrowserUtil";
+import {downloadByUrl} from "@/utils/lang/BrowserUtil";
 import {openCommentBox} from "@/pages/home/module/CommentBox";
 
 const NoteInfo = styled.div`
@@ -86,8 +86,6 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
     const user = utools.getUser();
 
     function close() {
-        // 组件取消挂载
-        app && app.unmount();
         // 销毁元素
         modalReturn.close();
     }
@@ -218,7 +216,7 @@ export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateI
         mask: false,
         width: '100vw',
         content: () => <div ref={el}/>,
-        onBeforeClose() {
+        onClose() {
             app && app.unmount();
         },
     });

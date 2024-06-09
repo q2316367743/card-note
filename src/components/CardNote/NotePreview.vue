@@ -1,7 +1,9 @@
 <template>
-    <a-typography class="note-preview juejin">
-        <a-typography-paragraph :ellipsis="ellipsis">
-            <div v-html="preview"></div>
+    <a-typography class="note-preview">
+        <a-typography-paragraph :ellipsis="ellipsis" class="preview">
+            <md-preview :model-value="props.content? props.content.content:''" :theme preview-theme="vuepress"
+                        code-theme="github"
+                        :style="{ fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"/>
         </a-typography-paragraph>
         <a-typography-paragraph v-if="relationNotes.length > 0 && props.relation">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
@@ -48,8 +50,9 @@ import {
     Tag as ATag
 } from "@arco-design/web-vue";
 import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
-import {renderContent} from "@/utils/BrowserUtil";
-import {ellipseRows, fontFamilyWrap, fontSizeWrap} from "@/store/AppStore";
+import {renderContent} from "@/utils/lang/BrowserUtil";
+import {ellipseRows, fontFamilyWrap, fontSizeWrap, useAppStore} from "@/store/AppStore";
+import {MdEditor, MdPreview} from "md-editor-v3";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>,
@@ -65,11 +68,11 @@ const props = defineProps({
     }
 });
 
-const preview = ref("");
 const relationNotes = ref<Array<DbRecord<NoteContent>>>([]);
 const associatedNotes = ref<Array<DbRecord<NoteContent>>>([]);
 const commentNotes = ref<Array<DbRecord<NoteContent>>>([]);
 
+const theme = computed(() => useAppStore().theme);
 const ellipsis = computed(() => {
     if (props.ellipsis) {
         if (ellipseRows.value > -1) {
@@ -87,8 +90,6 @@ watch(() => props.content,
         associatedNotes.value = [];
         commentNotes.value = [];
         if (value) {
-            // 渲染markdown
-            renderMarkdown(value.content).then(html => preview.value = html)
             // 渲染关联内容
             for (let relationNote of value.relationNotes) {
                 if (relationNote.type === 'COMMENT') {
@@ -120,6 +121,12 @@ function open(id: number) {
 .note-preview {
     font-size: v-bind(fontSizeWrap);
     font-family: v-bind(fontFamilyWrap);
+    padding: 10px 20px;
+
+    .md-editor-preview-wrapper {
+        padding: 0;
+    }
+
     .arco-tag {
         cursor: pointer;
     }
@@ -127,6 +134,12 @@ function open(id: number) {
     .arco-typography {
         &:last-child {
             margin-bottom: 0;
+        }
+    }
+
+    pre {
+        code {
+            margin: 0;
         }
     }
 }

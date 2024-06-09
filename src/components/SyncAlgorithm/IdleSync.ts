@@ -8,9 +8,9 @@ import {
 } from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {NoteIndex} from "@/entity/Note";
-import {arraysHaveSameElements, map} from "@/utils/ArrayUtil";
-import MessageUtil from "@/utils/MessageUtil";
-import {MessageBoxLoadingReturn} from "@/utils/MessageBoxUtil";
+import {arraysHaveSameElements, map} from "@/utils/lang/ArrayUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
+import {MessageBoxLoadingReturn} from "@/utils/modal/MessageBoxUtil";
 import {useNoteStore} from "@/store/NoteStore";
 import {useTagStore} from "@/store/TagStore";
 import {StoreService} from "../StoreService";

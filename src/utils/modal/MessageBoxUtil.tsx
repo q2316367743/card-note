@@ -1,6 +1,6 @@
 import {Input, InputPassword, Modal, ModalReturn, Result, Typography, TypographyParagraph} from "@arco-design/web-vue";
 import {h, ref, VNode} from "vue";
-import Optional from "@/utils/Optional";
+import Optional from "@/utils/lang/Optional";
 import {IconSync} from "@arco-design/web-vue/es/icon";
 
 export default {

@@ -4,7 +4,7 @@ import ArcoVue, {Drawer} from "@arco-design/web-vue";
 import TextEditor from "@/components/TextEditor/index.vue";
 import {createApp, ref, watch, App} from "vue";
 import ArcoVueIcon from "@arco-design/web-vue/es/icon";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {useNoteStore, useRefreshNoteEvent} from "@/store/NoteStore";
 import {useAiStore} from "@/store/AiStore";
 

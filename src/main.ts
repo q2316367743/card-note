@@ -8,7 +8,7 @@ import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 
 import {setupCalendar} from 'v-calendar';
 
-import {loadScript} from "@/utils/DomUtil";
+import {loadScript} from "@/utils/lang/DomUtil";
 import {utools, preload} from "@/plugin/utools";
 
 import '@arco-design/web-vue/dist/arco.css';

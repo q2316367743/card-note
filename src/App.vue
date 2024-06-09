@@ -1,36 +1,31 @@
 <template>
-    <a-layout class="main">
+    <a-layout :class="{main: true, detach: detach,'utools': isUtools, 'bg-color': true,}">
         <link type="text/css" rel="stylesheet" :href="href"/>
-        <a-layout-sider collapsed style="z-index: 50" v-if="!isMobile">
-            <a-menu breakpoint="xl" v-model:selected-keys="selectedKeys" class="main-side" collapsed
-                    :collapsed-width="48">
-                <a-menu-item key="/home">
-                    <template #icon>
-                        <icon-home/>
-                    </template>
-                    主页
-                </a-menu-item>
-                <a-menu-item key="/calendar">
-                    <template #icon>
-                        <icon-calendar/>
-                    </template>
-                    每日回顾
-                </a-menu-item>
-                <a-menu-item key="/statistics">
-                    <template #icon>
-                        <icon-bar-chart/>
-                    </template>
-                    记录统计
-                </a-menu-item>
-                <a-menu-item key="/setting">
-                    <template #icon>
-                        <icon-settings/>
-                    </template>
-                    设置
-                </a-menu-item>
-            </a-menu>
-        </a-layout-sider>
-        <a-layout-content :class="{container: true, mobile: isMobile, detach: detach, 'bg-color': true}">
+        <a-layout-header v-if="!isMobile">
+            <div class="card card-container">
+                <div class="header">
+                    <a-button type="text">
+                        <template #icon>
+                            <icon-menu/>
+                        </template>
+                    </a-button>
+                    <a-button-group type="text">
+                        <a-button>
+                            <template #icon>
+                                <icon-plus/>
+                            </template>
+                        </a-button>
+                        <a-button>
+                            <template #icon>
+                                <icon-search/>
+                            </template>
+                        </a-button>
+                    </a-button-group>
+                </div>
+            </div>
+        </a-layout-header>
+        <a-layout-content
+            :class="{container: true, mobile: isMobile}">
             <router-view/>
         </a-layout-content>
         <a-layout-footer v-if="isMobile" class="footer">
@@ -48,7 +43,8 @@ import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {detach, useAppStore} from "@/store/AppStore";
 import {useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
+import {isUtools} from "@/plugin/utools";
 
 
 const route = useRoute();

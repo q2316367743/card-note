@@ -46,9 +46,9 @@
 import {ref} from "vue";
 import {useSyncStore} from "@/store/SyncStore";
 import {clone} from "xe-utils";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {fullSynchronization} from "@/components/SyncAlgorithm/IdleSync";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
+import MessageBoxUtil from "@/utils/modal/MessageBoxUtil";
 
 const syncSetting = ref(clone(useSyncStore().syncSetting, true));
 

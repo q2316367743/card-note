@@ -1,7 +1,7 @@
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import {toDateString} from "xe-utils";
-import {download} from "@/utils/BrowserUtil";
+import {download} from "@/utils/lang/BrowserUtil";
 
 export async function exportOneMarkdown(notes: Array<DbRecord<NoteContent>>, title?: string): Promise<void> {
     const contents = new Array<string>();

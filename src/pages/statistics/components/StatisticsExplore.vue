@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card card-container">
         <div class="label">灵光一现</div>
         <div class="action">
             <a-tooltip content="再来一篇">

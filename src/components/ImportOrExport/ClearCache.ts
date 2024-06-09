@@ -1,8 +1,8 @@
 import {listByAsync, saveListByAsync} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {NoteIndex} from "@/entity/Note";
-import MessageBoxUtil, {MessageBoxLoadingReturn} from "@/utils/MessageBoxUtil";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageBoxUtil, {MessageBoxLoadingReturn} from "@/utils/modal/MessageBoxUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {useSyncStore} from "@/store/SyncStore";
 import {fullSynchronization} from "@/components/SyncAlgorithm/IdleSync";
 

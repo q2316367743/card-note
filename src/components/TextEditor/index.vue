@@ -1,7 +1,7 @@
 <template>
     <div>
-<!--        <markdown-editor style="min-height: 50px;max-height: 200px;" v-model="content" ref="editor"/>-->
-        <code-mirror-editor v-model="content" ref="editor"/>
+        <markdown-editor style="min-height: 50px;max-height: 200px;" v-model="content" ref="editor"/>
+<!--        <code-mirror-editor v-model="content" ref="editor"/>-->
         <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="(relationNote, index) in relationNotes" style="margin-top: 4px;" :key="relationNote.id">
                 <a-tag color="arcoblue" bordered closable @close="removeRelationNote(index)">
@@ -84,13 +84,13 @@
 import {computed, ref} from "vue";
 
 import {NoteContent, NoteRelation} from "@/entity/Note";
-import {renderContent} from "@/utils/BrowserUtil";
+import {renderContent} from "@/utils/lang/BrowserUtil";
 import {isNumber} from "xe-utils";
 import {useNoteStore} from "@/store/NoteStore";
 import {useRoleStore} from "@/store/RoleStore";
 import RoleAvatar from "@/components/RoleAvatar/index.vue";
 import {showAddRoleModal} from "@/pages/setting/module/RoleSetting/modal";
-import CodeMirrorEditor from "@/components/TextEditor/CodeMirrorEditor.vue";
+import MarkdownEditor from "@/components/TextEditor/MarkdownEditor.vue";
 
 const props = defineProps({
     content: String,

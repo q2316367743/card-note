@@ -1,6 +1,6 @@
 import {toRaw} from "vue";
 import {clone} from "xe-utils";
-import {visitorAvatar} from "@/store/RoleStore";
+import {visitorAvatar} from "@/entity/Role";
 
 // 对象
 

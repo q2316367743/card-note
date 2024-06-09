@@ -7,7 +7,7 @@
                     <p v-if="bottom">人家也是有底线的[○･｀Д´･ ○]</p>
                     <a-spin v-else/>
                 </template>
-                <input-box @add="onAdd" class="card"/>
+                <input-box @add="onAdd" class="card card-container"/>
                 <div v-if="keywords.length > 0" class="card no-bg">过滤器：
                     <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
                            @close="keywordRemove(keyword)" color="arcoblue">

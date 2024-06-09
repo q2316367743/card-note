@@ -1,6 +1,6 @@
 import {getFromOneByAsync} from "@/utils/utools/DbStorageUtil";
 import {useSyncStore} from "@/store/SyncStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 
 export interface SyncState {
     key: string;

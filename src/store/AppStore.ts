@@ -26,7 +26,7 @@ function renderIsDark(theme: number | null) {
 export const devTool = ref(false);
 watch(() => devTool.value, value => value ? eruda.init() : eruda.destroy());
 
-export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS,3);
+export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS, 3);
 export const fontSize = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_SIZE, 14);
 export const fontFamily = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_FAMILY, "'JetBrains Mono', '霞鹜文楷 GB'");
 
@@ -53,6 +53,7 @@ export const useAppStore = defineStore('app', () => {
 
     const size = useWindowSize();
     const isMobile = computed(() => size.width.value < size.height.value * 0.75);
+    const theme = computed(() => dark.value ? 'dark' : 'light');
 
     async function init() {
         // 初始化主题
@@ -85,10 +86,8 @@ export const useAppStore = defineStore('app', () => {
     }
 
 
-
     return {
-        dark, isMobile,
-        themeType,
+        dark, isMobile, themeType, theme,
         init, isDarkColors,
         saveThemeType
     }

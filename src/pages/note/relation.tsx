@@ -5,10 +5,10 @@ import RelationGraph from 'relation-graph/vue3'
 import type {RGJsonData, RGNode, RGOptions} from "relation-graph/types/types";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent, NoteRelation} from "@/entity/Note";
-import MessageBoxUtil from "@/utils/MessageBoxUtil";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageBoxUtil from "@/utils/modal/MessageBoxUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {useNoteStore} from "@/store/NoteStore";
-import {renderContent} from "@/utils/BrowserUtil";
+import {renderContent} from "@/utils/lang/BrowserUtil";
 import {toDateString} from "xe-utils";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
 

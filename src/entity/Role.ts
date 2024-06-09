@@ -1,5 +1,3 @@
-import {visitorAvatar} from "@/store/RoleStore";
-
 export interface Role {
 
     /**
@@ -28,11 +26,16 @@ export const HTTP_PREFIX = 'http://'
 export const HTTPS_PREFIX = 'https://'
 export const FILE_PREFIX = 'file://'
 export const AVATAR_PREFIX = '/avatar/';
+export const ATTACHMENT_PREFIX = '/attachment/';
 export const CUSTOMER_PREFIX = 'customer:';
 // AI
 export const ROBOT = 'robot';
 // 自己
 export const USER = 'user';
+
+export const defaultHost = `${location.protocol}//${location.host}`;
+export const defaultAvatar = `${defaultHost}/logo.png`;
+export const visitorAvatar = `${defaultHost}/visitor.png`;
 
 export function buildDefaultRole(): Role {
     return {id: 0, avatar: visitorAvatar, name: '访客', description: ''}

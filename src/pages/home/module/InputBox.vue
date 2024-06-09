@@ -5,7 +5,7 @@
 </template>
 <script lang="ts" setup>
 import {useNoteStore} from "@/store/NoteStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import TextEditor from "@/components/TextEditor/index.vue";
 import {NoteAdd} from "@/entity/Note";
 

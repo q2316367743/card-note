@@ -1,6 +1,6 @@
 <template>
     <div class="calendar">
-        <div class="card">
+        <div class="card card-container">
             <calendar ref="calendarRef" expanded :is-dark="dark" v-model="now" @dayclick="dayClick"
                       :attributes="heatmap"/>
         </div>
@@ -11,7 +11,7 @@
                 {{ keyword }}
             </a-tag>
         </div>
-        <a-timeline style="margin: 14px auto 0;max-width: 730px;">
+        <a-timeline class="card-container">
             <a-timeline-item v-for="note of notes" :key="note.record.id">
                 <div style="margin-bottom: 7px;">{{ renderLabel(note.record.id) }}</div>
                 <div class="card">

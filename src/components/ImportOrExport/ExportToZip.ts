@@ -2,7 +2,7 @@ import {listRecordByAsync} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {NoteContent} from "@/entity/Note";
 import JSZip from "jszip";
-import {download} from "@/utils/BrowserUtil";
+import {download} from "@/utils/lang/BrowserUtil";
 import {toDateString} from "xe-utils";
 
 export async function openExportToZip() {

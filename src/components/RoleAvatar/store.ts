@@ -1,7 +1,7 @@
 // 角色头像缓存：附件图标 => 附件url
 import {defineStore} from "pinia";
-import {AVATAR_PREFIX, buildDefaultRole, CUSTOMER_PREFIX, Role, USER} from "@/entity/Role";
-import {myself, useRoleStore, visitorAvatar} from "@/store/RoleStore";
+import {AVATAR_PREFIX, buildDefaultRole, CUSTOMER_PREFIX, Role, USER, visitorAvatar} from "@/entity/Role";
+import {myself, useRoleStore} from "@/store/RoleStore";
 
 export const useRoleAvatarCache = defineStore('role-avatar', () => {
     const roleAvatarCache = new Map<string, Role>();

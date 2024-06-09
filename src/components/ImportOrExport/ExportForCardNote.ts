@@ -2,7 +2,7 @@ import {getFromOneByAsync, listByAsync} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {NoteIndex} from "@/entity/Note";
 import JSZip from 'jszip'
-import {download} from "@/utils/BrowserUtil";
+import {download} from "@/utils/lang/BrowserUtil";
 
 /**
  * 导出作为卡片笔记

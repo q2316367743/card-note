@@ -4,7 +4,7 @@ import {Avatar, Button, Form, FormItem, Input, Modal, Textarea, Upload, UploadRe
 import {getAttachmentAsync, postAttachment, removeOneByAsync} from "@/utils/utools/DbStorageUtil";
 import {RequestOption} from "@arco-design/web-vue/es/upload/interfaces";
 import {useRoleStore} from "@/store/RoleStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 
 function buildForm(data: Ref<Role>, avatar: Ref<string>, customerUpload: (option: RequestOption) => UploadRequest) {
     return <Form model={data.value} layout={'horizontal'}>

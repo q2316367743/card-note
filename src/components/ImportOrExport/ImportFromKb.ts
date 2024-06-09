@@ -1,5 +1,5 @@
-import MessageBoxUtil, {MessageBoxLoadingReturn} from "@/utils/MessageBoxUtil";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageBoxUtil, {MessageBoxLoadingReturn} from "@/utils/modal/MessageBoxUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import JSZip from "jszip";
 import {NoteContent} from "@/entity/Note";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";

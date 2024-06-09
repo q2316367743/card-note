@@ -1,17 +1,15 @@
 import {defineStore} from "pinia";
-import {CUSTOMER_PREFIX, Role} from "@/entity/Role";
+import {CUSTOMER_PREFIX, defaultAvatar, Role} from "@/entity/Role";
 import {useUtoolsDbStorage} from "@/hooks/UtoolsDbStorage";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 import {computed, ref} from "vue";
 import {SelectOptionData} from "@arco-design/web-vue/es/select/interface";
 import {listByAsync, saveListByAsync} from "@/utils/utools/DbStorageUtil";
-import {map} from "@/utils/ArrayUtil";
+import {map} from "@/utils/lang/ArrayUtil";
 import {useSyncEvent} from "@/store/SyncStore";
+import {getUser} from "@/plugin/utools";
 
-export const defaultAvatar = `${location.protocol}//${location.host}/logo.png`;
-export const visitorAvatar = `${location.protocol}//${location.host}/visitor.png`;
-
-const useUser = () => utools.getUser() || {avatar: defaultAvatar, nickname: '访客', type: '1'};
+const useUser = () => getUser() || {avatar: defaultAvatar, nickname: '访客', type: '1'};
 
 const buildMyself = (): Role => {
     const user = useUser();

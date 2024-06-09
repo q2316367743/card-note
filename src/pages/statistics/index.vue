@@ -1,6 +1,6 @@
 <template>
     <div class="statistics">
-        <div class="card">
+        <div class="card card-container">
             <div class="label">
                 <a-month-picker v-model="date" :allow-clear="false"/>
             </div>
@@ -18,7 +18,7 @@
                 </a-row>
             </div>
         </div>
-        <div class="card">
+        <div class="card card-container">
             <div class="label">最近一年一共记录 {{ total }} 条 MEMO</div>
             <div class="content">
                 <calendar-heatmap :values="dayCount" :end-date="new Date()" :dark-mode="dark" :locale="locale"

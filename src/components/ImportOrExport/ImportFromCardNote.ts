@@ -2,11 +2,11 @@ import JSZip from "jszip";
 import {listByAsync, removeOneByAsync, saveOneByAsync} from "@/utils/utools/DbStorageUtil";
 import {NoteIndex} from "@/entity/Note";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
-import MessageBoxUtil, {MessageBoxLoadingReturn} from "@/utils/MessageBoxUtil";
+import MessageBoxUtil, {MessageBoxLoadingReturn} from "@/utils/modal/MessageBoxUtil";
 import {useNoteStore} from "@/store/NoteStore";
 import {fullSynchronization} from "@/components/SyncAlgorithm/IdleSync";
 import {useSyncStore} from "@/store/SyncStore";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 
 export function openImportFromCardNote(blob: Blob) {
     let loading = MessageBoxUtil.loading("开始导入...");

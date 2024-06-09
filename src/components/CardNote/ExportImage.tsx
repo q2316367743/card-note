@@ -11,7 +11,7 @@ import {IconDownload} from "@arco-design/web-vue/es/icon";
 import {toDateString} from "xe-utils";
 import {ref} from "vue";
 import html2canvas from "html2canvas";
-import {downloadByUrl} from "@/utils/BrowserUtil";
+import {downloadByUrl} from "@/utils/lang/BrowserUtil";
 import {useAppStore} from "@/store/AppStore";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
 

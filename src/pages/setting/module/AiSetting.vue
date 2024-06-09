@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import {ref} from "vue";
 import {clone} from "xe-utils";
-import MessageUtil from "@/utils/MessageUtil";
+import MessageUtil from "@/utils/modal/MessageUtil";
 import {useAiStore} from "@/store/AiStore";
 import {getItemByDefault, setItem} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
