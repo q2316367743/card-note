@@ -2,25 +2,21 @@
     <a-layout :class="{main: true, detach: detach,'utools': isUtools, 'bg-color': true,}">
         <link type="text/css" rel="stylesheet" :href="href"/>
         <a-layout-header v-if="!isMobile">
-            <div class="card card-container">
+            <div class="card card-container nav" style="height: 40px">
                 <div class="header">
                     <a-button type="text">
                         <template #icon>
                             <icon-menu/>
                         </template>
                     </a-button>
-                    <a-button-group type="text">
-                        <a-button>
-                            <template #icon>
-                                <icon-plus/>
-                            </template>
-                        </a-button>
-                        <a-button>
-                            <template #icon>
-                                <icon-search/>
-                            </template>
-                        </a-button>
-                    </a-button-group>
+                    <div style="line-height: 30px;">
+                        <div class="statistics" v-if="isMobile">
+                            <span>{{ day }} 天</span>
+                            <a-divider direction="vertical"/>
+                            <span>{{ noteLength }} 条笔记</span>
+                        </div>
+                        <div class="statistics" v-if="!isMobile">在过去的 {{ day }} 天中，共记录 {{ noteLength }} 条笔记</div>
+                    </div>
                 </div>
             </div>
         </a-layout-header>
@@ -42,7 +38,7 @@
 import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {detach, useAppStore} from "@/store/AppStore";
-import {useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
+import {useNoteStore, useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/modal/MessageUtil";
 import {isUtools} from "@/plugin/utools";
 
@@ -54,6 +50,10 @@ const selectedKeys = ref(['/home']);
 const href = computed(() => `./highlight.js/${useAppStore().dark ? 'github-dark' : 'github'}.css`);
 // 是否是手机客户端
 const isMobile = computed(() => useAppStore().isMobile);
+const allIds = computed(() => useNoteStore().allIds())
+const noteLength = computed(() => allIds.value.length);
+const minDay = computed(() => Math.min(...allIds.value, new Date().getTime()));
+const day = computed(() => Math.floor(((new Date().getTime()) - minDay.value) / (24 * 60 * 60 * 1000)));
 
 watch(() => selectedKeys.value, value => router.push(value[0]), {deep: true});
 watch(() => useAppStore().dark, handleTheme, {immediate: true});

@@ -1,7 +1,6 @@
 <template>
     <div>
-        <markdown-editor style="min-height: 50px;max-height: 200px;" v-model="content" ref="editor"/>
-<!--        <code-mirror-editor v-model="content" ref="editor"/>-->
+        <markdown-editor v-model="content" @save="add()"/>
         <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="(relationNote, index) in relationNotes" style="margin-top: 4px;" :key="relationNote.id">
                 <a-tag color="arcoblue" bordered closable @close="removeRelationNote(index)">
@@ -22,25 +21,6 @@
                             </template>
                         </a-button>
                     </a-tooltip>
-                    <a-tooltip content="待办">
-                        <a-button @click="addCheckbox()">
-                            <template #icon>
-                                <icon-check-square :size="16"/>
-                            </template>
-                        </a-button>
-                    </a-tooltip>
-                    <a-tooltip content="表格">
-                        <a-button @click="addTable()">
-                            <template #icon>
-                                <icon-nav :size="16"/>
-                            </template>
-                        </a-button>
-                    </a-tooltip>
-                    <a-button @click="addCode()">
-                        <template #icon>
-                            <icon-code :size="16"/>
-                        </template>
-                    </a-button>
                 </a-space>
             </a-button-group>
             <a-space>
@@ -114,7 +94,6 @@ const emits = defineEmits(['save']);
 
 const content = ref(props.content || '');
 const relationNotes = ref<Array<NoteContent>>([]);
-const editor = ref();
 
 if (props.relationNotes) {
     useNoteStore().getMany(props.relationNotes
@@ -130,18 +109,6 @@ const loading = ref(false);
 const role = ref('user');
 
 const roleOptions = computed(() => useRoleStore().roleOptions);
-
-function addCheckbox() {
-    editor.value && editor.value.addCheckbox();
-}
-
-function addCode() {
-    editor.value && editor.value.addCode();
-}
-
-function addTable() {
-    editor.value && editor.value.addTable();
-}
 
 function openAddRelation() {
     visible.value = true;
@@ -192,7 +159,6 @@ function add() {
     content.value = "";
     relationNotes.value = [];
 }
-
 
 
 </script>

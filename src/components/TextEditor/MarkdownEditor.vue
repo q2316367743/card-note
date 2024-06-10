@@ -2,7 +2,7 @@
     <div class="markdown-editor">
         <md-editor v-model="modelValue" :preview="false" :theme preview-theme="vuepress"
                    code-theme="github"
-                   :style="{maxHeight: '200px', fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"
+                   :style="{maxHeight: '400px', height: '200px', fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"
                    @save="onSave" @error="onError"
         />
     </div>
@@ -19,12 +19,12 @@ const modelValue = defineModel({
     type: String,
     default: ''
 });
-const emits = defineEmits(['onSave']);
+const emits = defineEmits(['save']);
 
 const theme = computed(() => useAppStore().theme);
 
 function onSave(v: string) {
-    emits('onSave', v);
+    emits('save', v);
 }
 
 function onError(err: { name: 'Cropper' | 'fullscreen' | 'prettier' | 'overlength'; message: string }) {

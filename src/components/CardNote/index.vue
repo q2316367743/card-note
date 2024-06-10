@@ -1,15 +1,15 @@
 <template>
     <div class="card-note">
         <div class="card-container">
-            <a-row :gutter="8" v-if="record" :key="record.record.id" class="row">
-                <a-col flex="48px">
+            <a-row  v-if="record" :key="record.record.id" class="row">
+                <a-col flex="56px">
                     <div class="avatar">
                         <role-avatar :icon="record.record.role"/>
                     </div>
                 </a-col>
                 <a-col flex="auto">
                     <div class="card">
-                        <note-preview :content="record.record" :ellipsis="ellipsis"/>
+                        <note-preview :content="record.record" :ellipsis="ellipsis" />
                         <div class="footer">
                             <div class="title">
                         <span class="create-time"

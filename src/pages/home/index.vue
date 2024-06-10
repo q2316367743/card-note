@@ -1,51 +1,39 @@
 <template>
     <a-layout class="home">
-        <a-layout-content>
-            <a-list @reach-bottom="fetchData()" :scrollbar="false" :bordered="false"
-                    :max-height="height" :split="false">
-                <template #scroll-loading>
-                    <p v-if="bottom">人家也是有底线的[○･｀Д´･ ○]</p>
-                    <a-spin v-else/>
-                </template>
-                <input-box @add="onAdd" class="card card-container"/>
-                <div v-if="keywords.length > 0" class="card no-bg">过滤器：
-                    <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
-                           @close="keywordRemove(keyword)" color="arcoblue">
-                        <span v-if="keyword.type === 'TAG'" style="width: 1rem">#</span>
-                        <span v-if="keyword.type === 'KEY'" style="width: 1rem">
+        <a-list @reach-bottom="fetchData()" :scrollbar="false" :bordered="false"
+                :max-height="height" :split="false">
+            <template #scroll-loading>
+                <p v-if="bottom">人家也是有底线的[○･｀Д´･ ○]</p>
+                <a-spin v-else/>
+            </template>
+            <input-box @add="onAdd" class="card card-container" style="margin-top: 0;"/>
+            <div v-if="keywords.length > 0" class="card no-bg">过滤器：
+                <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
+                       @close="keywordRemove(keyword)" color="arcoblue">
+                    <span v-if="keyword.type === 'TAG'" style="width: 1rem">#</span>
+                    <span v-if="keyword.type === 'KEY'" style="width: 1rem">
                             <icon-search/>
                         </span>
-                        <span>{{ keyword.value }}</span>
-                    </a-tag>
-                    <a-dropdown type="text" size="mini" position="br">
-                        <a-button type="text" style="float: right">
-                            <template #icon>
-                                <icon-more-vertical/>
-                            </template>
-                        </a-button>
-                        <template #content>
-                            <a-doption @click="exportOneFile()">导出</a-doption>
-                            <a-doption :disabled="disabledAi" @click="askMultiNoteToAiWarp()">询问AI</a-doption>
+                    <span>{{ keyword.value }}</span>
+                </a-tag>
+                <a-dropdown type="text" size="mini" position="br">
+                    <a-button type="text" style="float: right">
+                        <template #icon>
+                            <icon-more-vertical/>
                         </template>
-                    </a-dropdown>
-                </div>
-                <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
-                           :ellipsis="keywords.length === 0"
-                           @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
-            </a-list>
-            <a-back-top target-container=".arco-list" :style="{bottom: isMobile ? '100px' : '60px'}"
-                        ref="backTopInstance"/>
-        </a-layout-content>
-        <a-layout-footer class="footer">
-            <div class="title">
+                    </a-button>
+                    <template #content>
+                        <a-doption @click="exportOneFile()">导出</a-doption>
+                        <a-doption :disabled="disabledAi" @click="askMultiNoteToAiWarp()">询问AI</a-doption>
+                    </template>
+                </a-dropdown>
             </div>
-            <div class="statistics" v-if="isMobile">
-                <span>{{ day }} 天</span>
-                <a-divider direction="vertical"/>
-                <span>{{ noteLength }} 条笔记</span>
-            </div>
-            <div class="statistics" v-if="!isMobile">在过去的 {{ day }} 天中，共记录 {{ noteLength }} 条笔记</div>
-        </a-layout-footer>
+            <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
+                       :ellipsis="keywords.length === 0"
+                       @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
+        </a-list>
+        <a-back-top target-container=".arco-list" :style="{bottom: isMobile ? '100px' : '60px'}"
+                    ref="backTopInstance"/>
     </a-layout>
 </template>
 <script lang="ts" setup>
@@ -68,6 +56,7 @@ import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
 import {useAiStore} from "@/store/AiStore";
 import {askMultiNoteToAi} from "@/pages/home/module/AskMultiNoteToAi";
 import {useSubInput} from "@/hooks/SubInput";
+import {isUtools} from "@/plugin/utools";
 
 const size = useWindowSize();
 
@@ -89,7 +78,7 @@ const backTopInstance = ref<BackTopInstance | null>(null);
 
 // 是否是手机客户端
 const isMobile = computed(() => useAppStore().isMobile);
-const height = computed(() => size.height.value - 33 - (isMobile.value ? 40 : 0));
+const height = computed(() => size.height.value - 47 - (isUtools ? 0 : 7) - (isMobile.value ? 40 : 0));
 const allIds = computed(() => useNoteStore().allIds())
 const noteLength = computed(() => allIds.value.length);
 const minDay = computed(() => Math.min(...allIds.value, new Date().getTime()));
