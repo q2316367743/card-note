@@ -2,7 +2,6 @@ import MessageUtil from '@/utils/modal/MessageUtil';
 import {generateUUID} from "@/utils/lang/BrowserUtil";
 import {createStore} from 'idb-keyval';
 import Constant from "@/global/Constant";
-import axios from "axios";
 import {DbPromise, DbStorage, RedirectPreload, ShowOpenDialogOption} from "@/plugin/utools/types";
 import {webDbPromise} from "@/plugin/utools/dbPromise";
 import {webDbStorage} from "@/plugin/utools/dbStorage";
@@ -114,9 +113,3 @@ export const getUser = window.utools ? window.utools.getUser : getWebUser;
 
 export const isUtools = !!window.utools;
 
-export const preload = {
-    axios: axios.create({
-        adapter: 'xhr',
-        timeout: 5000
-    })
-}

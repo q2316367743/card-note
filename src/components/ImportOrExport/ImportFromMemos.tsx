@@ -7,6 +7,7 @@ import {useSyncStore} from "@/store/SyncStore";
 import MessageBoxUtil from "@/utils/modal/MessageBoxUtil";
 import MessageUtil from "@/utils/modal/MessageUtil";
 import {matchTagFromContent} from "@/store/TagStore";
+import axios from "axios";
 
 export function openImportFromMemos() {
     const config = ref({
@@ -75,7 +76,7 @@ async function _importFromMemos(url: string, token: string) {
     const limit = 20;
     const noteContentMap = new Map<number, NoteContent>();
     while (true) {
-        let rsp = await window.preload.axios.get<Array<RootObject>>("/api/v1/memo", {
+        let rsp = await axios.get<Array<RootObject>>("/api/v1/memo", {
             baseURL: url,
             params: {
                 rowStatus: 'NORMAL',

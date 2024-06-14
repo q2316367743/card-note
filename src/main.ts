@@ -9,7 +9,7 @@ import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import {setupCalendar} from 'v-calendar';
 
 import {loadScript} from "@/utils/lang/DomUtil";
-import {utools, preload} from "@/plugin/utools";
+import {utools} from "@/plugin/utools";
 
 import '@arco-design/web-vue/dist/arco.css';
 import "@/assets/less/index.less";
@@ -17,7 +17,6 @@ import "@/assets/less/index.less";
 // utools挂载
 window.isUtools = !!window.utools;
 window.utools = window.utools || utools;
-window.preload = window.preload || preload;
 
 if (window.utools.isDev()) {
     console.log("开发环境，不加载统计")
