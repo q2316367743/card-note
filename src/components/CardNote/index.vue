@@ -141,7 +141,6 @@ function copy(record: DbRecord<NoteContent>) {
 
     .avatar {
         padding-top: 16px;
-        padding-left: 16px;
     }
 
     .create-time {
