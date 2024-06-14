@@ -13,7 +13,7 @@
                         <template #content>
                             <a-doption @click="$router.push('/home')">
                                 <template #icon>
-                                    <icon-home />
+                                    <icon-home/>
                                 </template>
                                 首页
                             </a-doption>
@@ -31,7 +31,7 @@
                             </a-doption>
                             <a-doption @click="$router.push('/setting')">
                                 <template #icon>
-                                    <icon-settings />
+                                    <icon-settings/>
                                 </template>
                                 设置
                             </a-doption>
@@ -43,7 +43,9 @@
                             <a-divider direction="vertical"/>
                             <span>{{ noteLength }} 条笔记</span>
                         </div>
-                        <div class="statistics" v-if="!isMobile">在过去的 {{ day }} 天中，共记录 {{ noteLength }} 条笔记</div>
+                        <div class="statistics" v-if="!isMobile">在过去的 {{ day }} 天中，共记录 {{ noteLength }}
+                            条笔记
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,6 +125,17 @@ window.openMessage = (content, level) => {
 window.copyText = (content: string) => {
     utools.copyText(decodeURIComponent(content));
 }
+
+window.addEventListener('click', e => {
+    const ele = e.target as HTMLElement;
+    if (ele && ele.tagName && ele.tagName.toUpperCase() === 'A') {
+        // a标签
+        const href = ele.getAttribute('href');
+        if (href) {
+            utools.shellOpenExternal(href);
+        }
+    }
+})
 
 </script>
 <style scoped>
