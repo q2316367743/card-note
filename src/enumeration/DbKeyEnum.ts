@@ -16,6 +16,12 @@ enum DbKeyEnum {
 
     KEY_VERSION = '/key/version',
 
+    KEY_MD_EDITOR_ENABLE = '/key/md-editor/enable',
+
+    KEY_MD_EDITOR_HEIGHT = '/key/md-editor/height',
+
+    KEY_MD_EDITOR_PREVIEW = '/key/md-editor/preview',
+
 
     SETTING_SYNC = '/setting/sync',
 

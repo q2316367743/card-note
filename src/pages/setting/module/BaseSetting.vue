@@ -24,15 +24,40 @@
                     <a-link @click="openFontFamily()">font-family</a-link>
                 </template>
             </a-form-item>
+            <a-form-item label="完全的markdown编辑器">
+                <a-switch v-model="mdEditorEnable" type="round">
+                    <template #checked>启用</template>
+                    <template #unchecked>禁用</template>
+                </a-switch>
+                <template #help>
+                    完整的markdown编辑器将支持全部的markdown语法，包括数学公式，流程图、时序图等等各种图，但是暂不支持标签高亮
+                </template>
+            </a-form-item>
+            <a-form-item label="markdown编辑器高度">
+                <a-input-number v-model="mdEditorHeight" :min="200" :disabled="!mdEditorEnable" style="width: 150px">
+                    <template #suffix>px</template>
+                </a-input-number>
+            </a-form-item>
+            <a-form-item label="markdown编辑器是否展示预览">
+                <a-switch v-model="mdEditorPreview" type="round" :disabled="!mdEditorEnable"/>
+            </a-form-item>
             <a-form-item label="开发者工具">
-                <a-switch v-model="devTool"/>
+                <a-switch v-model="devTool" type="round"/>
             </a-form-item>
         </a-form>
     </a-card>
 </template>
 <script lang="ts" setup>
 import {ref, watch} from "vue";
-import {useAppStore, devTool, ellipseRows, fontSize, fontFamily} from "@/store/AppStore";
+import {
+    useAppStore,
+    devTool,
+    ellipseRows,
+    fontSize,
+    fontFamily,
+    mdEditorEnable,
+    mdEditorHeight, mdEditorPreview
+} from "@/store/AppStore";
 
 const themeType = ref(useAppStore().themeType);
 

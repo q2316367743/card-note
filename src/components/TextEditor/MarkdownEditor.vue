@@ -1,8 +1,8 @@
 <template>
     <div class="markdown-editor">
-        <md-editor v-model="modelValue" :preview="false" :theme preview-theme="vuepress"
+        <md-editor v-model="modelValue" :preview="mdEditorPreview" :theme preview-theme="vuepress"
                    code-theme="github"
-                   :style="{maxHeight: '400px', height: '200px', fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"
+                   :style="{height: height, fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"
                    @save="onSave" @error="onError"
         />
     </div>
@@ -11,7 +11,7 @@
 import {MdEditor} from "md-editor-v3";
 import 'md-editor-v3/lib/style.css';
 import 'md-editor-v3/lib/preview.css';
-import {fontFamilyWrap, fontSizeWrap, useAppStore} from "@/store/AppStore";
+import {fontFamilyWrap, fontSizeWrap, mdEditorHeight, mdEditorPreview, useAppStore} from "@/store/AppStore";
 import {computed} from "vue";
 import {Message} from "@arco-design/web-vue";
 
@@ -22,6 +22,13 @@ const modelValue = defineModel({
 const emits = defineEmits(['save']);
 
 const theme = computed(() => useAppStore().theme);
+const height = computed(() => {
+    const res = mdEditorHeight.value
+    if (Number.isInteger(res)) {
+        return Math.max(res, 200) + 'px';
+    }
+    return '200px';
+})
 
 function onSave(v: string) {
     emits('save', v);

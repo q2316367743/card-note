@@ -126,7 +126,7 @@ function tooltipFormatter(item: CalendarItem) {
 
 }
 </script>
-<style scoped>
+<style scoped lang="less">
 .statistics {
     position: absolute;
     top: 0;
@@ -134,5 +134,9 @@ function tooltipFormatter(item: CalendarItem) {
     right: 0;
     bottom: 0;
     overflow: auto;
+
+    & > .card-container {
+        margin-top: 0;
+    }
 }
 </style>

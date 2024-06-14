@@ -1,16 +1,16 @@
-import {createApp, onMounted, ref} from "vue";
-import {Drawer, PageHeader} from "@arco-design/web-vue";
+import {App, createApp, onMounted, ref, watch} from "vue";
+import ArcoVue, {Drawer, PageHeader} from "@arco-design/web-vue";
 import styled from "vue3-styled-components";
 import RelationGraph from 'relation-graph/vue3'
 import type {RGJsonData, RGNode, RGOptions} from "relation-graph/types/types";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent, NoteRelation} from "@/entity/Note";
-import MessageBoxUtil from "@/utils/modal/MessageBoxUtil";
 import MessageUtil from "@/utils/modal/MessageUtil";
 import {useNoteStore} from "@/store/NoteStore";
 import {renderContent} from "@/utils/lang/BrowserUtil";
 import {toDateString} from "xe-utils";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
+import ArcoVueIcon from "@arco-design/web-vue/es/icon";
 
 
 const NoteRelationInfo = styled.div`
@@ -40,12 +40,10 @@ export function openNoteRelation(record: DbRecord<NoteContent>) {
         return;
     }
 
-    const loading = MessageBoxUtil.loading("正在获取关联关系");
 
     getAllContent(record.record)
         .then(res => createPage(buildData(record.record, res), res))
-        .catch(e => MessageUtil.error("获取关联关系失败", e))
-        .finally(loading.close);
+        .catch(e => MessageUtil.error("获取关联关系失败", e));
 
 
 }
@@ -115,8 +113,9 @@ function buildData(root: NoteContent, itemMap: Map<number, NoteContent>): RGJson
 }
 
 function createPage(data: RGJsonData, itemMap: Map<number, NoteContent>) {
-    const divElement = document.createElement("div");
 
+    let app: App | null = null
+    const el = ref<HTMLDivElement>();
 
     const options: RGOptions = {
         defaultExpandHolderPosition: 'right',
@@ -125,39 +124,51 @@ function createPage(data: RGJsonData, itemMap: Map<number, NoteContent>) {
 
 
     function close() {
-        // 组件取消挂载
-        app.unmount();
-        // 销毁元素
-        divElement.remove();
+        modalReturn.close();
     }
 
 
-    const app = createApp({
-        setup() {
+    const setup = () => {
 
-            const relationGraphRef = ref<RelationGraphInstance | null>(null);
+        const relationGraphRef = ref<RelationGraphInstance | null>(null);
 
 
-            onMounted(() => {
-                if (!relationGraphRef.value) {
-                    return;
-                }
-                relationGraphRef.value.setJsonData(data);
-            })
+        onMounted(() => {
+            if (!relationGraphRef.value) {
+                return;
+            }
+            relationGraphRef.value.setJsonData(data);
+        })
 
-            return () => <NoteRelationInfo>
-                <PageHeader title="关联图" subtitle="卡片笔记" onBack={close}/>
-                <Container>
-                    <RelationGraph options={options} ref={relationGraphRef} onNodeClick={e => onShow(e, itemMap)}/>
-                </Container>
-            </NoteRelationInfo>;
+        return () => <NoteRelationInfo>
+            <PageHeader title="关联图" subtitle="卡片笔记" onBack={close}/>
+            <Container>
+                <RelationGraph options={options} ref={relationGraphRef} onNodeClick={e => onShow(e, itemMap)}/>
+            </Container>
+        </NoteRelationInfo>;
+    }
+
+
+    watch(el, value => {
+        if (value && !app) {
+            app = createApp({setup});
+            app.use(ArcoVue).use(ArcoVueIcon);
+            app.mount(value);
+        } else {
+
         }
+    })
+
+    const modalReturn = Drawer.open({
+        footer: false,
+        header: false,
+        mask: false,
+        width: '100vw',
+        content: () => <div ref={el}/>,
+        onClose() {
+            app && app.unmount();
+        },
     });
-
-
-    app.mount(divElement);
-
-    document.body.append(divElement);
 
 }
 

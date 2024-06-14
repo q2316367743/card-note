@@ -1,6 +1,7 @@
 <template>
     <div>
-        <markdown-editor v-model="content" @save="add()"/>
+        <markdown-editor v-model="content" @save="add()" v-if="mdEditorEnable"/>
+        <TextareaEditor v-model="content" v-else ref="editor"/>
         <a-typography-paragraph v-if="relationNotes.length > 0">
             <div v-for="(relationNote, index) in relationNotes" style="margin-top: 4px;" :key="relationNote.id">
                 <a-tag color="arcoblue" bordered closable @close="removeRelationNote(index)">
@@ -21,10 +22,29 @@
                             </template>
                         </a-button>
                     </a-tooltip>
+                    <a-tooltip content="待办" v-if="!mdEditorEnable">
+                        <a-button @click="addCheckbox()">
+                            <template #icon>
+                                <icon-check-square :size="16"/>
+                            </template>
+                        </a-button>
+                    </a-tooltip>
+                    <a-tooltip content="表格" v-if="!mdEditorEnable">
+                        <a-button @click="addTable()">
+                            <template #icon>
+                                <icon-nav :size="16"/>
+                            </template>
+                        </a-button>
+                    </a-tooltip>
+                    <a-button @click="addCode()" v-if="!mdEditorEnable">
+                        <template #icon>
+                            <icon-code :size="16"/>
+                        </template>
+                    </a-button>
                 </a-space>
             </a-button-group>
             <a-space>
-                <a-select v-model="role" :options="roleOptions" v-if="allowRole">
+                <a-select v-model="role" :options="roleOptions" v-if="allowRole" disabled>
                     <template #label="{ data }">
                         <role-avatar :icon="data.value === 'user' ? 'user' : data.avatar" :size="18"/>
                         <span style="margin-left: 4px">{{ data.label }}</span>
@@ -71,6 +91,8 @@ import {useRoleStore} from "@/store/RoleStore";
 import RoleAvatar from "@/components/RoleAvatar/index.vue";
 import {showAddRoleModal} from "@/pages/setting/module/RoleSetting/modal";
 import MarkdownEditor from "@/components/TextEditor/MarkdownEditor.vue";
+import TextareaEditor from "@/components/TextEditor/TextareaEditor.vue";
+import {mdEditorEnable} from "@/store/AppStore";
 
 const props = defineProps({
     content: String,
@@ -94,6 +116,7 @@ const emits = defineEmits(['save']);
 
 const content = ref(props.content || '');
 const relationNotes = ref<Array<NoteContent>>([]);
+const editor = ref();
 
 if (props.relationNotes) {
     useNoteStore().getMany(props.relationNotes
@@ -109,6 +132,11 @@ const loading = ref(false);
 const role = ref('user');
 
 const roleOptions = computed(() => useRoleStore().roleOptions);
+
+
+const addCheckbox = () => editor.value && editor.value.addCheckbox();
+const addCode = () => editor.value && editor.value.addCode();
+const addTable = () => editor.value && editor.value.addTable();
 
 function openAddRelation() {
     visible.value = true;

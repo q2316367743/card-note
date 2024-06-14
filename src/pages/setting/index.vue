@@ -1,8 +1,8 @@
 <template>
-    <div class="setting">
+    <div class="setting card-container">
         <a-tabs hide-content v-model:active-key="activeKey">
             <a-tab-pane title="基础设置" key="1"/>
-            <a-tab-pane title="角色管理" key="2"/>
+            <a-tab-pane title="角色管理" key="2" disabled/>
             <a-tab-pane title="同步设置" key="3"/>
             <a-tab-pane title="AI设置" key="4"/>
             <a-tab-pane title="导入与导出" key="5"/>
@@ -31,6 +31,10 @@ const activeKey = ref('1');
     position: relative;
     height: 100%;
     width: 100%;
+
+    &.card-container {
+        margin-top: 0;
+    }
 
     .container {
         position: absolute;

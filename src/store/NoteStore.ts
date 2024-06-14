@@ -135,7 +135,6 @@ export const useNoteStore = defineStore('note', () => {
     }
 
     async function add(content: string, relationNotes: Array<NoteRelation>, role: NoteRole = 'user'): Promise<NoteContent> {
-        console.log(content, relationNotes, role)
         const now = new Date().getTime();
         const noteIndex: NoteIndex = {
             id: now,

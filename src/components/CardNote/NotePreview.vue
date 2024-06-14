@@ -2,8 +2,9 @@
     <a-typography class="note-preview">
         <a-typography-paragraph :ellipsis="ellipsis" class="preview">
             <md-preview :model-value="props.content? props.content.content:''" :theme preview-theme="vuepress"
-                        code-theme="github"
+                        code-theme="github" v-if="mdEditorEnable"
                         :style="{ fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"/>
+            <textarea-preview v-else :content="props.content? props.content.content:''"/>
         </a-typography-paragraph>
         <a-typography-paragraph v-if="relationNotes.length > 0 && props.relation">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
@@ -39,20 +40,15 @@
 </template>
 <script lang="ts" setup>
 import {computed, PropType, ref, watch} from "vue";
-import {renderMarkdown} from "@/plugin/markdown";
 import {NoteContent} from "@/entity/Note";
 import {useNoteStore, useOpenNoteEvent} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 
-import {
-    Typography as ATypography,
-    TypographyParagraph as ATypographyParagraph,
-    Tag as ATag
-} from "@arco-design/web-vue";
 import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
 import {renderContent} from "@/utils/lang/BrowserUtil";
-import {ellipseRows, fontFamilyWrap, fontSizeWrap, useAppStore} from "@/store/AppStore";
-import {MdEditor, MdPreview} from "md-editor-v3";
+import {ellipseRows, fontFamilyWrap, fontSizeWrap, mdEditorEnable, useAppStore} from "@/store/AppStore";
+import {MdPreview} from "md-editor-v3";
+import TextareaPreview from "@/components/CardNote/TextareaPreview.vue";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>,
