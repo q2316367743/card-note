@@ -1,7 +1,7 @@
 <template>
     <a-layout :class="{main: true, detach: detach,'utools': isUtools, 'bg-color': true,}">
         <link type="text/css" rel="stylesheet" :href="href"/>
-        <a-layout-header v-if="!isMobile">
+        <a-layout-header>
             <div class="card card-container nav" style="height: 40px">
                 <div class="header">
                     <a-dropdown position="bl">
@@ -37,7 +37,7 @@
                             </a-doption>
                         </template>
                     </a-dropdown>
-                    <div style="line-height: 30px;">
+                    <div>
                         <div class="statistics" v-if="isMobile">
                             <span>{{ day }} 天</span>
                             <a-divider direction="vertical"/>
@@ -52,14 +52,6 @@
             :class="{container: true, mobile: isMobile}">
             <router-view/>
         </a-layout-content>
-        <a-layout-footer v-if="isMobile" class="footer">
-            <a-tabs v-model:active-key="selectedKeys[0]" hide-content position="bottom" style="width: 300px;">
-                <a-tab-pane title="主页" key="/home"/>
-                <a-tab-pane title="每日回顾" key="/calendar"/>
-                <a-tab-pane title="记录统计" key="/statistics"/>
-                <a-tab-pane title="设置" key="/setting"/>
-            </a-tabs>
-        </a-layout-footer>
     </a-layout>
 </template>
 <script lang="ts" setup>
