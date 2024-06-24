@@ -10,6 +10,8 @@ interface Window {
 
     copyText(message: string): void;
 
+    shellOpenExternal(url: string): void;
+
 }
 
 interface LAInstance {

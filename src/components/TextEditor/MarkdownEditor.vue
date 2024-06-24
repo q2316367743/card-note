@@ -14,6 +14,7 @@ import {MdEditor, config} from "md-editor-v3";
 import 'md-editor-v3/lib/style.css';
 import 'md-editor-v3/lib/preview.css';
 import {fontFamilyWrap, fontSizeWrap, mdEditorHeight, mdEditorPreview, useAppStore} from "@/store/AppStore";
+import {highlightPlugin, linkPlugin, tagPlugin} from "@/plugin/markdown";
 
 const modelValue = defineModel({
     type: String,
@@ -21,7 +22,12 @@ const modelValue = defineModel({
 });
 const emits = defineEmits(['save']);
 
-config({ iconfontType: 'svg' })
+config({
+    iconfontType: 'svg',
+    markdownItConfig(md) {
+        md.use(highlightPlugin).use(tagPlugin).use(linkPlugin);
+    }
+})
 
 const theme = computed(() => useAppStore().theme);
 const height = computed(() => {

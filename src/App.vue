@@ -66,13 +66,15 @@ function handleTheme() {
     }
 }
 
-window.onTagSearch = useSearchNoteEvent.emit;
+window.onTagSearch = e => useSearchNoteEvent.emit(decodeURIComponent(e));
 window.openMessage = (content, level) => {
     MessageUtil[level || 'warning'](content);
 }
-
 window.copyText = (content: string) => {
     utools.copyText(decodeURIComponent(content));
+}
+window.shellOpenExternal = (url: string) => {
+    utools.shellOpenExternal(decodeURIComponent(url));
 }
 
 window.addEventListener('click', e => {
