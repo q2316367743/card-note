@@ -8,18 +8,20 @@
     </div>
 </template>
 <script lang="ts" setup>
-import {MdEditor} from "md-editor-v3";
+import {computed} from "vue";
+import {Message} from "@arco-design/web-vue";
+import {MdEditor, config} from "md-editor-v3";
 import 'md-editor-v3/lib/style.css';
 import 'md-editor-v3/lib/preview.css';
 import {fontFamilyWrap, fontSizeWrap, mdEditorHeight, mdEditorPreview, useAppStore} from "@/store/AppStore";
-import {computed} from "vue";
-import {Message} from "@arco-design/web-vue";
 
 const modelValue = defineModel({
     type: String,
     default: ''
 });
 const emits = defineEmits(['save']);
+
+config({ iconfontType: 'svg' })
 
 const theme = computed(() => useAppStore().theme);
 const height = computed(() => {
