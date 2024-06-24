@@ -1,8 +1,8 @@
 <template>
     <a-typography class="note-preview">
         <a-typography-paragraph :ellipsis="ellipsis" class="preview">
-            <md-preview :model-value="props.content? props.content.content:''" :theme preview-theme="vuepress"
-                        code-theme="github" v-if="mdEditorEnable"
+            <md-preview :model-value="props.content? props.content.content:''" :theme :preview-theme="mdEditorTheme"
+                        :code-theme="codeTheme" v-if="mdEditorEnable"
                         :style="{ fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"/>
             <textarea-preview v-else :content="props.content? props.content.content:''"/>
         </a-typography-paragraph>
@@ -40,14 +40,14 @@
 </template>
 <script lang="ts" setup>
 import {computed, PropType, ref, watch} from "vue";
+import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
+import {MdPreview} from "md-editor-v3";
 import {NoteContent} from "@/entity/Note";
 import {useNoteStore, useOpenNoteEvent} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
 
-import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
 import {renderContent} from "@/utils/lang/BrowserUtil";
-import {ellipseRows, fontFamilyWrap, fontSizeWrap, mdEditorEnable, useAppStore} from "@/store/AppStore";
-import {MdPreview} from "md-editor-v3";
+import {ellipseRows, fontFamilyWrap, fontSizeWrap, mdEditorEnable, mdEditorTheme, useAppStore} from "@/store/AppStore";
 import TextareaPreview from "@/components/CardNote/TextareaPreview.vue";
 
 const props = defineProps({
@@ -69,6 +69,7 @@ const associatedNotes = ref<Array<DbRecord<NoteContent>>>([]);
 const commentNotes = ref<Array<DbRecord<NoteContent>>>([]);
 
 const theme = computed(() => useAppStore().theme);
+const codeTheme = computed(() => useAppStore().dark ? 'github-dark' : 'github');
 const ellipsis = computed(() => {
     if (props.ellipsis) {
         if (ellipseRows.value > -1) {

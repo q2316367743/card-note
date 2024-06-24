@@ -33,6 +33,7 @@ export const fontFamily = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_FAMILY, "'JetBra
 export const mdEditorEnable = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_ENABLE, false);
 export const mdEditorHeight = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_HEIGHT, 200);
 export const mdEditorPreview = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_PREVIEW, false);
+export const mdEditorTheme = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_THEME, 'cyanosis');
 
 
 export const fontSizeWrap = computed(() => fontSize.value + 'px');

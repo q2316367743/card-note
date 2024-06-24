@@ -1,9 +1,9 @@
 <template>
     <div class="markdown-editor">
         <md-editor v-model="modelValue" :preview="mdEditorPreview" :theme preview-theme="vuepress"
-                   code-theme="github"
+                   code-theme="github" placeholder="任何想法。。。"
                    :style="{height: height, fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"
-                   @save="onSave" @error="onError"
+                   @save="onSave" @error="onError" :footers="['markdownTotal']"
         />
     </div>
 </template>
@@ -26,6 +26,20 @@ config({
     iconfontType: 'svg',
     markdownItConfig(md) {
         md.use(highlightPlugin).use(tagPlugin).use(linkPlugin);
+    },
+    editorExtensionsAttrs: {
+        highlight: {
+            css: {
+                'github': {
+                    dark: {
+                        href: './highlight.js/github-dark.css'
+                    },
+                    light: {
+                        href: './highlight.js/github.css'
+                    }
+                }
+            },
+        }
     }
 })
 

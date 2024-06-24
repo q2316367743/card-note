@@ -41,6 +41,20 @@
             <a-form-item label="markdown编辑器是否展示预览">
                 <a-switch v-model="mdEditorPreview" type="round" :disabled="!mdEditorEnable"/>
             </a-form-item>
+            <a-form-item label="markdown预览主题">
+                <a-select v-model="mdEditorTheme" :disabled="!mdEditorEnable">
+                    <a-option value="default">default</a-option>
+                    <a-option value="github">github</a-option>
+                    <a-option value="vuepress">vuepress</a-option>
+                    <a-option value="mk-cute">mk-cute</a-option>
+                    <a-option value="smart-blue">smart-blue</a-option>
+                    <a-option value="cyanosis">cyanosis</a-option>
+                    <a-option value="arknights">arknights</a-option>
+                </a-select>
+                <template #help>
+                    只在启用【完全的markdown编辑器】时生效
+                </template>
+            </a-form-item>
             <a-form-item label="开发者工具">
                 <a-switch v-model="devTool" type="round"/>
             </a-form-item>
@@ -56,7 +70,7 @@ import {
     fontSize,
     fontFamily,
     mdEditorEnable,
-    mdEditorHeight, mdEditorPreview
+    mdEditorHeight, mdEditorPreview, mdEditorTheme
 } from "@/store/AppStore";
 
 const themeType = ref(useAppStore().themeType);

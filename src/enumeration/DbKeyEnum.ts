@@ -22,6 +22,8 @@ enum DbKeyEnum {
 
     KEY_MD_EDITOR_PREVIEW = '/key/md-editor/preview',
 
+    KEY_MD_EDITOR_THEME = '/key/md-editor/theme',
+
 
     SETTING_SYNC = '/setting/sync',
 
