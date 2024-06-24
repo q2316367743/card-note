@@ -24,7 +24,6 @@ import {
     getMermaidSrc, getPrettierParseMarkdown, getPrettierStandalone,
     getScreenFullJs
 } from "@/plugin/library";
-import hljs from "highlight.js";
 
 const modelValue = defineModel({
     type: String,
@@ -45,7 +44,6 @@ config({
                     light: './highlight.js/github.css'
                 }
             },
-            instance: hljs,
             js: getHighlightJs()
         },
         mermaid: {

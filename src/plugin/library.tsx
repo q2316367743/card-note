@@ -73,7 +73,7 @@ const Highlight: Library = {
 }
 const CropperJs: Library = {
     label: '图片裁剪 - js',
-    name: 'highlight.min.js',
+    name: 'cropper.min.js',
     path: PATH,
     url: 'https://cdn.bootcdn.net/ajax/libs/cropperjs/1.6.2/cropper.min.js'
 }
@@ -151,7 +151,11 @@ export function checkLibrary() {
         });
         Promise.any(results.map(e =>
             window.preload.customer.downloadFile(utools.getPath('appData'), e.path, e.name, e.url)))
-            .then(() => NotificationUtil.success("下载完成，请重新进入插件后使用", '第三方资源检测'))
+            .then(() => Notification.success({
+                content: "下载完成，请重新进入插件后使用，以免插件使用异常。",
+                title: '第三方资源检测',
+                duration: 10000,
+            }))
             .catch(e => NotificationUtil.error(`下载失败，${e.message}`, '第三方资源检测'));
     }
 }
