@@ -12,6 +12,17 @@ interface Window {
 
     shellOpenExternal(url: string): void;
 
+    preload: {
+        customer: {
+            checkFileExist(root: string, dir: string, file: string): boolean;
+            downloadFile(root: string, dir: string, fileName: string, url: string): Promise<void>;
+        },
+
+        path: {
+            join(...paths: string[]): string;
+        }
+    }
+
 }
 
 interface LAInstance {

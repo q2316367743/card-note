@@ -16,6 +16,7 @@ import {useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/modal/MessageUtil";
 import {isUtools} from "@/plugin/utools";
 import AppHeader from "@/components/App/AppHeader.vue";
+import {checkLibrary} from "@/plugin/library";
 
 
 const route = useRoute();
@@ -35,11 +36,12 @@ watch(() => route.path, value => {
 });
 
 useAppStore().init();
-
 import("@/store/TagStore").then(res => res.useTagStore().init());
 import("@/store/SyncStore").then(res => res.useSyncStore().init());
 import("@/store/AiStore").then(res => res.useAiStore().init());
 import("@/store/RoleStore").then(res => res.useRoleStore().init());
+// 资源检查
+checkLibrary()
 
 utools.onPluginEnter(action => {
     handleTheme();
@@ -86,7 +88,9 @@ window.addEventListener('click', e => {
             utools.shellOpenExternal(href);
         }
     }
-})
+});
+
+
 
 </script>
 <style scoped>

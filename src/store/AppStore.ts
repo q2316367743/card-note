@@ -98,4 +98,4 @@ export const useAppStore = defineStore('app', () => {
         saveThemeType
     }
 
-})
+});

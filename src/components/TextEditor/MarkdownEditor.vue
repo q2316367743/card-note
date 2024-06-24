@@ -15,6 +15,16 @@ import 'md-editor-v3/lib/style.css';
 import 'md-editor-v3/lib/preview.css';
 import {fontFamilyWrap, fontSizeWrap, mdEditorHeight, mdEditorPreview, useAppStore} from "@/store/AppStore";
 import {highlightPlugin, linkPlugin, tagPlugin} from "@/plugin/markdown";
+import {
+    getCropperCss,
+    getCropperJs,
+    getHighlightJs,
+    getKatexCss,
+    getKatexJs,
+    getMermaidSrc, getPrettierParseMarkdown, getPrettierStandalone,
+    getScreenFullJs
+} from "@/plugin/library";
+import hljs from "highlight.js";
 
 const modelValue = defineModel({
     type: String,
@@ -27,18 +37,35 @@ config({
     markdownItConfig(md) {
         md.use(highlightPlugin).use(tagPlugin).use(linkPlugin);
     },
-    editorExtensionsAttrs: {
+    editorExtensions: {
         highlight: {
             css: {
                 'github': {
-                    dark: {
-                        href: './highlight.js/github-dark.css'
-                    },
-                    light: {
-                        href: './highlight.js/github.css'
-                    }
+                    dark: './highlight.js/github-dark.css',
+                    light: './highlight.js/github.css'
                 }
             },
+            instance: hljs,
+            js: getHighlightJs()
+        },
+        mermaid: {
+            js: getMermaidSrc()
+        },
+        katex: {
+            css: getKatexCss(),
+            js: getKatexJs()
+        },
+        cropper: {
+            css: getCropperCss(),
+            js: getCropperJs()
+        },
+        screenfull: {
+            js: getScreenFullJs()
+        },
+        iconfont: './font_2605852_cmafimm6hot.js',
+        prettier: {
+            parserMarkdownJs: getPrettierParseMarkdown(),
+            standaloneJs: getPrettierStandalone()
         }
     }
 })
