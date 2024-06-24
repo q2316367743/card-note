@@ -1,4 +1,7 @@
 export const updateLogs: Record<string, Array<string>> = {
+    "1.5.1": [
+        "【修复】markdown编辑器新增流程图与公式",
+    ],
     "1.5.0": [
         "【更新】首页布局优化，更加美观",
         "【新增】新增markdown编辑器，功能更强大",

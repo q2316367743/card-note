@@ -6,7 +6,7 @@ export default {
     // 项目中文名称
     name: '卡片笔记',
     // 版本
-    version: '1.5.0',
+    version: '1.5.1',
     _version: 150,
     // 作者
     author: '落雨不悔',
