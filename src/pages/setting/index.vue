@@ -6,6 +6,7 @@
             <a-tab-pane title="同步设置" key="3"/>
             <a-tab-pane title="AI设置" key="4"/>
             <a-tab-pane title="导入与导出" key="5"/>
+            <a-tab-pane title="附件管理" key="6"/>
         </a-tabs>
         <div class="container">
             <base-setting v-if="activeKey === '1'"/>
@@ -13,6 +14,7 @@
             <sync-setting v-else-if="activeKey === '3'"/>
             <ai-setting v-else-if="activeKey === '4'" />
             <import-or-export v-else-if="activeKey === '5'" />
+            <attachment-manage v-else-if="activeKey === '6'" />
         </div>
     </div>
 </template>
@@ -23,6 +25,7 @@ import SyncSetting from "@/pages/setting/module/SyncSetting.vue";
 import ImportOrExport from "@/pages/setting/module/ImportOrExport.vue";
 import AiSetting from "@/pages/setting/module/AiSetting.vue";
 import RoleSetting from "@/pages/setting/module/RoleSetting/index.vue";
+import AttachmentManage from "@/pages/setting/module/AttachmentManage.vue";
 
 const activeKey = ref('1');
 </script>

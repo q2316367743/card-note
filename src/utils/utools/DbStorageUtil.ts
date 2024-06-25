@@ -43,6 +43,12 @@ export interface DbRecord<T> {
 
 }
 
+export interface DbListRecord<T> extends DbRecord<T>{
+
+    id: string
+
+}
+
 // --------------------------------------- 列表操作 ---------------------------------------
 
 export async function listByAsync<T = any>(key: string): Promise<DbList<T>> {
@@ -73,12 +79,13 @@ export async function saveListByAsync<T>(key: string, records: Array<T>, rev?: s
     return Promise.resolve(res.rev);
 }
 
-export async function listRecordByAsync<T>(key?: string | string[]): Promise<Array<DbRecord<T>>> {
+export async function listRecordByAsync<T>(key?: string | string[]): Promise<Array<DbListRecord<T>>> {
     // @ts-ignore
     const items = await utools.db.promises.allDocs(key);
     return items.filter(e => !!e).map(item => ({
         record: item.value,
-        rev: item._rev
+        rev: item._rev,
+        id: item._id
     }));
 }
 

@@ -2,7 +2,7 @@
     <div class="markdown-editor">
         <md-editor v-model="modelValue" :code-theme="codeTheme" placeholder="任何想法。。。"
                    :preview="mdEditorPreview" :theme :preview-theme="mdEditorTheme" :style
-                   :transform-img-url="transformImgUrl" :footers="['markdownTotal']" :auto-detect-code="true"
+                   :footers="['markdownTotal']" :auto-detect-code="true"
                    @save="onSave" @error="onError" @upload-img="onImageUpload"
         />
     </div>
@@ -19,7 +19,7 @@ import {
     mdEditorTheme,
     useAppStore
 } from "@/store/AppStore";
-import {transformImgUrl, useImageUpload} from "@/plugin/image";
+import {useImageUpload} from "@/plugin/image";
 import MessageUtil from "@/utils/modal/MessageUtil";
 
 const modelValue = defineModel({

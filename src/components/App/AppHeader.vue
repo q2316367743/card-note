@@ -58,7 +58,7 @@ const isMobile = computed(() => useAppStore().isMobile);
 const allIds = computed(() => useNoteStore().allIds())
 const noteLength = computed(() => allIds.value.length);
 const minDay = computed(() => Math.min(...allIds.value, new Date().getTime()));
-const day = computed(() => Math.floor(((new Date().getTime()) - minDay.value) / (24 * 60 * 60 * 1000)));
+const day = computed(() => Math.max(Math.floor(((new Date().getTime()) - minDay.value) / (24 * 60 * 60 * 1000)), 0));
 </script>
 <style scoped>
 

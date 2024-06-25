@@ -1,8 +1,7 @@
 <template>
     <a-typography class="note-preview">
         <a-typography-paragraph :ellipsis="ellipsis" class="preview">
-            <md-preview :model-value="markdown" :theme :style
-                        :transform-img-url="transformImgUrl" :preview-theme="mdEditorTheme" :code-theme="codeTheme"
+            <md-preview :model-value="markdown" :theme :style :preview-theme="mdEditorTheme" :code-theme="codeTheme"
             />
         </a-typography-paragraph>
         <a-typography-paragraph v-if="relationNotes.length > 0 && props.relation">
