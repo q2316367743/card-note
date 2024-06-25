@@ -1,8 +1,9 @@
 <template>
     <a-typography class="note-preview">
         <a-typography-paragraph :ellipsis="ellipsis" class="preview">
-            <md-preview :model-value="props.content? props.content.content:''" :theme
-                        :preview-theme="mdEditorTheme" :code-theme="codeTheme" :style/>
+            <md-preview :model-value="markdown" :theme :style
+                        :transform-img-url="transformImgUrl" :preview-theme="mdEditorTheme" :code-theme="codeTheme"
+            />
         </a-typography-paragraph>
         <a-typography-paragraph v-if="relationNotes.length > 0 && props.relation">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
@@ -46,6 +47,8 @@ import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {renderContent} from "@/utils/lang/BrowserUtil";
 import {useNoteStore, useOpenNoteEvent} from "@/store/NoteStore";
 import {ellipseRows, fontFamilyWrap, fontSizeWrap, mdEditorTheme, useAppStore} from "@/store/AppStore";
+import {transformImgUrl} from "@/plugin/image";
+import {asyncReplaceAll} from "@/utils/lang/StringUtil";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>,
@@ -64,6 +67,7 @@ const props = defineProps({
 const relationNotes = ref<Array<DbRecord<NoteContent>>>([]);
 const associatedNotes = ref<Array<DbRecord<NoteContent>>>([]);
 const commentNotes = ref<Array<DbRecord<NoteContent>>>([]);
+const markdown = ref('');
 
 const theme = computed(() => useAppStore().theme);
 const codeTheme = computed(() => useAppStore().dark ? 'github-dark' : 'github');
@@ -77,7 +81,32 @@ const ellipsis = computed(() => {
     }
     return false;
 });
-const style = computed(() => ({fontFamily: fontFamilyWrap.value, fontSize: fontSizeWrap.value}))
+const style = computed(() => ({fontFamily: fontFamilyWrap.value, fontSize: fontSizeWrap.value}));
+
+watch(() => props.content, value => {
+    if (!value) {
+        markdown.value = '';
+        return;
+    }
+    const content = value.content;
+
+    // 此处执行内容替换
+    asyncReplaceAll(content, /!\[.*?]\((utools:\/\/.*)\)/g, async (match) => {
+        let exec = /!\[.*?]\((utools:\/\/.*)\)/g.exec(match);
+        if (exec) {
+            const link = exec[1];
+            if (link) {
+                const url = await transformImgUrl(link);
+                return match.replace(link, url);
+            }
+        }
+        return match;
+    }).then(md => markdown.value = md)
+        .catch(e => {
+            markdown.value = content;
+            console.error(e);
+        });
+}, {immediate: true});
 
 watch(() => props.content,
     value => {

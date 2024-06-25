@@ -8,7 +8,7 @@ import {
     saveOneByAsync
 } from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
-import {computed, ref} from "vue";
+import {ref, watch} from "vue";
 import {NoteContent, NoteIndex, NoteRelation, NoteRole} from "@/entity/Note";
 import {matchTagFromContent, useTagStore} from "@/store/TagStore";
 import {useSyncEvent} from "@/store/SyncStore";
@@ -52,15 +52,21 @@ export const useOpenNoteEvent = useEventBus<number>('open-note');
 export const useSearchNoteEvent = useEventBus<string>('search-note');
 export const useRefreshNoteEvent = useEventBus<Array<number> | null>('refresh-note');
 
+function renderIds(indexes: Array<NoteIndex>): Array<number> {
+    return indexes
+        .filter(index => !index.deleted)
+        .map(index => index.id)
+        .sort((a, b) => b - a)
+}
+
 export const useNoteStore = defineStore('note', () => {
     const indexes = ref(new Array<NoteIndex>());
     let rev: string | undefined = undefined;
     let isInit = false;
+    const ids = ref<Array<number>>([]);
 
-    const ids = computed(() => indexes.value
-        .filter(index => !index.deleted)
-        .map(index => index.id)
-        .sort((a, b) => b - a));
+    watch(indexes, value => ids.value = renderIds(value));
+
 
     async function init(force: boolean = false) {
         if (isInit && !force) {
@@ -69,6 +75,7 @@ export const useNoteStore = defineStore('note', () => {
         isInit = true;
         const res = await listByAsync(DbKeyEnum.LIST_NOTE);
         indexes.value = res.list;
+        ids.value = renderIds(indexes.value)
         rev = res.rev;
     }
 

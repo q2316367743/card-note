@@ -83,7 +83,6 @@ window.addEventListener('click', e => {
     }
 });
 
-
 </script>
 <style scoped>
 </style>

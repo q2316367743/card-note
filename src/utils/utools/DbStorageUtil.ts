@@ -195,18 +195,26 @@ export async function postAttachment(docId: string, attachment: Blob | File): Pr
     return Promise.resolve(docId);
 }
 
+const attachmentUrl = new Map<string, string>();
+
 /**
  *  获取附件
  * @param docId 附件ID
  * @return 附件链接
  */
 export async function getAttachmentAsync(docId: string): Promise<string> {
+    let newVar = attachmentUrl.get(docId);
+    if (newVar) {
+        return Promise.resolve(newVar);
+    }
     const data = await utools.db.promises.getAttachment(docId);
     if (!data) {
         return Promise.resolve("./logo.png")
     }
-    const blob = new Blob([data]);
-    return Promise.resolve(window.URL.createObjectURL(blob));
+    const blob = new Blob([data], {type: 'image/png'});
+    newVar = window.URL.createObjectURL(blob);
+    attachmentUrl.set(docId, newVar);
+    return Promise.resolve(newVar);
 }
 
 

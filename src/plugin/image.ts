@@ -1,8 +1,9 @@
 import {base64toBlob, blobToBase64} from "@/utils/file/CovertUtil";
 import {RedirectPreload} from "@/plugin/utools/types";
-import {getAttachmentSync, postAttachment} from "@/utils/utools/DbStorageUtil";
-import {ATTACHMENT_PREFIX} from "@/entity/Role";
+import {getAttachmentAsync, postAttachment} from "@/utils/utools/DbStorageUtil";
+import {ATTACHMENT_PREFIX, UTOOLS_PREFIX} from "@/entity/Role";
 import {isUtools} from "@/plugin/utools";
+import Constant from "@/global/Constant";
 
 const BASE64_PREFIX: string = 'data:image/png;base64,';
 
@@ -46,31 +47,27 @@ async function useImageUploadByUtools(data: Blob | File | string): Promise<strin
     return postAttachment(ATTACHMENT_PREFIX + Date.now(), data);
 
 }
+
 /**
  * 文件上传组件
  * @param data 图片数据
  * @return 链接
  */
 export async function useImageUpload(data: File | string): Promise<string> {
-    if (isUtools) {
-        return useImageUploadByUtools(data);
-    } else {
-        return Promise.resolve(useImageUploadByBase64(data));
-    }
-
+    const id = await useImageUploadByUtools(data);
+    return UTOOLS_PREFIX + Constant.id + id;
 }
 
 // --------------------------------------------------------------------------------------------------------------
 // --------------------------------------------------- 加载图片 ---------------------------------------------------
 // --------------------------------------------------------------------------------------------------------------
 
+const startIndex = UTOOLS_PREFIX.length + Constant.id.length;
 
-/**
- * 根据图片ID，获取图片连接（同步）
- * @param id 附件ID
- * @return 图片地址
- */
-export function useLoadImageBySync(id: string): string {
-    return getAttachmentSync(id);
+export function transformImgUrl(url: string): Promise<string> {
+    if (url.startsWith(UTOOLS_PREFIX)) {
+        return getAttachmentAsync(url.substring(startIndex));
+    }
+    return Promise.resolve(url);
 }
 

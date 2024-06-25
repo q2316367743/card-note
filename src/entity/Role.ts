@@ -26,7 +26,8 @@ export const HTTP_PREFIX = 'http://'
 export const HTTPS_PREFIX = 'https://'
 export const FILE_PREFIX = 'file://'
 export const AVATAR_PREFIX = '/avatar/';
-export const ATTACHMENT_PREFIX = 'utools://attachment/';
+export const UTOOLS_PREFIX = 'utools://';
+export const ATTACHMENT_PREFIX = '/attachment/';
 export const CUSTOMER_PREFIX = 'customer:';
 // AI
 export const ROBOT = 'robot';

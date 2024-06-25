@@ -1,15 +1,8 @@
 import MessageUtil from '@/utils/modal/MessageUtil';
 import {generateUUID} from "@/utils/lang/BrowserUtil";
-import {createStore} from 'idb-keyval';
-import Constant from "@/global/Constant";
 import {DbPromise, DbStorage, RedirectPreload, ShowOpenDialogOption} from "@/plugin/utools/types";
 import {webDbPromise} from "@/plugin/utools/dbPromise";
 import {webDbStorage} from "@/plugin/utools/dbStorage";
-
-export const store = createStore(Constant.id, "db");
-export const attachment = createStore(Constant.id, "attachment");
-
-
 
 export type ShowOpenDialogOptionProperty = 'openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles'
     | 'createDirectory' | 'promptToCreate' | 'noResolveAliases' | 'treatPackageAsDirectory' | 'dontAddToRecent';
@@ -58,7 +51,10 @@ export const utools = {
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     },
     onPluginEnter(callback: (action: { code: string, type: string, payload: any }) => void): void {
-        document.addEventListener('load', () => callback({code: 'application', type: '', payload: {}}));
+        window.addEventListener('load', () => callback({code: 'application', type: '', payload: {}}));
+    },
+    onPluginOut(callback: () =>void){
+        window.addEventListener('close', () => callback());
     },
     onPluginDetach() {
     },

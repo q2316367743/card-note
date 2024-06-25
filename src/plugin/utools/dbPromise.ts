@@ -1,6 +1,20 @@
-import {DbPromise} from "@/plugin/utools/types";
-import {del, get, getMany, keys, set, values} from "idb-keyval";
-import {attachment, store} from "@/plugin/utools";
+import {DbDoc, DbPromise} from "@/plugin/utools/types";
+import Constant from "@/global/Constant";
+import {openDB} from "idb";
+
+const DB = 'db';
+const ATTACHMENT = 'attachment';
+
+const dbPromise = openDB(Constant.id, 2, {
+    upgrade(db, oldVersion) {
+        if (oldVersion !== 1) {
+            // 只有第一个版本，才不需要创建db
+            db.createObjectStore(DB);
+        }
+        db.createObjectStore(ATTACHMENT);
+    },
+});
+
 
 export const webDbPromise: DbPromise = {
     /**
@@ -8,10 +22,10 @@ export const webDbPromise: DbPromise = {
      */
     async put(doc: DbDoc): Promise<DbReturn> {
         try {
-            await set(doc._id, doc, store)
+            await (await dbPromise).put(DB, doc, doc._id)
             return Promise.resolve({
                 id: doc._id,
-                rev: ''
+                rev: Date.now() + ''
             });
         } catch (e) {
             return Promise.resolve({
@@ -26,7 +40,7 @@ export const webDbPromise: DbPromise = {
      * 获取文档
      */
     async get(id: string): Promise<DbDoc | null> {
-        const res = await get(id, store);
+        const res = await (await dbPromise).get(DB, id);
         return res || null;
     },
     /**
@@ -40,9 +54,9 @@ export const webDbPromise: DbPromise = {
             id = doc._id;
         }
         try {
-            await del(id, store);
+            await (await dbPromise).delete(DB, id);
             // 判断是否存在附件
-            await del(id, attachment)
+            await (await dbPromise).delete(ATTACHMENT, id);
             return Promise.resolve({
                 id,
                 rev: ''
@@ -69,19 +83,30 @@ export const webDbPromise: DbPromise = {
      * 获取所有文档 可根据文档id前缀查找
      */
     async allDocs(key?: string | string[]): Promise<DbDoc[]> {
-        if (key && key instanceof Array) {
-            return getMany(key, store);
-        } else if (key && typeof key === 'string') {
-            let itemKeys = await keys(store);
-            itemKeys = itemKeys.filter(itemKey => {
+        const c = await dbPromise;
+
+        if (!key) {
+            return c.getAll(DB);
+        }
+
+        let keys = new Array<IDBValidKey>();
+
+        if (typeof key === 'string') {
+            let itemKeys = await (await dbPromise).getAllKeys(DB);
+            keys = itemKeys.filter(itemKey => {
                 if (typeof itemKey === 'string') {
                     return itemKey.startsWith(key)
                 }
                 return false;
             })
-            return getMany(itemKeys, store);
+        } else {
+            keys = key;
         }
-        return values(store);
+
+        const results = new Array<DbDoc>()
+        let items = await Promise.all(keys.map(id => c.get(DB, id)));
+        items.forEach(e => e && results.push(e));
+        return results;
     },
 
     /**
@@ -91,18 +116,19 @@ export const webDbPromise: DbPromise = {
      * @param type 附件类型，示例：image/png, text/plain
      */
     async postAttachment(docId: string, buffer: Uint8Array, type: string): Promise<DbReturn> {
-        await set(docId, {
+        await (await dbPromise).put(DB, {
             _id: docId,
             _attachment: {
                 contentType: type,
                 length: buffer.length,
             }
-        }, store);
+        }, docId);
         try {
-            await set(docId, buffer, attachment);
+            await (await dbPromise).put(ATTACHMENT, buffer, docId);
         } catch (e) {
             // 错误，删除
-            await del(docId, store);
+            console.error(e)
+            await (await dbPromise).delete(DB, docId);
             return Promise.resolve({
                 id: docId,
                 error: true,
@@ -123,11 +149,11 @@ export const webDbPromise: DbPromise = {
      * @param docId 文档ID
      */
     async getAttachment(docId: string): Promise<Uint8Array | null> {
-        const res = await get(docId, store);
+        const res = await (await dbPromise).get(DB, docId);
         if (!res) {
             return null;
         }
-        const buffer = await get(docId, attachment);
+        const buffer = await (await dbPromise).get(ATTACHMENT, docId);
         return buffer || null;
     },
 
@@ -136,12 +162,12 @@ export const webDbPromise: DbPromise = {
      * @param docId 文档ID
      */
     async getAttachmentType(docId: string): Promise<string | null> {
-        const res = await get(docId, store);
+        const res = await (await dbPromise).get(DB, docId);
         if (!res) {
             return null;
         }
         const attachment = res['_attachment'];
-        return attachment ? (attachment['contentType'] || null): null;
+        return attachment ? (attachment['contentType'] || null) : null;
     },
     replicateStateFromCloud(): Promise<null | 0 | 1> {
         return Promise.resolve(null);
