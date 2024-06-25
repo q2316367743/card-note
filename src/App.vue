@@ -1,5 +1,5 @@
 <template>
-    <a-layout :class="{main: true, detach: detach,'utools': isUtools, 'bg-color': true,}">
+    <a-layout :class="layoutClass">
         <link type="text/css" rel="stylesheet" :href="href"/>
         <app-header/>
         <a-layout-content
@@ -26,6 +26,7 @@ const selectedKeys = ref(['/home']);
 const href = computed(() => `./highlight.js/${useAppStore().dark ? 'github-dark' : 'github'}.css`);
 // 是否是手机客户端
 const isMobile = computed(() => useAppStore().isMobile);
+const layoutClass = computed(() => ({main: true, detach: detach.value, 'utools': isUtools, 'bg-color': true}))
 
 watch(() => selectedKeys.value, value => router.push(value[0]), {deep: true});
 watch(() => useAppStore().dark, handleTheme, {immediate: true});
@@ -44,7 +45,6 @@ import("@/store/RoleStore").then(res => res.useRoleStore().init());
 checkLibrary()
 
 utools.onPluginEnter(action => {
-    handleTheme();
     if (action.code === 'append') {
         import("@/store/NoteStore").then(res =>
             res.useNoteStore().init().then(() =>
@@ -55,10 +55,7 @@ utools.onPluginEnter(action => {
                 })));
     }
 });
-utools.onPluginDetach(() => {
-    console.log('分离窗口')
-    detach.value = true;
-})
+utools.onPluginDetach(() => detach.value = true)
 
 function handleTheme() {
     if (useAppStore().isDarkColors()) {
@@ -69,17 +66,13 @@ function handleTheme() {
 }
 
 window.onTagSearch = e => useSearchNoteEvent.emit(decodeURIComponent(e));
-window.openMessage = (content, level) => {
-    MessageUtil[level || 'warning'](content);
-}
-window.copyText = (content: string) => {
-    utools.copyText(decodeURIComponent(content));
-}
-window.shellOpenExternal = (url: string) => {
-    utools.shellOpenExternal(decodeURIComponent(url));
-}
-
+window.openMessage = (content, level) => MessageUtil[level || 'warning'](content);
+window.copyText = (content: string) => utools.copyText(decodeURIComponent(content));
+window.shellOpenExternal = (url: string) => utools.shellOpenExternal(decodeURIComponent(url));
 window.addEventListener('click', e => {
+    if (!isUtools) {
+        return;
+    }
     const ele = e.target as HTMLElement;
     if (ele && ele.tagName && ele.tagName.toUpperCase() === 'A') {
         // a标签
@@ -89,7 +82,6 @@ window.addEventListener('click', e => {
         }
     }
 });
-
 
 
 </script>

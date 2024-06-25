@@ -42,7 +42,7 @@
                 <a-switch v-model="mdEditorPreview" type="round" :disabled="!mdEditorEnable"/>
             </a-form-item>
             <a-form-item label="markdown预览主题">
-                <a-select v-model="mdEditorTheme" :disabled="!mdEditorEnable">
+                <a-select v-model="mdEditorTheme">
                     <a-option value="default">default</a-option>
                     <a-option value="github">github</a-option>
                     <a-option value="vuepress">vuepress</a-option>

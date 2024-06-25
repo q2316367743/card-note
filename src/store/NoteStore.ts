@@ -312,7 +312,7 @@ export const useNoteStore = defineStore('note', () => {
             rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
             // 2. 删除数据
             const old = await getOne(id);
-            await removeOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${id}`);
+            await removeOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${id}`, true);
             if (old) {
                 // 3. 删除关联及评论
                 for (let relationNote of old.record.relationNotes) {

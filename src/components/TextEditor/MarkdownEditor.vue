@@ -1,72 +1,32 @@
 <template>
     <div class="markdown-editor">
-        <md-editor v-model="modelValue" :preview="mdEditorPreview" :theme preview-theme="vuepress"
-                   code-theme="github" placeholder="任何想法。。。"
-                   :style="{height: height, fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"
-                   @save="onSave" @error="onError" :footers="['markdownTotal']"
+        <md-editor v-model="modelValue" code-theme="github" placeholder="任何想法。。。"
+                   :preview="mdEditorPreview" :theme :preview-theme="mdEditorTheme" :style :transformImgUrl
+                   :footers="['markdownTotal']" :auto-detect-code="true"
+                   @save="onSave" @error="onError" @upload-img="onImageUpload"
         />
     </div>
 </template>
 <script lang="ts" setup>
 import {computed} from "vue";
-import {Message} from "@arco-design/web-vue";
-import {MdEditor, config} from "md-editor-v3";
+import {MdEditor} from "md-editor-v3";
 import 'md-editor-v3/lib/style.css';
-import 'md-editor-v3/lib/preview.css';
-import {fontFamilyWrap, fontSizeWrap, mdEditorHeight, mdEditorPreview, useAppStore} from "@/store/AppStore";
-import {highlightPlugin, linkPlugin, tagPlugin} from "@/plugin/markdown";
 import {
-    getCropperCss,
-    getCropperJs,
-    getHighlightJs,
-    getKatexCss,
-    getKatexJs,
-    getMermaidSrc, getPrettierParseMarkdown, getPrettierStandalone,
-    getScreenFullJs
-} from "@/plugin/library";
+    fontFamilyWrap,
+    fontSizeWrap,
+    mdEditorHeight,
+    mdEditorPreview,
+    mdEditorTheme,
+    useAppStore
+} from "@/store/AppStore";
+import {useImageUpload, useLoadImageBySync} from "@/plugin/image";
+import MessageUtil from "@/utils/modal/MessageUtil";
 
 const modelValue = defineModel({
     type: String,
     default: ''
 });
 const emits = defineEmits(['save']);
-
-config({
-    iconfontType: 'svg',
-    markdownItConfig(md) {
-        md.use(highlightPlugin).use(tagPlugin).use(linkPlugin);
-    },
-    editorExtensions: {
-        highlight: {
-            css: {
-                'github': {
-                    dark: './highlight.js/github-dark.css',
-                    light: './highlight.js/github.css'
-                }
-            },
-            js: getHighlightJs()
-        },
-        mermaid: {
-            js: getMermaidSrc()
-        },
-        katex: {
-            css: getKatexCss(),
-            js: getKatexJs()
-        },
-        cropper: {
-            css: getCropperCss(),
-            js: getCropperJs()
-        },
-        screenfull: {
-            js: getScreenFullJs()
-        },
-        iconfont: './font_2605852_cmafimm6hot.js',
-        prettier: {
-            parserMarkdownJs: getPrettierParseMarkdown(),
-            standaloneJs: getPrettierStandalone()
-        }
-    }
-})
 
 const theme = computed(() => useAppStore().theme);
 const height = computed(() => {
@@ -75,14 +35,34 @@ const height = computed(() => {
         return Math.max(res, 200) + 'px';
     }
     return '200px';
-})
+});
+const style = computed(() => ({
+    height: height.value, fontFamily: fontFamilyWrap.value, fontSize: fontSizeWrap.value
+}))
+
+function transformImgUrl(url: string): Promise<string> | string {
+    if (url.startsWith("utools://")) {
+        return useLoadImageBySync(url);
+    }
+    return url;
+}
 
 function onSave(v: string) {
     emits('save', v);
 }
 
 function onError(err: { name: 'Cropper' | 'fullscreen' | 'prettier' | 'overlength'; message: string }) {
-    Message.error(err.message);
+    MessageUtil.error(`【${err.name}】出现异常`, err.message);
+}
+
+function onImageUpload(files: Array<File>, callback: (urls: string[] | {
+    url: string;
+    alt: string;
+    title: string
+}[]) => void) {
+    Promise.all(files.map(e => useImageUpload(e)))
+        .then(callback)
+        .catch(e => MessageUtil.error("图片上传失败", e));
 }
 
 const addCheckbox = () => {

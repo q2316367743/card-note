@@ -1,6 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 import {SOURCE_TAG_REGEX} from "@/store/TagStore";
+import {isUtools} from "@/plugin/utools";
 
 
 const md = new MarkdownIt({
@@ -55,7 +56,9 @@ export function linkPlugin(md: MarkdownIt) {
             }
         }
 
-        tokens[idx].attrPush(['onclick', `utools.shellOpenExternal('${encodeURIComponent(href || '')}')`])
+        if (isUtools) {
+            tokens[idx].attrPush(['onclick', `utools.shellOpenExternal('${encodeURIComponent(href || '')}')`])
+        }
 
         // 传递 token 到默认的渲染器。
         return defaultRender(tokens, idx, options, env, self);

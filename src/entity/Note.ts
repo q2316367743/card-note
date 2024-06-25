@@ -28,11 +28,6 @@ export interface NoteIndex {
      */
     role?: NoteRole | string;
 
-    /**
-     * 是否进行加密
-     */
-    encrypt: boolean;
-
 }
 
 

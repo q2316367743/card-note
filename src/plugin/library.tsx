@@ -114,7 +114,7 @@ function getLibrary(library: Library) {
     if (isUtools) {
         return window.preload.path.join(utools.getPath('appData'), library.path, library.name);
     }
-    return mermaid.url;
+    return library.url;
 }
 
 /**

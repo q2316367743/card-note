@@ -13,6 +13,17 @@ import {utools} from "@/plugin/utools";
 
 import '@arco-design/web-vue/dist/arco.css';
 import "@/assets/less/index.less";
+import {config} from "md-editor-v3";
+import {highlightPlugin, linkPlugin, tagPlugin} from "@/plugin/markdown";
+import {
+    getCropperCss,
+    getCropperJs,
+    getHighlightJs,
+    getKatexCss,
+    getKatexJs,
+    getMermaidSrc, getPrettierParseMarkdown, getPrettierStandalone,
+    getScreenFullJs
+} from "@/plugin/library";
 
 // utools挂载
 window.isUtools = !!window.utools;
@@ -35,6 +46,43 @@ if (window.utools.isDev()) {
         window.LA = LA;
     });
 }
+
+config({
+    iconfontType: 'svg',
+    markdownItConfig(md) {
+        md.use(highlightPlugin).use(tagPlugin).use(linkPlugin);
+    },
+    editorExtensions: {
+        highlight: {
+            css: {
+                'github': {
+                    dark: './highlight.js/github-dark.css',
+                    light: './highlight.js/github.css'
+                }
+            },
+            js: getHighlightJs()
+        },
+        mermaid: {
+            js: getMermaidSrc()
+        },
+        katex: {
+            css: getKatexCss(),
+            js: getKatexJs()
+        },
+        cropper: {
+            css: getCropperCss(),
+            js: getCropperJs()
+        },
+        screenfull: {
+            js: getScreenFullJs()
+        },
+        iconfont: './font_2605852_cmafimm6hot.js',
+        prettier: {
+            parserMarkdownJs: getPrettierParseMarkdown(),
+            standaloneJs: getPrettierStandalone()
+        }
+    }
+})
 
 // 额外引入图标库
 createApp(App)

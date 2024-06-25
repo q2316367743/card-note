@@ -1,10 +1,8 @@
 <template>
     <a-typography class="note-preview">
         <a-typography-paragraph :ellipsis="ellipsis" class="preview">
-            <md-preview :model-value="props.content? props.content.content:''" :theme :preview-theme="mdEditorTheme"
-                        :code-theme="codeTheme" v-if="mdEditorEnable"
-                        :style="{ fontFamily: fontFamilyWrap, fontSize: fontSizeWrap}"/>
-            <textarea-preview v-else :content="props.content? props.content.content:''"/>
+            <md-preview :model-value="props.content? props.content.content:''" :theme
+                        :preview-theme="mdEditorTheme" :code-theme="codeTheme" :style/>
         </a-typography-paragraph>
         <a-typography-paragraph v-if="relationNotes.length > 0 && props.relation">
             <div v-for="relationNote in relationNotes" style="margin-bottom: 4px;" :key="relationNote.record.id">
@@ -40,15 +38,14 @@
 </template>
 <script lang="ts" setup>
 import {computed, PropType, ref, watch} from "vue";
-import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
 import {MdPreview} from "md-editor-v3";
+import 'md-editor-v3/lib/preview.css';
+import {IconLink, IconShareInternal, IconEdit} from "@arco-design/web-vue/es/icon";
 import {NoteContent} from "@/entity/Note";
-import {useNoteStore, useOpenNoteEvent} from "@/store/NoteStore";
 import {DbRecord} from "@/utils/utools/DbStorageUtil";
-
 import {renderContent} from "@/utils/lang/BrowserUtil";
-import {ellipseRows, fontFamilyWrap, fontSizeWrap, mdEditorEnable, mdEditorTheme, useAppStore} from "@/store/AppStore";
-import TextareaPreview from "@/components/CardNote/TextareaPreview.vue";
+import {useNoteStore, useOpenNoteEvent} from "@/store/NoteStore";
+import {ellipseRows, fontFamilyWrap, fontSizeWrap, mdEditorTheme, useAppStore} from "@/store/AppStore";
 
 const props = defineProps({
     content: Object as PropType<NoteContent>,
@@ -80,6 +77,7 @@ const ellipsis = computed(() => {
     }
     return false;
 });
+const style = computed(() => ({fontFamily: fontFamilyWrap.value, fontSize: fontSizeWrap.value}))
 
 watch(() => props.content,
     value => {
