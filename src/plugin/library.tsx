@@ -14,91 +14,91 @@ interface Library {
 const mermaid: Library = {
     label: '流程图',
     name: 'mermaid.min.js',
-    path: PATH,
+    path: `${PATH}/mermaid/10.9.1`,
     url: 'https://cdn.bootcdn.net/ajax/libs/mermaid/10.9.1/mermaid.min.js'
 }
 const katexCss: Library = {
     label: '数学公式 - css',
     name: 'katex.min.css',
-    path: PATH,
+    path: `${PATH}/KaTeX/0.16.9`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.css'
 }
 const katexJs: Library = {
     label: '数学公式 - js',
     name: 'katex.min.js',
-    path: PATH,
+    path: `${PATH}/KaTeX/0.16.9`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.js'
 }
 const katexRegularWoff2: Library = {
     label: '数学公式 - 常规字体2',
     name: 'KaTeX_Main-Regular.woff2',
-    path: `${PATH}/fonts`,
+    path: `${PATH}/KaTeX/0.16.9/fonts`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/fonts/KaTeX_Main-Regular.woff2'
 }
 const katexItalicWoff2: Library = {
     label: '数学公式 - 斜体2',
     name: 'KaTeX_Math-Italic.woff2',
-    path: `${PATH}/fonts`,
+    path: `${PATH}/KaTeX/0.16.9/fonts`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/fonts/KaTeX_Math-Italic.woff2'
 }
 const katexRegularWoff: Library = {
     label: '数学公式 - 常规字体',
     name: 'KaTeX_Main-Regular.woff',
-    path: `${PATH}/fonts`,
+    path: `${PATH}/KaTeX/0.16.9/fonts`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/fonts/KaTeX_Main-Regular.woff'
 }
 const katexItalicWoff: Library = {
     label: '数学公式 - 斜体',
     name: 'KaTeX_Math-Italic.woff',
-    path: `${PATH}/fonts`,
+    path: `${PATH}/KaTeX/0.16.9/fonts`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/fonts/KaTeX_Math-Italic.woff'
 }
 const katexRegularTtf: Library = {
     label: '数学公式 - 常规字体ttf',
     name: 'KaTeX_Main-Regular.ttf',
-    path: `${PATH}/fonts`,
+    path: `${PATH}/KaTeX/0.16.9/fonts`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/fonts/KaTeX_Main-Regular.ttf'
 }
 const katexItalicTtf: Library = {
     label: '数学公式 - 斜体ttf',
     name: 'KaTeX_Math-Italic.ttf',
-    path: `${PATH}/fonts`,
+    path: `${PATH}/KaTeX/0.16.9/fonts`,
     url: 'https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/fonts/KaTeX_Math-Italic.ttf'
 }
 const Highlight: Library = {
     label: '语法高亮 - js',
     name: 'highlight.min.js',
-    path: PATH,
+    path: `${PATH}/highlight.js/11.9.0`,
     url: 'https://cdn.bootcdn.net/ajax/libs/highlight.js/11.9.0/highlight.min.js'
 }
 const CropperJs: Library = {
     label: '图片裁剪 - js',
     name: 'cropper.min.js',
-    path: PATH,
+    path: `${PATH}/cropperjs/1.6.2`,
     url: 'https://cdn.bootcdn.net/ajax/libs/cropperjs/1.6.2/cropper.min.js'
 }
 const CropperCss: Library = {
     label: '图片裁剪 - css',
     name: 'highlight.min.js',
-    path: PATH,
+    path: `${PATH}/cropperjs/1.6.2`,
     url: 'https://cdn.bootcdn.net/ajax/libs/cropperjs/1.6.2/cropper.min.css'
 }
 const ScreenFullJs: Library = {
     label: '全屏 - js',
     name: 'screenfull.min.js',
-    path: PATH,
+    path: `${PATH}/screenfull.js/5.2.0`,
     url: 'https://cdn.bootcdn.net/ajax/libs/screenfull.js/5.2.0/screenfull.min.js'
 }
 const PrettierStandalone: Library = {
     label: '代码格式化 - 单独',
     name: 'standalone.js',
-    path: PATH,
+    path: `${PATH}/prettier/2.8.0`,
     url: 'https://cdn.bootcdn.net/ajax/libs/prettier/2.8.0/standalone.js'
 }
 const PrettierParseMarkdown: Library = {
     label: '代码格式化 - 解析markdown',
     name: 'parser-markdown.js',
-    path: PATH,
+    path: `${PATH}/prettier/2.8.0`,
     url: 'https://cdn.bootcdn.net/ajax/libs/prettier/2.8.0/parser-markdown.js'
 }
 
@@ -112,7 +112,7 @@ const libraries = [mermaid, Highlight, ScreenFullJs,
 
 function getLibrary(library: Library) {
     if (isUtools) {
-        return window.preload.path.join(utools.getPath('appData'), PATH, library.name);
+        return window.preload.path.join(utools.getPath('appData'), library.path, library.name);
     }
     return mermaid.url;
 }
