@@ -10,6 +10,11 @@
                         <span class="id">&nbsp;· #{{ record.record.id }}</span>
                     </div>
                     <div class="extra">
+                        <a-button type="text" size="mini" @click="update(record)">
+                            <template #icon>
+                                <icon-edit/>
+                            </template>
+                        </a-button>
                         <a-tooltip content="关系图" v-if="record.record.relationNotes.length > 0">
                             <a-button title="关系图" type="text" @click="openNoteRelation(record)" size="mini">
                                 <template #icon>
@@ -35,12 +40,6 @@
                                         <icon-copy/>
                                     </template>
                                     复制
-                                </a-doption>
-                                <a-doption @click="update(record)">
-                                    <template #icon>
-                                        <icon-edit/>
-                                    </template>
-                                    编辑
                                 </a-doption>
                                 <a-doption @click="createExportImage(record.record)">
                                     <template #icon>

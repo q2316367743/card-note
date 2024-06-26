@@ -38,7 +38,7 @@ export function openEditBox(record: DbRecord<NoteContent>): Promise<Array<number
         const modalReturn = Drawer.open({
             title: '卡片笔记',
             footer: false,
-            width: isMobile.value ? '100vw' : '600px',
+            width: isMobile.value ? '100vw' : '764px',
             content: () => <div ref={el} />,
             onBeforeClose() {
                 app && app.unmount();

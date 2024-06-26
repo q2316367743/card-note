@@ -37,7 +37,7 @@ const height = computed(() => {
     return '200px';
 });
 const style = computed(() => ({
-    height: height.value, fontFamily: fontFamilyWrap.value, fontSize: fontSizeWrap.value
+    height: '100%', fontFamily: fontFamilyWrap.value, fontSize: fontSizeWrap.value
 }));
 const codeTheme = computed(() => useAppStore().dark ? 'github-dark' : 'github');
 
@@ -67,6 +67,10 @@ const addCode = () => {
 };
 defineExpose({addCheckbox, addTable, addCode});
 </script>
-<style scoped>
-
+<style lang="less">
+.markdown-editor {
+    .md-editor-input-wrapper {
+        max-height: v-bind(height);
+    }
+}
 </style>
