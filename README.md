@@ -17,5 +17,5 @@
 ## 如何使用
 
 1. [utools插件商店](https://u.tools/plugins/detail/卡片笔记/)
-2. 网页：[卡片笔记](https://blog.esion.xyz/apps/card-note)
+2. 网页：[卡片笔记](https://blog.esion.xyz/card-note)
 3. 下载安装包：[可道云](http://disk.esion.xyz/#s/-J-4X6rA);
