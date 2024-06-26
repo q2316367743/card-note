@@ -2,39 +2,46 @@
     <a-layout-header>
         <div class="card card-container nav" style="height: 40px">
             <div class="header">
-                <a-dropdown position="bl">
-                    <a-button type="text">
+                <div>
+                    <a-dropdown position="bl">
+                        <a-button type="text">
+                            <template #icon>
+                                <icon-menu/>
+                            </template>
+                        </a-button>
+                        <template #content>
+                            <a-doption @click="$router.push('/home')">
+                                <template #icon>
+                                    <icon-home/>
+                                </template>
+                                首页
+                            </a-doption>
+                            <a-doption @click="$router.push('/calendar')">
+                                <template #icon>
+                                    <icon-calendar/>
+                                </template>
+                                每日回顾
+                            </a-doption>
+                            <a-doption @click="$router.push('/statistics')">
+                                <template #icon>
+                                    <icon-bar-chart/>
+                                </template>
+                                记录统计
+                            </a-doption>
+                            <a-doption @click="$router.push('/setting')">
+                                <template #icon>
+                                    <icon-settings/>
+                                </template>
+                                设置
+                            </a-doption>
+                        </template>
+                    </a-dropdown>
+                    <a-button type='text' v-if="!isUtools">
                         <template #icon>
-                            <icon-menu/>
+                            <icon-search/>
                         </template>
                     </a-button>
-                    <template #content>
-                        <a-doption @click="$router.push('/home')">
-                            <template #icon>
-                                <icon-home/>
-                            </template>
-                            首页
-                        </a-doption>
-                        <a-doption @click="$router.push('/calendar')">
-                            <template #icon>
-                                <icon-calendar/>
-                            </template>
-                            每日回顾
-                        </a-doption>
-                        <a-doption @click="$router.push('/statistics')">
-                            <template #icon>
-                                <icon-bar-chart/>
-                            </template>
-                            记录统计
-                        </a-doption>
-                        <a-doption @click="$router.push('/setting')">
-                            <template #icon>
-                                <icon-settings/>
-                            </template>
-                            设置
-                        </a-doption>
-                    </template>
-                </a-dropdown>
+                </div>
                 <div>
                     <div class="statistics" v-if="isMobile">
                         <span>{{ day }} 天</span>
@@ -53,6 +60,7 @@
 import {computed} from "vue";
 import {useAppStore} from "@/store/AppStore";
 import {useNoteStore} from "@/store/NoteStore";
+import {isUtools} from "@/plugin/utools";
 
 const isMobile = computed(() => useAppStore().isMobile);
 const allIds = computed(() => useNoteStore().allIds())
