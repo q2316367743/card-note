@@ -64,6 +64,13 @@ export async function useImageUpload(data: File | string): Promise<string> {
 
 const startIndex = UTOOLS_PREFIX.length + Constant.id.length;
 
+export function buildUrlFromUtools(url: string) {
+    if (url.startsWith(UTOOLS_PREFIX)) {
+        return url.substring(startIndex);
+    }
+    return url
+}
+
 export function transformImgUrl(url: string): Promise<string> {
     if (url.startsWith(UTOOLS_PREFIX)) {
         return getAttachmentAsync(url.substring(startIndex));

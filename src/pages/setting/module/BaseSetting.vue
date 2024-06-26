@@ -30,7 +30,7 @@
                     <template #unchecked>禁用</template>
                 </a-switch>
                 <template #help>
-                    完整的markdown编辑器将支持全部的markdown语法，包括数学公式，流程图、时序图等等各种图，但是暂不支持标签高亮
+                    完整的markdown编辑器将支持全部的markdown语法，包括数学公式，流程图、时序图等等各种图
                 </template>
             </a-form-item>
             <a-form-item label="markdown编辑器高度">

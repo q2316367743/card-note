@@ -226,6 +226,20 @@ export async function getAttachmentAsync(docId: string): Promise<string> {
 
 
 /**
+ *  异步删除附件
+ * @param docId 附件ID
+ * @return 附件链接
+ */
+export async function removeAttachmentAsync(docId: string): Promise<void> {
+    const data = await utools.db.promises.remove(docId);
+    attachmentUrl.delete(docId);
+    if (data.error) {
+        return Promise.reject(new Error(data.message));
+    }
+}
+
+
+/**
  *  获取附件
  * @param docId 附件ID
  * @return 附件链接

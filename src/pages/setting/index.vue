@@ -3,7 +3,7 @@
         <a-tabs hide-content v-model:active-key="activeKey">
             <a-tab-pane title="基础设置" key="1"/>
             <a-tab-pane title="角色管理" key="2" disabled/>
-            <a-tab-pane title="同步设置" key="3"/>
+            <a-tab-pane title="同步设置" key="3" :disabled="!isUtools"/>
             <a-tab-pane title="AI设置" key="4"/>
             <a-tab-pane title="导入与导出" key="5"/>
             <a-tab-pane title="附件管理" key="6"/>
@@ -26,6 +26,7 @@ import ImportOrExport from "@/pages/setting/module/ImportOrExport.vue";
 import AiSetting from "@/pages/setting/module/AiSetting.vue";
 import RoleSetting from "@/pages/setting/module/RoleSetting/index.vue";
 import AttachmentManage from "@/pages/setting/module/AttachmentManage.vue";
+import {isUtools} from "@/plugin/utools";
 
 const activeKey = ref('1');
 </script>
