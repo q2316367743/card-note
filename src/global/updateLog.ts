@@ -1,4 +1,8 @@
 export const updateLogs: Record<string, Array<string>> = {
+    "1.5.2": [
+        "【新增】笔记支持图片了，可以粘贴图片到输入框（只有完整markdown编辑器支持），可以在设置中管理这些附件",
+        "【更新】去除角色框"
+    ],
     "1.5.1": [
         "【修复】markdown编辑器新增流程图与公式",
     ],

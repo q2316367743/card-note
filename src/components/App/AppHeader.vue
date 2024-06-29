@@ -36,7 +36,7 @@
                             </a-doption>
                         </template>
                     </a-dropdown>
-                    <a-button type='text' v-if="!isUtools">
+                    <a-button type='text' v-if="!isUtools" disabled>
                         <template #icon>
                             <icon-search/>
                         </template>
