@@ -1,6 +1,7 @@
 import {toRaw} from "vue";
 import {clone} from "xe-utils";
 import {visitorAvatar} from "@/entity/Role";
+import {isUtools} from "@/plugin/utools";
 
 // 对象
 
@@ -43,7 +44,7 @@ export interface DbRecord<T> {
 
 }
 
-export interface DbListRecord<T> extends DbRecord<T>{
+export interface DbListRecord<T> extends DbRecord<T> {
 
     id: string
 
@@ -113,6 +114,20 @@ export async function getFromOneByAsync<T extends Record<string, any>>(key: stri
     });
 }
 
+export function getFromOneBySync<T extends Record<string, any>>(key: string): DbRecord<T> | null {
+    if (!isUtools) {
+        throw new Error("同步方法只支持utools");
+    }
+    const res = utools.db.get(key);
+    if (!res) {
+        return null
+    }
+    return {
+        record: res.value,
+        rev: res._rev
+    };
+}
+
 
 /**
  * 保存一条数据
@@ -154,7 +169,7 @@ export async function removeOneByAsync(key: string, ignoreError: boolean = false
     if (res.error) {
         if (ignoreError) {
             console.error(res);
-        }else {
+        } else {
             return Promise.reject(res.message);
         }
     }

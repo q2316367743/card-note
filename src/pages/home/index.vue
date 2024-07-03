@@ -4,36 +4,46 @@
                 :max-height="height" :split="false">
             <template #scroll-loading>
                 <p v-if="bottom">人家也是有底线的[○･｀Д´･ ○]</p>
-                <a-spin v-else/>
+                <a-spin tip="正在加载中" v-else/>
             </template>
+            <!-- 输入框 -->
             <input-box v-show="keywords.length === 0" @add="onAdd" class="card card-container" style="margin-top: 0;"/>
-            <div v-if="keywords.length > 0" class="card no-bg card-container">过滤器：
-                <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
-                       @close="keywordRemove(keyword)" color="arcoblue">
-                    <span v-if="keyword.type === 'TAG'" style="width: 1rem">#</span>
-                    <span v-if="keyword.type === 'KEY'" style="width: 1rem">
-                            <icon-search/>
-                        </span>
-                    <span>{{ keyword.value }}</span>
-                </a-tag>
-                <a-dropdown type="text" size="mini" position="br">
-                    <a-button type="text" style="float: right">
-                        <template #icon>
-                            <icon-more-vertical/>
+            <!-- 过滤器 -->
+            <a-row v-if="keywords.length > 0" class="card no-bg card-container">
+                <a-col flex="auto">
+                    <a-space>
+                        <span>过滤器：</span>
+                        <a-tag v-for="keyword of keywords" :key="keyword.type+keyword.value" class="keyword" closable
+                               @close="keywordRemove(keyword)" color="arcoblue">
+                            <span v-if="keyword.type === 'TAG'" style="width: 1rem">#</span>
+                            <span v-if="keyword.type === 'KEY'" style="width: 1rem">
+                                <icon-search/>
+                            </span>
+                            <span>{{ keyword.value }}</span>
+                        </a-tag>
+                    </a-space>
+                </a-col>
+                <a-col flex="24px">
+                    <a-dropdown position="br">
+                        <a-button type="text" size="mini" style="float: right">
+                            <template #icon>
+                                <icon-more-vertical/>
+                            </template>
+                        </a-button>
+                        <template #content>
+                            <a-doption @click="exportOneFile()">导出</a-doption>
+                            <a-doption :disabled="disabledAi" @click="askMultiNoteToAiWarp()">询问AI</a-doption>
                         </template>
-                    </a-button>
-                    <template #content>
-                        <a-doption @click="exportOneFile()">导出</a-doption>
-                        <a-doption :disabled="disabledAi" @click="askMultiNoteToAiWarp()">询问AI</a-doption>
-                    </template>
-                </a-dropdown>
-            </div>
+                    </a-dropdown>
+                </a-col>
+            </a-row>
+            <!-- 实际的卡片 -->
             <card-note v-for="(record, index) of records" :record="record" :key="record.record.id"
                        :ellipsis="keywords.length === 0"
                        @update="e=>update(record, index, e)" @remove="e=>remove(index, e)"/>
         </a-list>
-        <a-back-top target-container=".arco-list" :style="{bottom: isMobile ? '100px' : '60px'}"
-                    ref="backTopInstance"/>
+        <!-- 返回顶部 -->
+        <a-back-top target-container=".arco-list" ref="backTopInstance"/>
     </a-layout>
 </template>
 <script lang="ts" setup>
@@ -51,14 +61,14 @@ import {
     useSearchNoteEvent
 } from "@/store/NoteStore";
 import {BackTopInstance} from "@arco-design/web-vue/es/back-top";
-import {useAppStore} from "@/store/AppStore";
 import {exportOneMarkdown} from "@/components/ImportOrExport/ExportOneMarkdown";
 import {useAiStore} from "@/store/AiStore";
 import {askMultiNoteToAi} from "@/pages/home/module/AskMultiNoteToAi";
 import {useSubInput} from "@/hooks/SubInput";
-import {isUtools} from "@/plugin/utools";
+import {useRoute} from "vue-router";
 
 const size = useWindowSize();
+const route = useRoute();
 
 interface Keyword {
     type: 'TAG' | 'KEY';
@@ -70,18 +80,23 @@ const limit = 10;
 
 const {onSearch, setSubInput} = useSubInput('', '请输入关键字、标签，回车搜索', false);
 
-const keyword = ref('');
 const keywords = ref<Array<Keyword>>([]);
 const records = ref<Array<DbRecord<NoteContent>>>(new Array<DbRecord<NoteContent>>());
 const bottom = ref(false);
 const backTopInstance = ref<BackTopInstance | null>(null);
 
 // 是否是手机客户端
-const isMobile = computed(() => useAppStore().isMobile);
-const height = computed(() => size.height.value - 47 - (isUtools ? 0 : 7) - (isMobile.value ? 40 : 0));
+const height = computed(() => size.height.value - 47);
 const disabledAi = computed(() => useAiStore().disabled);
 
 watch(keywords, value => value.length === 0 ? refresh() : search(), {deep: true});
+
+watch(() => route.query, value => {
+    const keyword = `${value?.keyword || ''}`;
+    if (keyword) {
+        keyAdd(keyword);
+    }
+}, {immediate: true, deep: true})
 
 const onPage = () => useNoteStore().init().then(() => useNoteStore().page(offset, limit).then(items => {
     items.forEach(item => records.value.push(item));
@@ -100,12 +115,15 @@ function fetchData() {
         return;
     }
     offset = records.value.length;
-    onPage();
+    if (keywords.value.length === 0) {
+        onPage();
+    } else {
+        search();
+    }
 }
 
 function refresh() {
     if (keywords.value.length === 0) {
-        keyword.value = '';
         offset = 0;
         records.value = new Array<DbRecord<NoteContent>>();
         bottom.value = false;
@@ -164,6 +182,13 @@ function onAdd(id: number, ids: Array<number>) {
     });
 }
 
+function keywordAdd(keyword: Keyword) {
+    if (keywords.value.findIndex(item => item.value === keyword.value && item.type === keyword.type) === -1) {
+        keywords.value.push(keyword)
+    }
+
+}
+
 function tagAdd(tag: string) {
     keywordAdd({
         type: 'TAG',
@@ -172,22 +197,14 @@ function tagAdd(tag: string) {
     backTopInstance.value && backTopInstance.value.scrollToTop();
 }
 
-function keyAdd() {
-    if (keyword.value.trim() === '') {
+function keyAdd(keyword: string) {
+    if (keyword.trim() === '') {
         return;
     }
     keywordAdd({
         type: 'KEY',
-        value: keyword.value
+        value: keyword
     });
-    keyword.value = '';
-}
-
-function keywordAdd(keyword: Keyword) {
-    if (keywords.value.findIndex(item => item.value === keyword.value && item.type === keyword.type) === -1) {
-        keywords.value.push(keyword)
-    }
-
 }
 
 function keywordRemove(keyword: Keyword) {
@@ -214,8 +231,7 @@ useRefreshNoteEvent.on(ids => {
 });
 
 onSearch(res => {
-    keyword.value = res;
-    keyAdd();
+    keyAdd(res);
     setSubInput('');
 })
 

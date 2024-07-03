@@ -17,7 +17,7 @@
     "features": [
         {
             "code": "launch",
-            "explain": "card-note",
+            "explain": "卡片笔记",
             "icon": "public/logo.png",
             "platform": [
                 "win32",
@@ -30,7 +30,7 @@
         },
         {
             "code": "append",
-            "explain": "card-note",
+            "explain": "卡片笔记",
             "icon": "public/logo.png",
             "platform": [
                 "win32",
@@ -41,6 +41,26 @@
                 {
                     "type": "over",
                     "label": "新增卡片笔记",
+                    "minLength": 1,
+                    "maxLength": 500
+                }
+            ]
+        },
+        {
+            "code": "search",
+            "explain": "卡片笔记",
+            "icon": "public/logo.png",
+            "mainPush": true,
+            "platform": [
+                "win32",
+                "darwin",
+                "linux"
+            ],
+            "cmds": [
+                {
+                    "type": "over",
+                    "label": "卡片笔记搜索",
+                    "exclude": "\n/[\\\/\t\n]/",
                     "minLength": 1,
                     "maxLength": 500
                 }

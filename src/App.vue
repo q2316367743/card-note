@@ -12,11 +12,12 @@
 import {computed, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {detach, useAppStore} from "@/store/AppStore";
-import {useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
+import {useNoteStore, useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/modal/MessageUtil";
 import {isUtools} from "@/plugin/utools";
 import AppHeader from "@/components/App/AppHeader.vue";
 import {checkLibrary} from "@/plugin/library";
+import {prettyDate} from "@/utils/lang/FormatUtil";
 
 
 const route = useRoute();
@@ -28,8 +29,7 @@ const href = computed(() => `./highlight.js/${useAppStore().dark ? 'github-dark'
 const isMobile = computed(() => useAppStore().isMobile);
 const layoutClass = computed(() => ({main: true, detach: detach.value, 'utools': isUtools, 'bg-color': true}))
 
-watch(() => selectedKeys.value, value => router.push(value[0]), {deep: true});
-watch(() => useAppStore().dark, handleTheme, {immediate: true});
+watch(selectedKeys, value => router.push(value[0]), {deep: true});
 watch(() => route.path, value => {
     if (selectedKeys.value[0] !== value) {
         selectedKeys.value[0] = value
@@ -44,6 +44,7 @@ import("@/store/RoleStore").then(res => res.useRoleStore().init());
 // 资源检查
 checkLibrary()
 
+utools.onPluginDetach(() => detach.value = true);
 utools.onPluginEnter(action => {
     if (action.code === 'append') {
         import("@/store/NoteStore").then(res =>
@@ -54,16 +55,38 @@ utools.onPluginEnter(action => {
                     utools.outPlugin();
                 })));
     }
+    detach.value = window.utools ? window.utools.getWindowType() !== 'main' : detach.value;
 });
-utools.onPluginDetach(() => detach.value = true)
 
-function handleTheme() {
-    if (useAppStore().isDarkColors()) {
-        document.body.setAttribute('arco-theme', 'dark');
-    } else {
-        document.body.removeAttribute('arco-theme');
+utools.onMainPush(action => {
+    if (action.code !== 'search') {
+        return [];
     }
-}
+    let items = useNoteStore().searchSync([action.payload]);
+    if (items.length > 6) {
+        return [...items.slice(0, 5).map(e => ({
+            text: e.record.content,
+            title: e.record.content,
+            tag: prettyDate(e.record.updateTime)
+        })), {
+            text: `共搜索到 ${items.length + 1} 条记录，查看更多...`
+        }]
+    }
+    return items.map(e => ({
+        text: e.record.content,
+        title: e.record.content,
+        tag: prettyDate(e.record.updateTime)
+    }))
+}, action => {
+    // 此处进行处理
+    router.push({
+        path: '/home',
+        query: {
+            keyword: action.payload
+        }
+    });
+    return true;
+})
 
 window.onTagSearch = e => useSearchNoteEvent.emit(decodeURIComponent(e));
 window.openMessage = (content, level) => MessageUtil[level || 'warning'](content);

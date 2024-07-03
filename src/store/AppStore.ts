@@ -49,21 +49,29 @@ export const fontFamilyWrap = computed(() => {
 export const detach = ref(window.utools ? window.utools.getWindowType() !== 'main' : true);
 
 export const useAppStore = defineStore('app', () => {
-    const themeType = ref(0);
-    const dark = ref(renderIsDark(themeType.value));
+    const themeType = useUtoolsDbStorage<number>(DbKeyEnum.KEY_THEME, 0);
+    const dark = computed(() => renderIsDark(themeType.value));
 
-    watch(() => themeType.value, value => {
-        setItem(DbKeyEnum.KEY_THEME, value);
-        dark.value = renderIsDark(value);
+    watch(dark, value => {
+        if (value) {
+            document.body.setAttribute('arco-theme', 'dark');
+        } else {
+            document.body.removeAttribute('arco-theme');
+        }
     })
 
     const size = useWindowSize();
     const isMobile = computed(() => size.width.value < size.height.value * 0.75);
     const theme = computed(() => dark.value ? 'dark' : 'light');
 
+
+    function isDarkColors() {
+        return dark.value;
+    }
+
+
     async function init() {
         // 初始化主题
-        themeType.value = getItem<number>(DbKeyEnum.KEY_THEME) || 0;
 
         const oldVersion = getItem<number>(DbKeyEnum.KEY_VERSION) || 0;
         try {
@@ -81,11 +89,6 @@ export const useAppStore = defineStore('app', () => {
         }
         setItem(DbKeyEnum.KEY_VERSION, Constant._version);
     }
-
-    function isDarkColors() {
-        return dark.value;
-    }
-
 
     function saveThemeType(res: number) {
         themeType.value = res;

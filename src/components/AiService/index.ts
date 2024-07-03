@@ -16,7 +16,8 @@ async function askMulti(questions: Array<string>) {
  * 询问AI
  */
 export async function askToAi(noteId: number) {
-    const noteContent = await useNoteStore().getOne(noteId);
+    const {getOne, update} = useNoteStore();
+    const noteContent = await getOne(noteId);
     if (!noteContent) {
         return Promise.reject("系统异常，笔记不存在");
     }
@@ -26,7 +27,7 @@ export async function askToAi(noteId: number) {
     const newContent = "**原卡片内容：**\n\n" + content.trim() + "\n\n\n\n**处理后内容：**\n\n" + result;
     noteContent.record.content = newContent;
     noteContent.record.role = 'robot';
-    await useNoteStore().update(noteContent, newContent, noteContent.record.relationNotes);
+    await update(noteContent, newContent, noteContent.record.relationNotes);
 }
 
 export async function askMultiToAi(question: string, records: Array<DbRecord<NoteContent>>) {
