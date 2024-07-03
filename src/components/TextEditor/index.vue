@@ -22,6 +22,13 @@
                             </template>
                         </a-button>
                     </a-tooltip>
+                    <a-tooltip content="问问AI" v-if="showAskAi">
+                        <a-button @click="appendAskAi()">
+                            <template #icon>
+                                <icon-robot :size="16"/>
+                            </template>
+                        </a-button>
+                    </a-tooltip>
                     <a-tooltip content="待办" v-if="!mdEditorEnable">
                         <a-button @click="addCheckbox()">
                             <template #icon>
@@ -76,10 +83,10 @@ import {NoteContent, NoteRelation} from "@/entity/Note";
 import {renderContent} from "@/utils/lang/BrowserUtil";
 import {isNumber} from "xe-utils";
 import {useNoteStore} from "@/store/NoteStore";
-import {useRoleStore} from "@/store/RoleStore";
 import MarkdownEditor from "@/components/TextEditor/MarkdownEditor.vue";
 import TextareaEditor from "@/components/TextEditor/TextareaEditor.vue";
 import {mdEditorEnable} from "@/store/AppStore";
+import {AI_ASSISTANT, useAiStore} from "@/store/AiStore";
 
 const props = defineProps({
     content: String,
@@ -105,6 +112,8 @@ const content = ref(props.content || '');
 const relationNotes = ref<Array<NoteContent>>([]);
 const editor = ref();
 
+const showAskAi = computed(() => !useAiStore().disabled);
+
 if (props.relationNotes) {
     useNoteStore().getMany(props.relationNotes
         .filter(e => e.relationId !== props.noteId && e.type === 'REFERENCE')
@@ -118,9 +127,6 @@ const relationTempNotes = ref<Array<NoteContent>>([]);
 const loading = ref(false);
 const role = ref('user');
 
-const roleOptions = computed(() => useRoleStore().roleOptions);
-
-
 const addCheckbox = () => editor.value && editor.value.addCheckbox();
 const addCode = () => editor.value && editor.value.addCode();
 const addTable = () => editor.value && editor.value.addTable();
@@ -129,6 +135,18 @@ function openAddRelation() {
     visible.value = true;
     relationId.value = "";
     relationTempNotes.value = [];
+}
+
+function appendAskAi() {
+    if (content.value.startsWith(AI_ASSISTANT)) {
+        let temp = content.value.substring(AI_ASSISTANT.length);
+        if (temp.startsWith(" ")) {
+            temp = temp.substring(1);
+        }
+        content.value = temp;
+    } else {
+        content.value = AI_ASSISTANT + ' ' + content.value;
+    }
 }
 
 function onOk() {
