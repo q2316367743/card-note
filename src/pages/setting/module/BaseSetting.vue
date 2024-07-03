@@ -24,6 +24,7 @@
                     <a-link @click="openFontFamily()">font-family</a-link>
                 </template>
             </a-form-item>
+            <a-divider />
             <a-form-item label="完全的markdown编辑器">
                 <a-switch v-model="mdEditorEnable" type="round">
                     <template #checked>启用</template>
@@ -55,6 +56,7 @@
                     只在启用【完全的markdown编辑器】时生效
                 </template>
             </a-form-item>
+            <a-divider />
             <a-form-item label="开发者工具">
                 <a-switch v-model="devTool" type="round"/>
             </a-form-item>

@@ -30,7 +30,7 @@ export const ellipseRows = useUtoolsDbStorage(DbKeyEnum.KEY_ELLIPSE_ROWS, 3);
 export const fontSize = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_SIZE, 14);
 export const fontFamily = useUtoolsDbStorage(DbKeyEnum.KEY_FONT_FAMILY, "'JetBrains Mono', '霞鹜文楷 GB'");
 // 是否使用md编辑器
-export const mdEditorEnable = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_ENABLE, false);
+export const mdEditorEnable = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_ENABLE, true);
 export const mdEditorHeight = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_HEIGHT, 200);
 export const mdEditorPreview = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_PREVIEW, false);
 export const mdEditorTheme = useUtoolsDbStorage(DbKeyEnum.KEY_MD_EDITOR_THEME, 'cyanosis');

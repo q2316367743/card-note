@@ -174,13 +174,15 @@ export const useNoteStore = defineStore('note', () => {
             noteContent.relationNotes.push(relation)
         }
 
-
         // 先增加数据
         await saveOneByAsync(`${DbKeyEnum.NOTE_ITEM}/${now}`, noteContent);
 
         // 最后增加索引
         indexes.value.unshift(noteIndex);
         rev = await saveListByAsync(DbKeyEnum.LIST_NOTE, indexes.value, rev);
+
+        // AI功能
+        useAiStore().ask(noteIndex.id, content);
 
         // 自动同步事件
         useSyncEvent.emit({key: DbKeyEnum.LIST_NOTE, type: 'put'});

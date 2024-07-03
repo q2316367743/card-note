@@ -3,10 +3,17 @@
         <template #extra>
             <a-button type="primary" @click="save()">保存</a-button>
         </template>
-        <a-alert style="margin-bottom: 4px;">
+        <a-alert style="margin-bottom: 4px;" v-if="!aiSetting.token">
             <span>推荐使用</span>
             <a-link @click="toApi()">V3 API</a-link>
             <span>，无需科学上网，即可使用。</span>
+        </a-alert>
+        <a-alert>
+            <a-space>
+                <span>在输入框中，使用</span>
+                <a-tag color="red">{{AI_ASSISTANT}}</a-tag>
+                <span>开头，来进行AI提问</span>
+            </a-space>
         </a-alert>
         <a-form :model="aiSetting" layout="vertical">
             <a-form-item label="链接">
@@ -36,7 +43,7 @@
 import {ref} from "vue";
 import {clone} from "xe-utils";
 import MessageUtil from "@/utils/modal/MessageUtil";
-import {useAiStore} from "@/store/AiStore";
+import {AI_ASSISTANT, useAiStore} from "@/store/AiStore";
 import {getItemByDefault, setItem} from "@/utils/utools/DbStorageUtil";
 import DbKeyEnum from "@/enumeration/DbKeyEnum";
 

@@ -8,6 +8,7 @@ import {useNoteStore} from "@/store/NoteStore";
 import MessageUtil from "@/utils/modal/MessageUtil";
 import TextEditor from "@/components/TextEditor/index.vue";
 import {NoteAdd} from "@/entity/Note";
+import {statistics} from "@/plugin/statistics";
 
 const emits = defineEmits(['add']);
 
@@ -19,11 +20,7 @@ function add(note: NoteAdd) {
     }
     useNoteStore().add(note.content, note.relationNotes, note.role)
         .then(content => {
-            try {
-                LA.track('create_note');
-            } catch (e) {
-                console.error(e);
-            }
+            statistics.track('create_note');
             MessageUtil.success("新增成功");
             emits('add', content.id, content.relationNotes.map(e => e.relationId));
         })

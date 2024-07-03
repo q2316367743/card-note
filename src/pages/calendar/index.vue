@@ -32,6 +32,7 @@ import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import {useNoteStore, useSearchNoteEvent} from "@/store/NoteStore";
 import {useAppStore} from "@/store/AppStore";
+import {statistics} from "@/plugin/statistics";
 
 const now = new Date();
 
@@ -85,11 +86,7 @@ const notes = computed(() => {
 function dayClick(args: any) {
     keywords.value = [];
     records.value = [];
-    try {
-        LA.track('show_day');
-    } catch (e) {
-        console.error(e);
-    }
+    statistics.track('show_day');
     useNoteStore().init().then(() => useNoteStore().oneDay(new Date(toRaw(args).date).getTime())
         .then(items => records.value = items));
 }

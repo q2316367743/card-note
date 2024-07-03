@@ -25,6 +25,7 @@ import MessageUtil from "@/utils/modal/MessageUtil";
 import html2canvas from "html2canvas";
 import {downloadByUrl} from "@/utils/lang/BrowserUtil";
 import {openCommentBox} from "@/pages/home/module/CommentBox";
+import {statistics} from "@/plugin/statistics";
 
 const NoteInfo = styled.div`
     position: fixed;
@@ -70,11 +71,7 @@ const BottomLeft = styled.div`
 
 export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateIds: Array<number>) => void) {
 
-    try {
-        LA.track('note_info');
-    } catch (e) {
-        console.error(e);
-    }
+    statistics.track('note_info');
 
     const noteContent = ref(record.record);
     const commentNotes = ref<Array<NoteContent>>(new Array<NoteContent>());

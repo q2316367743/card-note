@@ -1,6 +1,12 @@
 // 模拟utools声明
 
-import {ShowOpenDialogOptionFilter, ShowOpenDialogOptionProperty} from "@/plugin/utools/index";
+export type ShowOpenDialogOptionProperty = 'openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles'
+    | 'createDirectory' | 'promptToCreate' | 'noResolveAliases' | 'treatPackageAsDirectory' | 'dontAddToRecent';
+
+export interface ShowOpenDialogOptionFilter {
+    name: string;
+    extensions: Array<string>
+}
 
 export interface DbDoc {
     _id: string,

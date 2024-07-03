@@ -26,7 +26,7 @@ interface Window {
 }
 
 interface LAInstance {
-    init(option: any);
+    init(option: any): void;
 
     // 事件埋点
     track(event: string, properties?: any): void

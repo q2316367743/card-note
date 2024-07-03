@@ -23,7 +23,7 @@ export async function askToAi(noteId: number) {
     const question = noteContent.record.content;
     const content = question.substring(5);
     const result = await ask(question);
-    const newContent = "==原卡片内容：==\n\n" + content.trim() + "\n\n\n\n==处理后内容：==\n\n" + result;
+    const newContent = "**原卡片内容：**\n\n" + content.trim() + "\n\n\n\n**处理后内容：**\n\n" + result;
     noteContent.record.content = newContent;
     noteContent.record.role = 'robot';
     await useNoteStore().update(noteContent, newContent, noteContent.record.relationNotes);
@@ -47,7 +47,7 @@ export async function askCommentToAi(source: string, current: DbRecord<NoteConte
     // 去除@AI助手的内容
     const question = current.record.content.replaceAll(AI_ASSISTANT, "");
     const res = await askMulti([source, question]);
-    const newContent = current.record.content + "\n\n==回答：==\n" + res;
+    const newContent = current.record.content + "\n\n**回答：**\n" + res;
     // 更新卡片
     current.record.role = 'robot';
     await useNoteStore().update(current, newContent, current.record.relationNotes);

@@ -4,14 +4,6 @@ import {DbPromise, DbStorage, RedirectPreload, ShowOpenDialogOption} from "@/plu
 import {webDbPromise} from "@/plugin/utools/dbPromise";
 import {webDbStorage} from "@/plugin/utools/dbStorage";
 
-export type ShowOpenDialogOptionProperty = 'openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles'
-    | 'createDirectory' | 'promptToCreate' | 'noResolveAliases' | 'treatPackageAsDirectory' | 'dontAddToRecent';
-
-export interface ShowOpenDialogOptionFilter {
-    name: string;
-    extensions: Array<string>
-}
-
 function isMacOS(): boolean {
     return /macintosh|mac os x/i.test(navigator.userAgent);
 }
