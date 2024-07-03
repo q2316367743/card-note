@@ -28,6 +28,12 @@
                                 </template>
                                 记录统计
                             </a-doption>
+                            <a-doption @click="openUploadLog()">
+                                <template #icon>
+                                    <icon-record/>
+                                </template>
+                                更新日志
+                            </a-doption>
                             <a-doption @click="$router.push('/setting')">
                                 <template #icon>
                                     <icon-settings/>
@@ -61,6 +67,7 @@ import {computed} from "vue";
 import {useAppStore} from "@/store/AppStore";
 import {useNoteStore} from "@/store/NoteStore";
 import {isUtools} from "@/plugin/utools";
+import {openUploadLog} from "@/components/App/AppUpdateLog";
 
 const isMobile = computed(() => useAppStore().isMobile);
 const allIds = computed(() => useNoteStore().allIds())
