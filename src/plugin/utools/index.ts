@@ -45,10 +45,22 @@ export const utools = {
     onPluginEnter(callback: (action: { code: string, type: string, payload: any }) => void): void {
         window.addEventListener('load', () => callback({code: 'application', type: '', payload: {}}));
     },
-    onPluginOut(callback: () =>void){
+    onPluginOut(callback: () => void) {
         window.addEventListener('close', () => callback());
     },
-    onPluginDetach() {
+    onPluginDetach(callback: () => void) {
+    },
+    onMainPush(callback: (action: { code: string, type: string, payload: any }) => {
+        icon?: string,
+        text: string,
+        title?: string
+    }[], selectCallback: (action: {
+        code: string,
+        type: string,
+        payload: any,
+        option: { icon?: string, text: string, title?: string }
+    }) => void) {
+
     },
     showOpenDialog(options: ShowOpenDialogOption): (string[]) | (undefined) {
         MessageUtil.warning("web环境不支持打开文件操作，请使用utools版本");
@@ -65,6 +77,9 @@ export const utools = {
     },
     fetchUserPayments(): Promise<any[]> {
         return Promise.resolve([]);
+    },
+    getWindowType() {
+        return 'main';
     },
     getUser: getWebUser,
     fetchUserServerTemporaryToken(): Promise<{ token: string, expiredAt: number }> {

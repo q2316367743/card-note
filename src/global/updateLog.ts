@@ -1,4 +1,7 @@
 export const updateLogs: Record<string, Array<string>> = {
+    "1.5.4": [
+        "【新增】进入插件自动聚焦输入框"
+    ],
     "1.5.3": [
         "【新增】新增主程序推送功能，开启主程序推送，可以在utools主页面进行搜索卡片内容",
         "【修复】修复AI功能无法使用的问题"

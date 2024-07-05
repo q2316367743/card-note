@@ -14,11 +14,13 @@ import {useRoute, useRouter} from "vue-router";
 import {detach, useAppStore} from "@/store/AppStore";
 import {useNoteStore, useRefreshNoteEvent, useSearchNoteEvent} from "@/store/NoteStore";
 import MessageUtil from "@/utils/modal/MessageUtil";
-import {isUtools} from "@/plugin/utools";
+import {isUtools, utools as webUtools} from "@/plugin/utools";
 import AppHeader from "@/components/App/AppHeader.vue";
 import {checkLibrary} from "@/plugin/library";
 import {prettyDate} from "@/utils/lang/FormatUtil";
 
+// 防止注册失败
+window.utools = window.utools || webUtools;
 
 const route = useRoute();
 const router = useRouter();

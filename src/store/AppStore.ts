@@ -58,7 +58,7 @@ export const useAppStore = defineStore('app', () => {
         } else {
             document.body.removeAttribute('arco-theme');
         }
-    })
+    }, {immediate: true})
 
     const size = useWindowSize();
     const isMobile = computed(() => size.width.value < size.height.value * 0.75);
