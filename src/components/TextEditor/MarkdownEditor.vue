@@ -2,7 +2,7 @@
     <div class="markdown-editor">
         <md-editor v-model="modelValue" :code-theme="codeTheme" placeholder="任何想法。。。"
                    :preview="mdEditorPreview" :theme :preview-theme="mdEditorTheme" :style
-                   :footers="['markdownTotal']" :auto-detect-code="true"
+                   :footers="['markdownTotal']" :auto-detect-code="true" auto-focus
                    @save="onSave" @error="onError" @upload-img="onImageUpload"
         />
     </div>

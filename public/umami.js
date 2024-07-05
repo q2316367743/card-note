@@ -70,7 +70,7 @@
             k = (t, e, a) => {
                 a && (D = B, B = U(a.toString()), B !== D && setTimeout($, x))
             },
-            E = () => !h || i && i.getItem("umami.disabled") || v && !S.includes(s),
+            E = () => !h || i && import.meta.env.DEV || v && !S.includes(s),
             L = async (t, e = "event") => {
                 if (E()) return;
                 const a = {

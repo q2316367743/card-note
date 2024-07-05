@@ -6,7 +6,7 @@
 <script lang="ts" setup>
 
 import {useAiStore} from "@/store/AiStore";
-import {computed, nextTick, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 import {useTagStore} from "@/store/TagStore";
 import {getCursorPosition} from "@/utils/lang/DomUtil";
 
@@ -19,6 +19,10 @@ const options = ref<Array<string>>([]);
 const textareaRef = ref()
 
 const tags = computed(() => Array.from(useTagStore().tags));
+
+onMounted(() => {
+    textareaRef.value?.focus();
+})
 
 function onSearch(_value: string, prefix: string) {
     if (prefix === '#') {
