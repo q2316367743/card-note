@@ -19,7 +19,6 @@ import {DbRecord} from "@/utils/utools/DbStorageUtil";
 import {NoteContent} from "@/entity/Note";
 import {useNoteStore} from "@/store/NoteStore";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
-import {statistics} from "@/plugin/statistics";
 
 let id = 0;
 const record = ref<DbRecord<NoteContent> | null>(null);
@@ -33,8 +32,6 @@ function init() {
     useNoteStore().getOne(id)
         .then(res => record.value = res);
 }
-
-statistics.track('export');
 
 </script>
 <style scoped>

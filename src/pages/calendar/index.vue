@@ -84,10 +84,11 @@ const notes = computed(() => {
 })
 
 function dayClick(args: any) {
+    const time = new Date(toRaw(args).date).getTime();
     keywords.value = [];
     records.value = [];
-    statistics.track('show_day');
-    useNoteStore().init().then(() => useNoteStore().oneDay(new Date(toRaw(args).date).getTime())
+    statistics.track('日历展示跳转', {time});
+    useNoteStore().init().then(() => useNoteStore().oneDay(time)
         .then(items => records.value = items));
 }
 

@@ -14,15 +14,12 @@ import html2canvas from "html2canvas";
 import {downloadByUrl} from "@/utils/lang/BrowserUtil";
 import {useAppStore} from "@/store/AppStore";
 import NotePreview from "@/components/CardNote/NotePreview.vue";
-import {statistics} from "@/plugin/statistics";
 
 export function createExportImage(note: NoteContent) {
 
     const user = utools.getUser();
     const id = "preview-" + note.id;
     const theme = ref(0);
-
-    statistics.track('share_note');
 
     Modal.open({
         title: "分享 卡片笔记",

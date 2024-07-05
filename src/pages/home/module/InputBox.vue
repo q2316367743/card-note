@@ -20,7 +20,7 @@ function add(note: NoteAdd) {
     }
     useNoteStore().add(note.content, note.relationNotes, note.role)
         .then(content => {
-            statistics.track('create_note');
+            statistics.track('新建笔记');
             MessageUtil.success("新增成功");
             emits('add', content.id, content.relationNotes.map(e => e.relationId));
         })

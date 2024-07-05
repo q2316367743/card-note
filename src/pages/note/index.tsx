@@ -71,7 +71,7 @@ const BottomLeft = styled.div`
 
 export function openNoteInfo(record: DbRecord<NoteContent>, update: (needUpdateIds: Array<number>) => void) {
 
-    statistics.track('note_info');
+    statistics.track('笔记详情');
 
     const noteContent = ref(record.record);
     const commentNotes = ref<Array<NoteContent>>(new Array<NoteContent>());
