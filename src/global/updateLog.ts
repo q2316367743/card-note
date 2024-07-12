@@ -1,4 +1,7 @@
 export const updateLogs: Record<string, Array<string>> = {
+    "1.5.5": [
+        "【新增】首页增加刷新"
+    ],
     "1.5.4": [
         "【新增】进入插件自动聚焦输入框"
     ],
