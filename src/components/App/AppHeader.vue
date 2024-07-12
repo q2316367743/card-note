@@ -42,6 +42,11 @@
                             </a-doption>
                         </template>
                     </a-dropdown>
+                    <a-button v-if="isHome" type='text' @click="onRefresh()">
+                        <template #icon>
+                            <icon-refresh/>
+                        </template>
+                    </a-button>
                     <a-button type='text' v-if="!isUtools" disabled>
                         <template #icon>
                             <icon-search/>
@@ -65,15 +70,21 @@
 <script lang="ts" setup>
 import {computed} from "vue";
 import {useAppStore} from "@/store/AppStore";
-import {useNoteStore} from "@/store/NoteStore";
+import {useNoteStore, useRefreshNoteEvent} from "@/store/NoteStore";
 import {isUtools} from "@/plugin/utools";
 import {openUploadLog} from "@/components/App/AppUpdateLog";
+import {useRoute} from "vue-router";
+
+const route = useRoute();
 
 const isMobile = computed(() => useAppStore().isMobile);
 const allIds = computed(() => useNoteStore().allIds())
 const noteLength = computed(() => allIds.value.length);
 const minDay = computed(() => Math.min(...allIds.value, new Date().getTime()));
 const day = computed(() => Math.max(Math.floor(((new Date().getTime()) - minDay.value) / (24 * 60 * 60 * 1000)), 0));
+const isHome = computed(() => route.path === '/home')
+
+const onRefresh = () => useRefreshNoteEvent.emit();
 </script>
 <style scoped>
 

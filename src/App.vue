@@ -29,7 +29,7 @@ const selectedKeys = ref(['/home']);
 const href = computed(() => `./highlight.js/${useAppStore().dark ? 'github-dark' : 'github'}.css`);
 // 是否是手机客户端
 const isMobile = computed(() => useAppStore().isMobile);
-const layoutClass = computed(() => ({main: true, detach: detach.value, 'utools': isUtools, 'bg-color': true}))
+const layoutClass = computed(() => ({main: true, detach: detach.value, 'utools': isUtools, 'bg-color': true}));
 
 watch(selectedKeys, value => router.push(value[0]), {deep: true});
 watch(() => route.path, value => {
@@ -58,6 +58,8 @@ utools.onPluginEnter(action => {
                 })));
     }
     detach.value = window.utools ? window.utools.getWindowType() !== 'main' : detach.value;
+    // 每次进入都刷新一遍
+    useRefreshNoteEvent.emit();
 });
 
 utools.onMainPush(action => {
