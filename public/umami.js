@@ -59,7 +59,7 @@
             },
             j = () => ({
                 website: h,
-                hostname: s,
+                hostname: s || 'localhost',
                 screen: N,
                 language: r,
                 title: O(_),
@@ -103,7 +103,7 @@
             identify: I
         });
         let K, R, B = U(u),
-            D = d !== s ? d : "",
+            D = window.utools ? 'https://u.tools' : (d !== s ? d : ""),
             _ = c.title;
         if (y && !E()) {
             (() => {
