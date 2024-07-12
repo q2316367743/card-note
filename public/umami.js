@@ -103,7 +103,7 @@
             identify: I
         });
         let K, R, B = U(u),
-            D = window.utools ? 'https://u.tools' : (d !== s ? d : ""),
+            D = (window.isUtools || window.utools) ? 'https://u.tools' : (d !== s ? d : ""),
             _ = c.title;
         if (y && !E()) {
             (() => {
